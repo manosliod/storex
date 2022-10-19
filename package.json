@@ -37,6 +37,7 @@
     "aws-amplify": "4.3.22",
     "axios": "0.27.2",
     "axios-mock-adapter": "1.20.0",
+    "bcryptjs": "^2.4.3",
     "chart.js": "3.7.1",
     "cleave.js": "1.6.0",
     "clipboard-copy": "4.0.1",
@@ -50,6 +51,7 @@
     "jsonwebtoken": "8.5.1",
     "keen-slider": "6.6.5",
     "mdi-material-ui": "7.1.0",
+    "moment": "^2.29.4",
     "next": "12.1.6",
     "nprogress": "0.2.0",
     "payment": "2.4.6",
@@ -73,9 +75,11 @@
     "recharts": "2.1.6",
     "stylis": "4.0.10",
     "stylis-plugin-rtl": "2.1.1",
-    "yup": "0.32.9"
+    "yup": "0.32.9",
+    "yup-phone": "^1.3.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/cleave.js": "1.4.6",
     "@types/draft-js": "0.11.8",
     "@types/jsonwebtoken": "8.5.8",
