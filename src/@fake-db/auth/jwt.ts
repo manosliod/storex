@@ -7,6 +7,10 @@ import mock from 'src/@fake-db/mock'
 // ** Types
 import { UserDataType } from 'src/context/types'
 
+// ** Password Security import
+import bcrypt from 'bcryptjs';
+import crypto from "crypto";
+
 const users: UserDataType[] = [];
 
 // ! These two secrets should be in .env file and not in any other file
@@ -25,14 +29,20 @@ mock.onPost('/jwt/set/users').reply(request => {
   return [200, 'success']
 });
 
-mock.onPost('/jwt/login').reply(request => {
+mock.onPost('/jwt/login').reply(async request => {
   const { email, password } = JSON.parse(request.data)
 
   let error = {
     email: ['Something went wrong']
   }
 
-  const user = users.find(u => u.email === email && u.password === password)
+  const cryptPass = await bcrypt.hash(password, <string>process.env.BCRYPT_SALT)
+  const hashedPassword = crypto
+      .createHash('md5')
+      .update(cryptPass)
+      .digest('hex');
+
+  const user = users.find(u => u.email === email && u.password === hashedPassword)
 
   if (user) {
     const accessToken = jwt.sign({ id: user._id }, jwtConfig.secret)
@@ -53,7 +63,7 @@ mock.onPost('/jwt/login').reply(request => {
 
 mock.onPost('/jwt/register').reply(request => {
   if (request.data.length > 0) {
-    const { email, password } = JSON.parse(request.data)
+    const { email, password, fullName, birthdate, phone } = JSON.parse(request.data)
     const isEmailAlreadyInUse = users.find(user => user.email === email)
     // const isUsernameAlreadyInUse = users.find(user => user.username === username)
     const error = {
@@ -71,18 +81,18 @@ mock.onPost('/jwt/register').reply(request => {
         lastIndex = <string>users[length - 1].id
       }
       const userData = {
-        id: lastIndex + 1,
+        _id: 'temporary_register_id',
         email,
         password,
-        // username,
-        avatar: null,
-        fullName: '',
-        role: 'admin'
+        fullName,
+        birthdate,
+        phone,
+        role: 'user'
       }
 
       users.push(userData)
 
-      const accessToken = jwt.sign({ id: userData.id }, jwtConfig.secret)
+      const accessToken = jwt.sign({ id: userData._id }, jwtConfig.secret)
 
       const user = { ...userData }
       delete user.password
@@ -92,7 +102,7 @@ mock.onPost('/jwt/register').reply(request => {
       return [200, response]
     }
 
-    return [200, { error }]
+    return [500, { error }]
   } else {
     return [401, { error: 'Invalid Data' }]
   }

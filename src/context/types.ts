@@ -7,21 +7,24 @@ export type LoginParams = {
 
 export type RegisterParams = {
   email: string
-  username: string
+  // username: string
   password: string
+  fullName: string
+  birthdate: Date
+  phone: string
 }
 
 export type UserDataType = {
   _id?: string | null
-  id: UserDataType['_id']
+  id?: UserDataType['_id']
   name?: string | null
   fullName: UserDataType['name']
   role: string
   email: string
   password: string
   phone?: string | null
-  birthday?: string | null
-  avatar?: string | null
+  birthdate?: string | null
+  // avatar?: string | null
 }
 
 export type AuthValuesType = {
