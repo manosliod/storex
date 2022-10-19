@@ -12,6 +12,9 @@ const withTM = require('next-transpile-modules')([
 ])
 
 module.exports = withTM({
+  env: {
+    BCRYPT_SALT: '$2a$12$n4LLA0kQYyqD7V1w3wdVq.'
+  },
   trailingSlash: true,
   reactStrictMode: false,
   experimental: {
