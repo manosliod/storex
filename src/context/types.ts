@@ -1,4 +1,6 @@
-export type ErrCallbackType = (err: { [key: string]: string }) => void
+import {AxiosResponse} from "axios";
+
+export type ErrCallbackType = (err: { [key: string]: AxiosResponse }) => void
 
 export type LoginParams = {
   email: string
@@ -7,10 +9,10 @@ export type LoginParams = {
 
 export type RegisterParams = {
   email: string
-  // username: string
   password: string
+  passwordConfirm: string
   fullName: string
-  birthdate: Date
+  birthday: string
   phone: string
 }
 

@@ -5,7 +5,7 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 import { useRouter } from 'next/router'
 
 // ** Axios
-import axios from 'axios'
+import axios, {AxiosResponse} from 'axios'
 
 // ** Config
 import authConfig from 'src/configs/auth'
@@ -116,10 +116,11 @@ const AuthProvider = ({ children }: Props) => {
         if (res.data.error) {
           if (errorCallback) errorCallback(res.data.error)
         } else {
+
           handleLogin({ email: params.email, password: params.password })
         }
       })
-      .catch((err: { [key: string]: string }) => (errorCallback ? errorCallback(err) : null))
+      .catch((err: { [key: string]: AxiosResponse }) => (errorCallback ? errorCallback(err) : null))
   }
 
   const setUsers = (data: UserDataType[]) => {

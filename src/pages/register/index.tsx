@@ -77,7 +77,7 @@ interface FormData {
   password: string
   passwordConfirm: string
   fullName: string
-  birthdate: Date
+  birthday: string
   phone: string
 }
 
@@ -94,37 +94,34 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
 
   const minDate = moment().subtract(120, 'years').format('MM/DD/YYYY');
   const maxDate = moment().subtract(18, 'years').format('MM/DD/YYYY');
-  const [values, setValues] = useState<State>({
-    email: '',
-    password: '',
-    passwordConfirm: '',
-    fullName: '',
-    birthday: new Date(maxDate),
-    phone: ''
-  })
 
   // ** Hook
   const auth = useAuth()
   const theme = useTheme()
 
-  const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
-
   const onSubmit = (data: FormData) => {
-    const { email, password, fullName, birthdate, phone } = data
-    console.log(email, password)
-    auth.register({ email, password, fullName, birthdate, phone }, () => {
-      setError('email', {
+    data.birthday = moment(new Date(data.birthday)).format('MM-DD-YYYY')
+    auth.register(data, (err) => {
+      let name;
+      let message;
+      const { response } = err
+      if ( response.data.message ) {
+        name = response.data.message.split('/type:')[1];
+        message = response.data.message.split('/type:')[0];
+      } else {
+        name = 'email';
+        message = 'Email already in use!';
+      }
+
+      setError(name, {
         type: 'manual',
-        message: 'Email already in use!'
+        message
       })
     })
   }
 
   const handleUsers = () => {
     auth.setUsers(props.users);
-    console.log(props.users);
   }
 
   useEffect(() => {

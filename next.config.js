@@ -21,6 +21,14 @@ module.exports = withTM({
     esmExternals: false,
     jsconfigPaths: true // enables it for both jsconfig.json and tsconfig.json
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://api.storex.local:81/api/:path*'
+      }
+    ]
+  },
   webpack: config => {
     config.resolve.alias = {
       ...config.resolve.alias,

@@ -5,11 +5,12 @@ import jwt from 'jsonwebtoken'
 import mock from 'src/@fake-db/mock'
 
 // ** Types
-import { UserDataType } from 'src/context/types'
+import {UserDataType} from 'src/context/types'
 
 // ** Password Security import
 import bcrypt from 'bcryptjs';
 import crypto from "crypto";
+import axios from "axios";
 
 const users: UserDataType[] = [];
 
@@ -61,9 +62,9 @@ mock.onPost('/jwt/login').reply(async request => {
   }
 })
 
-mock.onPost('/jwt/register').reply(request => {
+mock.onPost('/jwt/register').reply(async request => {
   if (request.data.length > 0) {
-    const { email, password, fullName, birthdate, phone } = JSON.parse(request.data)
+    const { email, password, passwordConfirm, fullName, birthday, phone } = JSON.parse(request.data)
     const isEmailAlreadyInUse = users.find(user => user.email === email)
     // const isUsernameAlreadyInUse = users.find(user => user.username === username)
     const error = {
@@ -80,14 +81,43 @@ mock.onPost('/jwt/register').reply(request => {
       if (length) {
         lastIndex = <string>users[length - 1].id
       }
-      const userData = {
-        _id: 'temporary_register_id',
+
+      const registerData = {
         email,
         password,
+        passwordConfirm,
+        name: fullName,
         fullName,
-        birthdate,
+        birthday,
         phone,
         role: 'user'
+      }
+
+      let axiosError;
+      await axios
+        .post('/api/v1/users/signup', registerData)
+        .then(res => {
+          if(res.data.error){
+            axiosError = res.data.message
+          }
+        })
+        .catch(error => {
+          axiosError = error.response.data.message
+        })
+      if ( axiosError !== undefined )
+        return [500, {message: axiosError}]
+
+      delete registerData.name
+      delete registerData.passwordConfirm
+
+      const cryptPass = await bcrypt.hash(registerData.password, <string>process.env.BCRYPT_SALT)
+      registerData.password = crypto
+          .createHash('md5')
+          .update(cryptPass)
+          .digest('hex')
+      const userData = {
+        _id: 'temporary_register_id',
+        ...registerData
       }
 
       users.push(userData)
