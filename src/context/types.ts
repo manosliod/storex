@@ -1,4 +1,4 @@
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from 'axios'
 
 export type ErrCallbackType = (err: { [key: string]: AxiosResponse }) => void
 
@@ -26,6 +26,7 @@ export type UserDataType = {
   password: string
   phone?: string | null
   birthdate?: string | null
+
   // avatar?: string | null
 }
 
@@ -38,6 +39,6 @@ export type AuthValuesType = {
   setUser: (value: UserDataType | null) => void
   setIsInitialized: (value: boolean) => void
   login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
-  register: (params: RegisterParams, errorCallback?: ErrCallbackType) => void,
+  register: (params: RegisterParams, errorCallback?: ErrCallbackType) => void
   setUsers: (data: UserDataType[]) => void
 }

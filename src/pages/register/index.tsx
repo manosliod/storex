@@ -1,5 +1,5 @@
 // ** React Imports
-import {ChangeEvent, ReactNode, useEffect, useState} from 'react'
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -18,9 +18,9 @@ import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
-import {styled, useTheme} from '@mui/material/styles'
-import MuiCard, {CardProps} from '@mui/material/Card'
-import MuiFormControlLabel, {FormControlLabelProps} from '@mui/material/FormControlLabel'
+import { styled, useTheme } from '@mui/material/styles'
+import MuiCard, { CardProps } from '@mui/material/Card'
+import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Icons Imports
 
@@ -28,32 +28,32 @@ import MuiFormControlLabel, {FormControlLabelProps} from '@mui/material/FormCont
 import themeConfig from 'src/configs/themeConfig'
 
 // ** Hooks
-import {useAuth} from 'src/hooks/useAuth'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Types
-import {UserDataType} from 'src/context/types'
+import { UserDataType } from 'src/context/types'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustrationsV1'
-import FormHelperText from "@mui/material/FormHelperText";
+import FormHelperText from '@mui/material/FormHelperText'
 
 // ** Third Party Imports
 import moment from 'moment'
 import * as yup from 'yup'
 import 'yup-phone'
-import {Controller, useForm} from 'react-hook-form'
-import {yupResolver} from '@hookform/resolvers/yup'
+import { Controller, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 interface State {
-  email: String
+  email: string
   password: string
   passwordConfirm: string
-  fullName: String
+  fullName: string
   birthday: Date
-  phone: String
+  phone: string
 }
 
 // ** Styled Components
@@ -61,15 +61,21 @@ const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
 }))
 
-const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/;
+const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 const schema = yup.object().shape({
-  email: yup.string().email("Email must be a valid email e.g. user@domain.net").required("Email is a required field"),
-  password: yup.string().min(5).required("Password is a required field"),
-  passwordConfirm: yup.string().min(5).required("Password Confirm is a required field").oneOf([yup.ref("password")], "Passwords do not match"),
-  fullName: yup.string().required("Full Name is a required field"),
-  birthday: yup.date().nullable().required("Birthday is a required field"),
-  phone: yup.string().required("Mobile Phone is a required field")
-      .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
+  email: yup.string().email('Email must be a valid email e.g. user@domain.net').required('Email is a required field'),
+  password: yup.string().min(5).required('Password is a required field'),
+  passwordConfirm: yup
+    .string()
+    .min(5)
+    .required('Password Confirm is a required field')
+    .oneOf([yup.ref('password')], 'Passwords do not match'),
+  fullName: yup.string().required('Full Name is a required field'),
+  birthday: yup.date().nullable().required('Birthday is a required field'),
+  phone: yup
+    .string()
+    .required('Mobile Phone is a required field')
+    .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
 })
 
 interface FormData {
@@ -92,8 +98,8 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
     resolver: yupResolver(schema)
   })
 
-  const minDate = moment().subtract(120, 'years').format('MM/DD/YYYY');
-  const maxDate = moment().subtract(18, 'years').format('MM/DD/YYYY');
+  const minDate = moment().subtract(120, 'years').format('MM/DD/YYYY')
+  const maxDate = moment().subtract(18, 'years').format('MM/DD/YYYY')
 
   // ** Hook
   const auth = useAuth()
@@ -101,16 +107,16 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
 
   const onSubmit = (data: FormData) => {
     data.birthday = moment(new Date(data.birthday)).format('MM-DD-YYYY')
-    auth.register(data, (err) => {
-      let name;
-      let message;
+    auth.register(data, err => {
+      let name
+      let message
       const { response } = err
-      if ( response.data.message ) {
-        name = response.data.message.split('/type:')[1];
-        message = response.data.message.split('/type:')[0];
+      if (response.data.message) {
+        name = response.data.message.split('/type:')[1]
+        message = response.data.message.split('/type:')[0]
       } else {
-        name = 'email';
-        message = 'Email already in use!';
+        name = 'email'
+        message = 'Email already in use!'
       }
 
       setError(name, {
@@ -121,12 +127,12 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
   }
 
   const handleUsers = () => {
-    auth.setUsers(props.users);
+    auth.setUsers(props.users)
   }
 
   useEffect(() => {
     handleUsers()
-  }, []);
+  }, [])
 
   return (
     <Box className='content-center'>
@@ -220,14 +226,7 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
                 defaultValue=''
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    autoFocus
-                    label='Email'
-                    error={Boolean(errors.email)}
-                  />
-                )}
+                render={({ field }) => <TextField {...field} autoFocus label='Email' error={Boolean(errors.email)} />}
               />
               {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
             </FormControl>
@@ -248,7 +247,9 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
                   />
                 )}
               />
-              {errors.password && <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>}
+              {errors.password && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>
+              )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <InputLabel htmlFor='auth-register-confirm-password'>Password Confirm</InputLabel>
@@ -267,7 +268,9 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
                   />
                 )}
               />
-              {errors.passwordConfirm && <FormHelperText sx={{ color: 'error.main' }}>{errors.passwordConfirm.message}</FormHelperText>}
+              {errors.passwordConfirm && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.passwordConfirm.message}</FormHelperText>
+              )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
@@ -275,15 +278,11 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
                 name='fullName'
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label='Full Name'
-                    error={Boolean(errors.fullName)}
-                  />
-                )}
+                render={({ field }) => <TextField {...field} label='Full Name' error={Boolean(errors.fullName)} />}
               />
-              {errors.fullName && <FormHelperText sx={{ color: 'error.main' }}>{errors.fullName.message}</FormHelperText>}
+              {errors.fullName && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.fullName.message}</FormHelperText>
+              )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
@@ -298,15 +297,14 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
                       label='Birthday'
                       minDate={new Date(minDate)}
                       maxDate={new Date(maxDate)}
-                      renderInput={params => <TextField
-                        error={Boolean(errors.birthday)}
-                        {...params}
-                      />}
+                      renderInput={params => <TextField error={Boolean(errors.birthday)} {...params} />}
                     />
                   </LocalizationProvider>
                 )}
               />
-              {errors.birthday && <FormHelperText sx={{ color: 'error.main' }}>{errors.birthday.message}</FormHelperText>}
+              {errors.birthday && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.birthday.message}</FormHelperText>
+              )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
@@ -314,13 +312,7 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
                 name='phone'
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label='Mobile Phone'
-                    error={Boolean(errors.phone)}
-                  />
-                )}
+                render={({ field }) => <TextField {...field} label='Mobile Phone' error={Boolean(errors.phone)} />}
               />
               {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
             </FormControl>
@@ -351,14 +343,14 @@ RegisterPage.guestGuard = true
 
 export default RegisterPage
 
-export async function getServerSideProps(){
-  const users_res = await fetch('http://api.storex.local:81/api/v1/users');
-  const promise = await users_res.json();
-  const users = promise.data;
+export async function getServerSideProps() {
+  const users_res = await fetch('http://api.storex.local:81/api/v1/users')
+  const promise = await users_res.json()
+  const users = promise.data
 
   return {
     props: {
       users
     }
-  };
+  }
 }

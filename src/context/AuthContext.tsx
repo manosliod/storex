@@ -5,7 +5,7 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 import { useRouter } from 'next/router'
 
 // ** Axios
-import axios, {AxiosResponse} from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 // ** Config
 import authConfig from 'src/configs/auth'
@@ -116,7 +116,6 @@ const AuthProvider = ({ children }: Props) => {
         if (res.data.error) {
           if (errorCallback) errorCallback(res.data.error)
         } else {
-
           handleLogin({ email: params.email, password: params.password })
         }
       })
@@ -124,7 +123,7 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   const setUsers = (data: UserDataType[]) => {
-    axios.post('/jwt/set/users', data);
+    axios.post('/jwt/set/users', data)
   }
 
   const values = {

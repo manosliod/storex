@@ -1,5 +1,5 @@
 // ** React Imports
-import {ChangeEvent, MouseEvent, ReactNode, useEffect, useState} from 'react'
+import { ChangeEvent, MouseEvent, ReactNode, useEffect, useState } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -32,7 +32,7 @@ import themeConfig from 'src/configs/themeConfig'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Types
-import {UserDataType} from 'src/context/types'
+import { UserDataType } from 'src/context/types'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -44,7 +44,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustrationsV1'
-import FormHelperText from "@mui/material/FormHelperText";
+import FormHelperText from '@mui/material/FormHelperText'
 
 interface State {
   password: string
@@ -113,13 +113,13 @@ const LoginPage = (props: { users: UserDataType[] }) => {
   }
 
   const handleUsers = () => {
-    auth.setUsers(props.users);
-    console.log(props.users);
+    auth.setUsers(props.users)
+    console.log(props.users)
   }
 
   useEffect(() => {
     handleUsers()
-  }, []);
+  }, [])
 
   return (
     <Box className='content-center'>
@@ -213,21 +213,12 @@ const LoginPage = (props: { users: UserDataType[] }) => {
                 name='email'
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    autoFocus
-                    label='Email'
-                    error={Boolean(errors.email)}
-                  />
-                )}
+                render={({ field }) => <TextField {...field} autoFocus label='Email' error={Boolean(errors.email)} />}
               />
               {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel htmlFor='auth-login-v2-password'>
-                Password
-              </InputLabel>
+              <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
               <Controller
                 defaultValue=''
                 name='password'
@@ -242,11 +233,7 @@ const LoginPage = (props: { users: UserDataType[] }) => {
                     type={values.showPassword ? 'text' : 'password'}
                     endAdornment={
                       <InputAdornment position='end'>
-                        <IconButton
-                          edge='end'
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                        >
+                        <IconButton edge='end' onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
                           {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
                         </IconButton>
                       </InputAdornment>
@@ -301,14 +288,14 @@ LoginPage.guestGuard = true
 
 export default LoginPage
 
-export async function getServerSideProps(){
-  const users_res = await fetch('http://api.storex.local:81/api/v1/users');
-  const promise = await users_res.json();
-  const users = promise.data;
+export async function getServerSideProps() {
+  const users_res = await fetch('http://api.storex.local:81/api/v1/users')
+  const promise = await users_res.json()
+  const users = promise.data
 
   return {
     props: {
       users
     }
-  };
+  }
 }

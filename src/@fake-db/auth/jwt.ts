@@ -5,14 +5,14 @@ import jwt from 'jsonwebtoken'
 import mock from 'src/@fake-db/mock'
 
 // ** Types
-import {UserDataType} from 'src/context/types'
+import { UserDataType } from 'src/context/types'
 
 // ** Password Security import
-import bcrypt from 'bcryptjs';
-import crypto from "crypto";
-import axios from "axios";
+import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
+import axios from 'axios'
 
-const users: UserDataType[] = [];
+const users: UserDataType[] = []
 
 // ! These two secrets should be in .env file and not in any other file
 const jwtConfig = {
@@ -21,14 +21,15 @@ const jwtConfig = {
 }
 
 mock.onPost('/jwt/set/users').reply(request => {
-  if(users.length > 0){
-    while(users.length > 0) {
-      users.pop();
+  if (users.length > 0) {
+    while (users.length > 0) {
+      users.pop()
     }
   }
-  users.push(...JSON.parse(request.data));
+  users.push(...JSON.parse(request.data))
+
   return [200, 'success']
-});
+})
 
 mock.onPost('/jwt/login').reply(async request => {
   const { email, password } = JSON.parse(request.data)
@@ -38,10 +39,7 @@ mock.onPost('/jwt/login').reply(async request => {
   }
 
   const cryptPass = await bcrypt.hash(password, <string>process.env.BCRYPT_SALT)
-  const hashedPassword = crypto
-      .createHash('md5')
-      .update(cryptPass)
-      .digest('hex');
+  const hashedPassword = crypto.createHash('md5').update(cryptPass).digest('hex')
 
   const user = users.find(u => u.email === email && u.password === hashedPassword)
 
@@ -66,15 +64,17 @@ mock.onPost('/jwt/register').reply(async request => {
   if (request.data.length > 0) {
     const { email, password, passwordConfirm, fullName, birthday, phone } = JSON.parse(request.data)
     const isEmailAlreadyInUse = users.find(user => user.email === email)
+
     // const isUsernameAlreadyInUse = users.find(user => user.username === username)
     const error = {
-      email: isEmailAlreadyInUse ? 'This email is already in use.' : null,
+      email: isEmailAlreadyInUse ? 'This email is already in use.' : null
+
       // username: isUsernameAlreadyInUse ? 'This username is already in use.' : null
     }
 
     if (
-        // !error.username &&
-        !error.email
+      // !error.username &&
+      !error.email
     ) {
       const { length } = users
       let lastIndex = ''
@@ -93,28 +93,24 @@ mock.onPost('/jwt/register').reply(async request => {
         role: 'user'
       }
 
-      let axiosError;
+      let axiosError
       await axios
         .post('/api/v1/users/signup', registerData)
         .then(res => {
-          if(res.data.error){
+          if (res.data.error) {
             axiosError = res.data.message
           }
         })
         .catch(error => {
           axiosError = error.response.data.message
         })
-      if ( axiosError !== undefined )
-        return [500, {message: axiosError}]
+      if (axiosError !== undefined) return [500, { message: axiosError }]
 
       delete registerData.name
       delete registerData.passwordConfirm
 
       const cryptPass = await bcrypt.hash(registerData.password, <string>process.env.BCRYPT_SALT)
-      registerData.password = crypto
-          .createHash('md5')
-          .update(cryptPass)
-          .digest('hex')
+      registerData.password = crypto.createHash('md5').update(cryptPass).digest('hex')
       const userData = {
         _id: 'temporary_register_id',
         ...registerData

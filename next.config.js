@@ -23,9 +23,17 @@ module.exports = withTM({
   },
   async rewrites() {
     return [
+      // {
+      //   source: '/api/:path*',
+      //   destination: 'http://api.storex.local:81/api/:path*'
+      // },
       {
-        source: '/api/:path*',
-        destination: 'http://api.storex.local:81/api/:path*'
+        source: '/api/users/list',
+        destination: 'http://api.storex.local:81/api/v1/users'
+      },
+      {
+        source: '/api/users/:id',
+        destination: 'http://api.storex.local:81/api/v1/users/:id'
       }
     ]
   },

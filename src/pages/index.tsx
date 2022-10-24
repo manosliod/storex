@@ -24,10 +24,6 @@ const Home = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (!router.isReady) {
-      return
-    }
-
     if (auth.user && auth.user.role) {
       const homeRoute = getHomeRoute(auth.user.role)
 
