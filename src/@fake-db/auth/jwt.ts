@@ -34,30 +34,31 @@ mock.onPost('/jwt/set/users').reply(request => {
 mock.onPost('/jwt/login').reply(async request => {
   const { email, password } = JSON.parse(request.data)
 
+  let status;
+  let response;
   let error = {
     email: ['Something went wrong']
   }
 
-  const cryptPass = await bcrypt.hash(password, <string>process.env.BCRYPT_SALT)
-  const hashedPassword = crypto.createHash('md5').update(cryptPass).digest('hex')
+  // @ts-ignore
+  await axios.post('/api/users/login', { email, password }, process.env.HEADERS).then((res) => {
+    if (res.data.error) {
+      status = res.data.error.statusCode;
+      response = res.data.message;
+    } else {
+      const { user } = res.data.data;
 
-  const user = users.find(u => u.email === email && u.password === hashedPassword)
-
-  if (user) {
-    const accessToken = jwt.sign({ id: user._id }, jwtConfig.secret)
-
-    const response = {
-      accessToken
+      // @ts-ignore
+      const accessToken = jwt.sign({id: user._id}, process.env.JWT_SECRET)
+      status = 200;
+      response = {accessToken};
     }
+  }).catch(() => {
+    status = 500;
+    response = {error};
+  })
 
-    return [200, response]
-  } else {
-    error = {
-      email: ['email or Password is Invalid']
-    }
-
-    return [400, { error }]
-  }
+  return [status, response]
 })
 
 mock.onPost('/jwt/register').reply(async request => {
@@ -134,23 +135,34 @@ mock.onPost('/jwt/register').reply(async request => {
   }
 })
 
-mock.onGet('/auth/me').reply(config => {
+mock.onGet('/auth/me').reply(async config => {
   // @ts-ignore
   const token = config.headers.Authorization as string
 
   // get the decoded payload and header
-  const decoded = jwt.decode(token, { complete: true })
+  const accessToken = token.split(' ')[1];
+  const decoded = jwt.decode(accessToken, { complete: true })
 
+  let status;
+  let response;
   if (decoded) {
     // @ts-ignore
     const { id: userId } = decoded.payload
 
-    const userData = JSON.parse(JSON.stringify(users.find((u: UserDataType) => u._id === userId)))
+    await axios.get('/api/users/me', { headers: config.headers }).then((res) => {
+      if(res.data.error){
+        status = res.data.error.statusCode;
+        response = res.data.message;
+      } else {
+        const userData = JSON.parse(JSON.stringify(res.data.user));
 
-    delete userData.password
+        status = 200;
+        response = userData
+      }
+    }).catch(err => console.log(err))
 
-    return [200, { userData }]
+    return [status, response ]
   } else {
-    return [401, { error: { error: 'Invalid User' } }]
+    return [401, { error: 'Invalid User' }]
   }
 })

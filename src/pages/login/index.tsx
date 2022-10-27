@@ -117,9 +117,9 @@ const LoginPage = (props: { users: UserDataType[] }) => {
     console.log(props.users)
   }
 
-  useEffect(() => {
-    handleUsers()
-  }, [])
+  // useEffect(() => {
+  //   handleUsers()
+  // }, [])
 
   return (
     <Box className='content-center'>
@@ -289,10 +289,11 @@ LoginPage.guestGuard = true
 export default LoginPage
 
 export async function getServerSideProps() {
-  const users_res = await fetch('http://api.storex.local:81/api/v1/users')
-  const promise = await users_res.json()
-  const users = promise.data
+  // const users_res = await fetch('http://api.storex.local:81/api/v1/users', process.env.HEADERS)
+  // const promise = await users_res.json()
+  // const users = promise.data
 
+  const users = null;
   return {
     props: {
       users

@@ -82,13 +82,14 @@ const AuthProvider = ({ children }: Props) => {
         axios
           .get(authConfig.meEndpoint, {
             headers: {
-              Authorization: window.localStorage.getItem(authConfig.storageTokenKeyName)!
+              Authorization: `Bearer ${window.localStorage.getItem(authConfig.storageTokenKeyName)!}`
             }
           })
           .then(async response => {
             const returnUrl = router.query.returnUrl
 
-            setUser({ ...response.data.userData })
+            setUser({ ...response.data })
+            console.log(response);
             await window.localStorage.setItem('userData', JSON.stringify(response.data.userData))
 
             const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
