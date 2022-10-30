@@ -1,5 +1,5 @@
 // ** React Imports
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -26,7 +26,7 @@ import Close from 'mdi-material-ui/Close'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { addUser } from 'src/store/apps/user'
+import { editUser } from 'src/store/apps/user'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -36,15 +36,14 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
 
-interface SidebarAddUserType {
+interface SidebarEditUserType {
   open: boolean
   toggle: () => void
+  data: UserData
 }
 
 interface UserData {
   email: string
-  password: string
-  passwordConfirm: string
   fullName: string
   birthday: string
   phone: string
@@ -68,36 +67,38 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   backgroundColor: theme.palette.background.default
 }))
 
-const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
-
-const schema = yup.object().shape({
-  email: yup.string().email('Email must be a valid email e.g. user@domain.net').required('Email is a required field'),
-  password: yup.string().min(5).required('Password is a required field'),
-  passwordConfirm: yup
-    .string()
-    .min(5)
-    .required('Password Confirm is a required field')
-    .oneOf([yup.ref('password')], 'Passwords do not match'),
-  fullName: yup.string().required('Full Name is a required field'),
-  birthday: yup.date().nullable().required('Birthday is a required field'),
-  phone: yup
-    .string()
-    .required('Mobile Phone is a required field')
-    .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
-})
-
-const defaultValues = {
-  email: '',
-  password: '',
-  passwordConfirm: '',
-  fullName: '',
-  birthday: new Date(moment().subtract(18, 'years').format('MM/DD/YYYY')),
-  phone: ''
-}
-
-const SidebarAddUser = (props: SidebarAddUserType) => {
+const SidebarEditUser = (props: SidebarEditUserType) => {
   // ** Props
-  const { open, toggle } = props
+  const { open, toggle, data } = props
+
+  const defaultValues = {
+    email: '',
+    fullName: '',
+    birthday: new Date(moment().subtract(18, 'years').format('MM/DD/YYYY')),
+    phone: ''
+  }
+
+  const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
+
+  const schema = yup.object().shape({
+    email: yup
+      .string()
+      .email('Email must be a valid email e.g. user@domain.net')
+      .required('Email is a required field')
+      .default('1234567'),
+    // password: yup.string().min(5).required('Password is a required field'),
+    // passwordConfirm: yup
+    //     .string()
+    //     .min(5)
+    //     .required('Password Confirm is a required field')
+    //     .oneOf([yup.ref('password')], 'Passwords do not match'),
+    fullName: yup.string().required('Full Name is a required field'),
+    birthday: yup.date().nullable().required('Birthday is a required field'),
+    phone: yup
+      .string()
+      .required('Mobile Phone is a required field')
+      .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
+  })
 
   // ** State
   const [gender, setGender] = useState<string>('')
@@ -131,18 +132,18 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
       if (gender === '' || role === '') return
 
-      dispatch(addUser({ ...data, role, gender }))
+      dispatch(editUser({ ...data, role, gender }))
 
       let error = []
       for (const user of store.data) {
         // @ts-ignore
-        if (user.email === data.email) {
+        if (user.email === data.email && data._id !== user._id) {
           error.push({
             type: 'email'
           })
         }
         // @ts-ignore
-        if (user.phone === data.phone) {
+        if (user.phone === data.phone && data._id !== user._id) {
           error.push({
             type: 'phone'
           })
@@ -160,6 +161,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
         return
       }
+
       toggle()
       reset()
     },
@@ -187,6 +189,17 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     [role, roleError]
   )
 
+  useEffect(() => {
+    for (const [key, value] of Object.entries(data)) {
+      //@ts-ignore
+      setValue(key, value)
+    }
+    //@ts-ignore
+    setRole(data.role)
+    //@ts-ignore
+    setGender(data.gender)
+  })
+
   return (
     <Drawer
       open={open}
@@ -197,13 +210,14 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h6'>Add User</Typography>
+        <Typography variant='h6'>Edit User</Typography>
         <Close fontSize='small' onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </Header>
       <Box sx={{ p: 5 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
+              defaultValue={data.email}
               name='email'
               control={control}
               rules={{ required: true }}
@@ -211,44 +225,44 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
             />
             {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
           </FormControl>
-          <FormControl fullWidth sx={{ mb: 4 }}>
-            <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
-            <Controller
-              name='password'
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <OutlinedInput
-                  {...field}
-                  id='auth-register-password'
-                  type='password'
-                  label='Password'
-                  error={Boolean(errors.password)}
-                />
-              )}
-            />
-            {errors.password && <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 4 }}>
-            <InputLabel htmlFor='auth-register-confirm-password'>Password Confirm</InputLabel>
-            <Controller
-              name='passwordConfirm'
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <OutlinedInput
-                  {...field}
-                  id='auth-register-confirm-password'
-                  type='password'
-                  label='Password Confirm'
-                  error={Boolean(errors.passwordConfirm)}
-                />
-              )}
-            />
-            {errors.passwordConfirm && (
-              <FormHelperText sx={{ color: 'error.main' }}>{errors.passwordConfirm.message}</FormHelperText>
-            )}
-          </FormControl>
+          {/*<FormControl fullWidth sx={{ mb: 4 }}>*/}
+          {/*  <InputLabel htmlFor='auth-register-password'>Password</InputLabel>*/}
+          {/*  <Controller*/}
+          {/*    name='password'*/}
+          {/*    control={control}*/}
+          {/*    rules={{ required: true }}*/}
+          {/*    render={({ field }) => (*/}
+          {/*      <OutlinedInput*/}
+          {/*        {...field}*/}
+          {/*        id='auth-register-password'*/}
+          {/*        type='password'*/}
+          {/*        label='Password'*/}
+          {/*        error={Boolean(errors.password)}*/}
+          {/*      />*/}
+          {/*    )}*/}
+          {/*  />*/}
+          {/*  {errors.password && <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>}*/}
+          {/*</FormControl>*/}
+          {/*<FormControl fullWidth sx={{ mb: 4 }}>*/}
+          {/*  <InputLabel htmlFor='auth-register-confirm-password'>Password Confirm</InputLabel>*/}
+          {/*  <Controller*/}
+          {/*    name='passwordConfirm'*/}
+          {/*    control={control}*/}
+          {/*    rules={{ required: true }}*/}
+          {/*    render={({ field }) => (*/}
+          {/*      <OutlinedInput*/}
+          {/*        {...field}*/}
+          {/*        id='auth-register-confirm-password'*/}
+          {/*        type='password'*/}
+          {/*        label='Password Confirm'*/}
+          {/*        error={Boolean(errors.passwordConfirm)}*/}
+          {/*      />*/}
+          {/*    )}*/}
+          {/*  />*/}
+          {/*  {errors.passwordConfirm && (*/}
+          {/*    <FormHelperText sx={{ color: 'error.main' }}>{errors.passwordConfirm.message}</FormHelperText>*/}
+          {/*  )}*/}
+          {/*</FormControl>*/}
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
               name='fullName'
@@ -346,4 +360,4 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   )
 }
 
-export default SidebarAddUser
+export default SidebarEditUser

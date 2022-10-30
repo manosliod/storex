@@ -19,34 +19,31 @@ const AuthGuard = (props: AuthGuardProps) => {
   const auth = useAuth()
   const router = useRouter()
 
-  useEffect(
-    () => {
-      if (!router.isReady) {
-        return
-      }
+  useEffect(() => {
+    if (!router.isReady) {
+      return
+    }
 
-      if (auth.user === null && !window.localStorage.getItem('userData')) {
-        if (router.asPath !== '/') {
-          router.replace({
-            pathname: '/login',
-            query: { returnUrl: router.asPath }
-          })
-        } else {
-          router.replace('/login')
-        }
+    if (auth.user === null && !window.localStorage.getItem('userData')) {
+      if (router.asPath !== '/') {
+        router.replace({
+          pathname: '/login',
+          query: { returnUrl: router.asPath }
+        })
+      } else {
+        router.replace('/login')
       }
-      // else {
-      //   if (router.asPath === '/') {
-      //     router.replace('/home')
-      //     console.log(getCookie('jwt', { path: '/' }), 'authGuard')
-      //     setCookie('jwt', getCookie('jwt', { path: '/' }), { path: '/' })
-      //   } else {
-      //     console.log(getCookies(), 'authGuard')
-      //   }
-      // }
-    },
-    [router.route, router.isReady]
-  )
+    }
+    // else {
+    //   if (router.asPath === '/') {
+    //     router.replace('/home')
+    //     console.log(getCookie('jwt', { path: '/' }), 'authGuard')
+    //     setCookie('jwt', getCookie('jwt', { path: '/' }), { path: '/' })
+    //   } else {
+    //     console.log(getCookies(), 'authGuard')
+    //   }
+    // }
+  }, [router.route, router.isReady])
 
   if (auth.loading || auth.user === null) {
     return fallback

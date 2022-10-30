@@ -34,30 +34,33 @@ mock.onPost('/jwt/set/users').reply(request => {
 mock.onPost('/jwt/login').reply(async request => {
   const { email, password } = JSON.parse(request.data)
 
-  let status;
-  let response;
+  let status
+  let response
   let error = {
     email: ['Something went wrong']
   }
 
   // @ts-ignore
-  await axios.post('/api/users/login', { email, password }, process.env.HEADERS).then((res) => {
-    if (res.data.error) {
-      status = res.data.error.statusCode;
-      response = res.data.message;
-    } else {
-      const { user } = res.data.data;
+  await axios
+    .post('/api/users/login', { email, password }, process.env.HEADERS)
+    .then(res => {
+      if (res.data.error) {
+        status = res.data.error.statusCode
+        response = res.data.message
+      } else {
+        const { user } = res.data.data
 
-      status = 200;
-      response = {
-        user,
-        token: res.data.token
-      };
-    }
-  }).catch(() => {
-    status = 500;
-    response = {error};
-  })
+        status = 200
+        response = {
+          user,
+          token: res.data.token
+        }
+      }
+    })
+    .catch(() => {
+      status = 500
+      response = { error }
+    })
 
   return [status, response]
 })
@@ -141,29 +144,31 @@ mock.onGet('/auth/me').reply(async config => {
   const token = config.headers.Authorization as string
 
   // get the decoded payload and header
-  const accessToken = token.split(' ')[1];
+  const accessToken = token.split(' ')[1]
   const decoded = jwt.decode(accessToken, { complete: true })
 
-
-  let status;
-  let response;
+  let status
+  let response
   if (decoded) {
     // @ts-ignore
     const { id: userId } = decoded.payload
 
-    await axios.get('/api/users/me', { headers: config.headers }).then((res) => {
-      if(res.data.error){
-        status = res.data.error.statusCode;
-        response = res.data.message;
-      } else {
-        const userData = JSON.parse(JSON.stringify(res.data.user));
+    await axios
+      .get('/api/users/me', { headers: config.headers })
+      .then(res => {
+        if (res.data.error) {
+          status = res.data.error.statusCode
+          response = res.data.message
+        } else {
+          const userData = JSON.parse(JSON.stringify(res.data.user))
 
-        status = 200;
-        response = userData
-      }
-    }).catch(err => console.log(err))
+          status = 200
+          response = userData
+        }
+      })
+      .catch(err => console.log(err))
 
-    return [status, response ]
+    return [status, response]
   } else {
     return [401, { error: 'Invalid User' }]
   }

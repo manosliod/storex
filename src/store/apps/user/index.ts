@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 interface DataParams {
   q: string
@@ -26,7 +26,7 @@ export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: D
     delete params.role
   }
 
-  const response = await axios.get('/api/users/list', {
+  const response = await axios.get('/api/users', {
     params
   })
 
@@ -45,12 +45,64 @@ export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: D
 export const addUser = createAsyncThunk(
   'appUsers/addUser',
   async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
-    const response = await axios.post('/apps/users/add-user', {
-      data
-    })
-    dispatch(fetchData(getState().user.params))
+    let returnObj
+    await axios
+      .post('/api/users', {
+        ...data
+      })
+      .then(res => {
+        returnObj = {
+          ...res.data
+        }
+      })
+      .catch(er => {
+        returnObj = {
+          error: {
+            type: er.response.data.message.split('type:')[1],
+            message: 'Value already in use!'
+          }
+        }
+      })
 
-    return response.data
+    //@ts-ignore
+    if (returnObj.error) return
+
+    await dispatch(fetchData(getState().user.params))
+
+    return returnObj
+  }
+)
+
+export const editUser = createAsyncThunk(
+  'appUsers/editUser',
+  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
+    let returnObj
+    const id = data._id
+    delete data._id
+    await axios
+      .patch(`/api/users/${id}`, {
+        ...data
+      })
+      .then(res => {
+        returnObj = {
+          ...res.data
+        }
+      })
+      .catch(er => {
+        returnObj = {
+          error: {
+            type: er.response.data.message.split('type:')[1],
+            message: 'Value already in use!'
+          }
+        }
+      })
+
+    //@ts-ignore
+    if (returnObj.error) return
+
+    await dispatch(fetchData(getState().user.params))
+
+    return returnObj
   }
 )
 
@@ -59,7 +111,8 @@ export const deleteUser = createAsyncThunk(
   'appUsers/deleteUser',
   async (id: number | string, { getState, dispatch }: Redux) => {
     const response = await axios.delete(`/api/users/${id}`)
-    dispatch(fetchData(getState().user.params))
+    // @ts-ignore
+    dispatch(fetchData(this.getState().user.params))
 
     return response.data
   }
@@ -71,7 +124,8 @@ export const appUsersSlice = createSlice({
     data: [],
     total: 1,
     params: {},
-    allData: []
+    allData: [],
+    error: {}
   },
   reducers: {},
   extraReducers: builder => {

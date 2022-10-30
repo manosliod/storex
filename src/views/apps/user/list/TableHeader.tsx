@@ -17,11 +17,11 @@ const TableHeader = (props: TableHeaderProps) => {
   const { handleFilter, toggle, value } = props
 
   return (
-    <Box sx={{ p: 5, pb: 3, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Button sx={{ mr: 4, mb: 2 }} color='secondary' variant='outlined' startIcon={<ExportVariant fontSize='small' />}>
-        Export
-      </Button>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+    <Box sx={{ p: 5, pb: 3, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end' }}>
+      {/*<Button sx={{ mr: 4, mb: 2 }} color='secondary' variant='outlined' startIcon={<ExportVariant fontSize='small' />}>*/}
+      {/*  Export*/}
+      {/*</Button>*/}
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', ml: 4 }}>
         <TextField
           size='small'
           value={value}

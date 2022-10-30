@@ -51,7 +51,8 @@ import { UsersType } from 'src/types/apps/userTypes'
 // ** Custom Components Imports
 import TableHeader from 'src/views/apps/user/list/TableHeader'
 import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
-import { UserDataType } from '../../context/types'
+import EditUserDrawer from 'src/views/apps/user/list/EditUserDrawer'
+import axios from 'axios'
 
 interface UserRoleType {
   [key: string]: ReactElement
@@ -59,6 +60,24 @@ interface UserRoleType {
 
 interface UserStatusType {
   [key: string]: ThemeColor
+}
+
+interface UserData {
+  email: string
+  fullName: string
+  gender: string
+  birthday: string
+  phone: string
+  role: string
+}
+
+const UserDataDefault: UserData = {
+  email: '',
+  fullName: '',
+  gender: '',
+  birthday: '',
+  phone: '',
+  role: ''
 }
 
 // ** Vars
@@ -93,17 +112,10 @@ const AvatarWithoutImageLink = styled(Link)(({ theme }) => ({
 
 // ** renders client column
 const renderClient = (row: UsersType) => {
-  // if (false) {
-  //     return (
-  //         <AvatarWithImageLink href={`/apps/user/view/${row._id}`}>
-  //             <CustomAvatar src={row.avatar} sx={{ mr: 3, width: 34, height: 34 }} />
-  //         </AvatarWithImageLink>
-  //     )
-  // } else {
   return (
     <AvatarWithoutImageLink href={`/apps/user/view/${row._id}`}>
       <CustomAvatar skin='light' color='primary' sx={{ mr: 3, width: 34, height: 34, fontSize: '1rem' }}>
-        {getInitials(row.name ? row.name : 'John Doe')}
+        {getInitials(row.fullName ? row.fullName : 'John Doe')}
       </CustomAvatar>
     </AvatarWithoutImageLink>
   )
@@ -121,148 +133,154 @@ const MenuItemLink = styled('a')(({ theme }) => ({
   color: theme.palette.text.primary
 }))
 
-const RowOptions = ({ id }: { id: number | string }) => {
-  // ** Hooks
-  const dispatch = useDispatch<AppDispatch>()
-
-  // ** State
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
-  const rowOptionsOpen = Boolean(anchorEl)
-
-  const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleRowOptionsClose = () => {
-    setAnchorEl(null)
-  }
-
-  const handleDelete = () => {
-    dispatch(deleteUser(id))
-    handleRowOptionsClose()
-  }
-
-  return (
-    <>
-      <IconButton size='small' onClick={handleRowOptionsClick}>
-        <DotsVertical />
-      </IconButton>
-      <Menu
-        keepMounted
-        anchorEl={anchorEl}
-        open={rowOptionsOpen}
-        onClose={handleRowOptionsClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
-        }}
-        PaperProps={{ style: { minWidth: '8rem' } }}
-      >
-        <MenuItem sx={{ p: 0 }}>
-          <Link href={`/apps/user/view/${id}`} passHref>
-            <MenuItemLink>
-              <EyeOutline fontSize='small' sx={{ mr: 2 }} />
-              View
-            </MenuItemLink>
-          </Link>
-        </MenuItem>
-        <MenuItem onClick={handleRowOptionsClose}>
-          <PencilOutline fontSize='small' sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-        <MenuItem onClick={handleDelete}>
-          <DeleteOutline fontSize='small' sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Menu>
-    </>
-  )
-}
-
-// @ts-ignore
-const columns = [
-  {
-    flex: 0.2,
-    minWidth: 230,
-    field: 'fullName',
-    headerName: 'User',
-    renderCell: ({ row }: CellType) => {
-      const { _id, name } = row
-
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {renderClient(row)}
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-            {/*<Link href={`/apps/user/view/${id}`} passHref>*/}
-            <Typography noWrap component='a' variant='subtitle2' sx={{ color: 'text.primary', textDecoration: 'none' }}>
-              {name}
-            </Typography>
-            {/*</Link>*/}
-            {/*<Link href={`/apps/user/view/${id}`} passHref>*/}
-            <Typography noWrap component='a' variant='caption' sx={{ textDecoration: 'none' }}>
-              @username
-            </Typography>
-            {/*</Link>*/}
-          </Box>
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 250,
-    field: 'email',
-    headerName: 'Email',
-    renderCell: ({ row }: CellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {row.email}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    field: 'role',
-    minWidth: 150,
-    headerName: 'Role',
-    renderCell: ({ row }: CellType) => {
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {userRoleObj[row.role]}
-          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.role}
-          </Typography>
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 90,
-    sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions id={row._id} />
-  }
-]
-
 const Users = () => {
   // ** State
+  const [currentUser, setCurrentUser] = useState<object>(UserDataDefault)
   const [role, setRole] = useState<string>('')
   const [plan, setPlan] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [status, setStatus] = useState<string>('')
   const [pageSize, setPageSize] = useState<number>(10)
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
+  const [editUserOpen, setEditUserOpen] = useState<boolean>(false)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.user)
+
+  const RowOptions = ({ id }: { id: number | string }) => {
+    // ** Hooks
+    const dispatch = useDispatch<AppDispatch>()
+
+    // ** State
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+    const rowOptionsOpen = Boolean(anchorEl)
+
+    const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget)
+    }
+    const handleRowOptionsClose = () => {
+      setAnchorEl(null)
+    }
+
+    const handleEdit = async () => {
+      const response = await axios.get(`/api/users/${id}`)
+      setCurrentUser(response.data.user)
+      setEditUserOpen(true)
+      handleRowOptionsClose()
+    }
+
+    const handleDelete = () => {
+      dispatch(deleteUser(id))
+      handleRowOptionsClose()
+    }
+
+    return (
+      <>
+        <IconButton size='small' onClick={handleRowOptionsClick}>
+          <DotsVertical />
+        </IconButton>
+        <Menu
+          keepMounted
+          anchorEl={anchorEl}
+          open={rowOptionsOpen}
+          onClose={handleRowOptionsClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+          PaperProps={{ style: { minWidth: '8rem' } }}
+        >
+          <MenuItem onClick={handleEdit}>
+            <PencilOutline fontSize='small' sx={{ mr: 2 }} />
+            Edit
+          </MenuItem>
+          <MenuItem onClick={handleDelete}>
+            <DeleteOutline fontSize='small' sx={{ mr: 2 }} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </>
+    )
+  }
+
+  // @ts-ignore
+  const columns = [
+    {
+      flex: 0.2,
+      minWidth: 230,
+      field: 'fullName',
+      headerName: 'User',
+      renderCell: ({ row }: CellType) => {
+        const { _id, fullName } = row
+
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {renderClient(row)}
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+              {/*<Link href={`/apps/user/view/${id}`} passHref>*/}
+              <Typography
+                noWrap
+                component='a'
+                variant='subtitle2'
+                sx={{ color: 'text.primary', textDecoration: 'none' }}
+              >
+                {fullName}
+              </Typography>
+              {/*</Link>*/}
+              {/*<Link href={`/apps/user/view/${id}`} passHref>*/}
+              <Typography noWrap component='a' variant='caption' sx={{ textDecoration: 'none' }}>
+                @username
+              </Typography>
+              {/*</Link>*/}
+            </Box>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
+      field: 'email',
+      headerName: 'Email',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.email}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      field: 'role',
+      minWidth: 150,
+      headerName: 'Role',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {userRoleObj[row.role]}
+            <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+              {row.role}
+            </Typography>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 90,
+      sortable: false,
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: ({ row }: CellType) => <RowOptions id={row._id} />
+    }
+  ]
 
   useEffect(() => {
     dispatch(
@@ -290,6 +308,13 @@ const Users = () => {
   }, [])
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
+  const toggleEditUserDrawer = () => setEditUserOpen(!editUserOpen)
+
+  useEffect(() => {
+    if (!editUserOpen) {
+      setCurrentUser(UserDataDefault)
+    }
+  }, [editUserOpen])
 
   return (
     <Grid container spacing={6}>
@@ -345,6 +370,7 @@ const Users = () => {
       </Grid>
 
       <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+      <EditUserDrawer open={editUserOpen} toggle={toggleEditUserDrawer} data={currentUser} />
     </Grid>
   )
 }
