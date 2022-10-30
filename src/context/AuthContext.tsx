@@ -10,6 +10,9 @@ import axios, { AxiosResponse } from 'axios'
 // ** Config
 import authConfig from 'src/configs/auth'
 
+// ** Cookies
+import { getCookie, setCookie, deleteCookie } from 'cookies-next'
+
 // ** Types
 import { AuthValuesType, RegisterParams, LoginParams, ErrCallbackType, UserDataType } from './types'
 
@@ -45,18 +48,18 @@ const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       setIsInitialized(true)
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
+      const storedToken = getCookie('StorexJWT', { path: '/' })
       if (storedToken) {
         setLoading(true)
         await axios
           .get(authConfig.meEndpoint, {
             headers: {
-              Authorization: storedToken
+              Authorization: `Bearer ${storedToken}`
             }
           })
           .then(async response => {
             setLoading(false)
-            setUser({ ...response.data.userData })
+            setUser({ ...response.data })
           })
           .catch(() => {
             localStorage.removeItem('userData')
@@ -76,26 +79,16 @@ const AuthProvider = ({ children }: Props) => {
     axios
       .post(authConfig.loginEndpoint, params)
       .then(async res => {
+        const returnUrl = router.query.returnUrl
+
         window.localStorage.setItem(authConfig.storageTokenKeyName, res.data.accessToken)
-      })
-      .then(() => {
-        axios
-          .get(authConfig.meEndpoint, {
-            headers: {
-              Authorization: `Bearer ${window.localStorage.getItem(authConfig.storageTokenKeyName)!}`
-            }
-          })
-          .then(async response => {
-            const returnUrl = router.query.returnUrl
+        setCookie('StorexJWT', res.data.token, { path: '/' })
+        setUser(res.data.user)
+        await window.localStorage.setItem('userData', JSON.stringify(res.data.user))
 
-            setUser({ ...response.data })
-            console.log(response);
-            await window.localStorage.setItem('userData', JSON.stringify(response.data.userData))
+        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
 
-            const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-
-            router.replace(redirectURL as string)
-          })
+        router.replace(redirectURL as string)
       })
       .catch(err => {
         if (errorCallback) errorCallback(err)
@@ -107,6 +100,7 @@ const AuthProvider = ({ children }: Props) => {
     setIsInitialized(false)
     window.localStorage.removeItem('userData')
     window.localStorage.removeItem(authConfig.storageTokenKeyName)
+    deleteCookie('StorexJWT', { path: '/' })
     router.push('/login')
   }
 

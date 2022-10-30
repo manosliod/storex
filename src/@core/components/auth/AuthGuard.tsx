@@ -7,6 +7,8 @@ import { useRouter } from 'next/router'
 // ** Hooks Import
 import { useAuth } from 'src/hooks/useAuth'
 
+import { getCookie, setCookie, getCookies } from 'cookies-next'
+
 interface AuthGuardProps {
   children: ReactNode
   fallback: ReactElement | null
@@ -33,9 +35,17 @@ const AuthGuard = (props: AuthGuardProps) => {
           router.replace('/login')
         }
       }
+      // else {
+      //   if (router.asPath === '/') {
+      //     router.replace('/home')
+      //     console.log(getCookie('jwt', { path: '/' }), 'authGuard')
+      //     setCookie('jwt', getCookie('jwt', { path: '/' }), { path: '/' })
+      //   } else {
+      //     console.log(getCookies(), 'authGuard')
+      //   }
+      // }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [router.route]
+    [router.route, router.isReady]
   )
 
   if (auth.loading || auth.user === null) {

@@ -11,6 +11,12 @@ const withTM = require('next-transpile-modules')([
   '@fullcalendar/timegrid'
 ])
 
+const bufferedBasicAuth = Buffer.from('console-storex:G#h42Jt*409QwerD0').toString('base64');
+const authHeaders = {
+  key: 'Authorization',
+  value: `Basic ${bufferedBasicAuth}`
+}
+
 module.exports = (phase, { defaultConfig }) => {
 
   return withTM({
@@ -19,7 +25,11 @@ module.exports = (phase, { defaultConfig }) => {
       BCRYPT_SALT: '$2a$12$n4LLA0kQYyqD7V1w3wdVq.',
       API_AUTH_USERNAME: 'console-storex',
       API_AUTH_PASSWORD: 'G#h42Jt*409QwerD0',
-      HEADERS: {}
+      HEADERS: {
+        headers: {
+          'Authorization': authHeaders.value
+        }
+      }
     },
     trailingSlash: true,
     reactStrictMode: false,
@@ -27,30 +37,12 @@ module.exports = (phase, { defaultConfig }) => {
       esmExternals: false,
       jsconfigPaths: true // enables it for both jsconfig.json and tsconfig.json
     },
-    async headers() {
-      const bufferedBasicAuth = Buffer.from(`${this.env.API_AUTH_USERNAME}:${this.env.API_AUTH_PASSWORD}`).toString('base64');
-      const authHeaders = {
-        key: 'Authorization',
-        value: `Basic ${bufferedBasicAuth}`
-      }
-      this.env.HEADERS = {
-        headers: {
-          'Authorization': authHeaders.value
-        }
-      }
-      return [
-        {
-          source: '/api/:path*',
-          headers: Array(authHeaders)
-        }
-      ]
-    },
     async rewrites() {
       return [
-        // {
-        //   source: '/api/:path*',
-        //   destination: 'http://api.storex.local:81/api/:path*'
-        // },
+        {
+          source: "/:path*",
+          destination: "/:path*"
+        },
         {
           source: '/api/users/login',
           destination: 'http://api.storex.local:81/api/v1/users/login'

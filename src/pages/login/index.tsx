@@ -287,16 +287,3 @@ LoginPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 LoginPage.guestGuard = true
 
 export default LoginPage
-
-export async function getServerSideProps() {
-  // const users_res = await fetch('http://api.storex.local:81/api/v1/users', process.env.HEADERS)
-  // const promise = await users_res.json()
-  // const users = promise.data
-
-  const users = null;
-  return {
-    props: {
-      users
-    }
-  }
-}

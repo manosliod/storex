@@ -48,10 +48,11 @@ mock.onPost('/jwt/login').reply(async request => {
     } else {
       const { user } = res.data.data;
 
-      // @ts-ignore
-      const accessToken = jwt.sign({id: user._id}, process.env.JWT_SECRET)
       status = 200;
-      response = {accessToken};
+      response = {
+        user,
+        token: res.data.token
+      };
     }
   }).catch(() => {
     status = 500;
@@ -142,6 +143,7 @@ mock.onGet('/auth/me').reply(async config => {
   // get the decoded payload and header
   const accessToken = token.split(' ')[1];
   const decoded = jwt.decode(accessToken, { complete: true })
+
 
   let status;
   let response;

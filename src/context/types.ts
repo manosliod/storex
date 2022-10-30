@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios'
+import {TmpCookiesObj} from "cookies-next/lib/types";
 
 export type ErrCallbackType = (err: { [key: string]: AxiosResponse }) => void
 
