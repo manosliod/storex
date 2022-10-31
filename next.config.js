@@ -40,24 +40,20 @@ module.exports = (phase, { defaultConfig }) => {
     async rewrites() {
       return [
         {
-          source: "/:path*/",
-          destination: "/:path*/"
-        },
-        {
           source: '/api/users/login/',
-          destination: 'http://api.storex.local:81/api/v1/users/login/'
+          destination: 'http://localhost:3001/api/v1/users/login/'
         },
         {
           source: '/api/users/me/',
-          destination: 'http://api.storex.local:81/api/v1/users/me/'
+          destination: 'http://localhost:3001/api/v1/users/me/'
         },
         {
           source: '/api/users/',
-          destination: 'http://api.storex.local:81/api/v1/users/'
+          destination: 'http://localhost:3001/api/v1/users/'
         },
         {
           source: '/api/users/:id/',
-          destination: 'http://api.storex.local:81/api/v1/users/:id/'
+          destination: 'http://localhost:3001/api/v1/users/:id/'
         }
       ]
     },

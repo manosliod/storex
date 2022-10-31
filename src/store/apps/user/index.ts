@@ -6,8 +6,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios, { AxiosResponse } from 'axios'
 
 interface DataParams {
-  q: string
-  role: string
+  q?: string
+  role?: string
 }
 
 interface Redux {
@@ -17,13 +17,13 @@ interface Redux {
 
 // ** Fetch Users
 export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: DataParams) => {
-  if (params.q.length === 0) {
-    //@ts-ignore
-    delete params.q
-  }
-  if (params.role.length === 0) {
-    //@ts-ignore
-    delete params.role
+  if (!!Object.keys(params).length) {
+    if (params.hasOwnProperty('q') && !Object.keys(params.q!).length) {
+      delete params.q
+    }
+    if (params.hasOwnProperty('role') && !Object.keys(params.role!).length) {
+      delete params.role
+    }
   }
 
   const response = await axios.get('/api/users', {
@@ -67,7 +67,7 @@ export const addUser = createAsyncThunk(
     //@ts-ignore
     if (returnObj.error) return
 
-    await dispatch(fetchData(getState().user.params))
+    dispatch(fetchData(getState().user.params))
 
     return returnObj
   }
@@ -100,7 +100,7 @@ export const editUser = createAsyncThunk(
     //@ts-ignore
     if (returnObj.error) return
 
-    await dispatch(fetchData(getState().user.params))
+    dispatch(fetchData(getState().user.params))
 
     return returnObj
   }
@@ -111,8 +111,8 @@ export const deleteUser = createAsyncThunk(
   'appUsers/deleteUser',
   async (id: number | string, { getState, dispatch }: Redux) => {
     const response = await axios.delete(`/api/users/${id}`)
-    // @ts-ignore
-    dispatch(fetchData(this.getState().user.params))
+
+    dispatch(fetchData(getState().user.params))
 
     return response.data
   }

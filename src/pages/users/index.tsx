@@ -297,7 +297,7 @@ const Users = () => {
                   >
                     <MenuItem value=''>Select Role</MenuItem>
                     <MenuItem value='super-admin'>Super Admin</MenuItem>
-                    <MenuItem value='stores-admin'>Stores Admin</MenuItem>
+                    <MenuItem value='store-admin'>Stores Admin</MenuItem>
                     <MenuItem value='admin'>Admin</MenuItem>
                     <MenuItem value='lead-tech'>Lead Tech</MenuItem>
                     <MenuItem value='accountant'>Accountant</MenuItem>

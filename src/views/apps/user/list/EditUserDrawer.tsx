@@ -1,5 +1,5 @@
 // ** React Imports
-import { useCallback, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -35,6 +35,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
+import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 
 interface SidebarEditUserType {
   open: boolean
@@ -45,8 +46,10 @@ interface SidebarEditUserType {
 interface UserData {
   email: string
   fullName: string
+  gender: string
   birthday: string
   phone: string
+  role: string
 }
 
 const showErrors = (field: string, valueLen: number, min: number) => {
@@ -72,26 +75,16 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const { open, toggle, data } = props
 
   const defaultValues = {
-    email: '',
-    fullName: '',
-    birthday: new Date(moment().subtract(18, 'years').format('MM/DD/YYYY')),
-    phone: ''
+    email: data.email,
+    fullName: data.fullName,
+    birthday: moment(new Date(data.birthday)).subtract(1, 'days').format('MM/DD/YYYY'),
+    phone: data.phone
   }
 
   const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 
   const schema = yup.object().shape({
-    email: yup
-      .string()
-      .email('Email must be a valid email e.g. user@domain.net')
-      .required('Email is a required field')
-      .default('1234567'),
-    // password: yup.string().min(5).required('Password is a required field'),
-    // passwordConfirm: yup
-    //     .string()
-    //     .min(5)
-    //     .required('Password Confirm is a required field')
-    //     .oneOf([yup.ref('password')], 'Passwords do not match'),
+    email: yup.string().email('Email must be a valid email e.g. user@domain.net').required('Email is a required field'),
     fullName: yup.string().required('Full Name is a required field'),
     birthday: yup.date().nullable().required('Birthday is a required field'),
     phone: yup
@@ -101,8 +94,8 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   })
 
   // ** State
-  const [gender, setGender] = useState<string>('')
-  const [role, setRole] = useState<string>('')
+  const [gender, setGender] = useState<string>(data.gender)
+  const [role, setRole] = useState<string>(data.role)
   const [genderError, setGenderError] = useState<boolean>(false)
   const [roleError, setRoleError] = useState<boolean>(false)
   const store = useSelector((state: RootState) => state.user)
@@ -112,7 +105,6 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const {
     reset,
     control,
-    setValue,
     setError,
     handleSubmit,
     formState: { errors }
@@ -125,80 +117,53 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const minDate = moment().subtract(120, 'years').format('MM/DD/YYYY')
   const maxDate = moment().subtract(18, 'years').format('MM/DD/YYYY')
 
-  const onSubmit = useCallback(
-    async (data: UserData) => {
-      setGenderError(gender === '')
-      setRoleError(role === '')
+  const onSubmit = (data: UserData) => {
+    setGenderError(gender === '')
+    setRoleError(role === '')
+    if (gender === '' || role === '') return
 
-      if (gender === '' || role === '') return
+    dispatch(editUser({ ...data, role, gender }))
 
-      dispatch(editUser({ ...data, role, gender }))
+    let error = []
+    for (const user of store.data) {
+      // @ts-ignore
+      if (user.email === data.email && data._id !== user._id) {
+        error.push({
+          type: 'email'
+        })
+      }
+      // @ts-ignore
+      if (user.phone === data.phone && data._id !== user._id) {
+        error.push({
+          type: 'phone'
+        })
+      }
+    }
 
-      let error = []
-      for (const user of store.data) {
+    if (error.length > 0) {
+      for (const errorElement of error) {
         // @ts-ignore
-        if (user.email === data.email && data._id !== user._id) {
-          error.push({
-            type: 'email'
-          })
-        }
-        // @ts-ignore
-        if (user.phone === data.phone && data._id !== user._id) {
-          error.push({
-            type: 'phone'
-          })
-        }
+        setError(errorElement.type, {
+          type: 'manual',
+          message: 'Value already in use!'
+        })
       }
 
-      if (error.length > 0) {
-        for (const errorElement of error) {
-          // @ts-ignore
-          setError(errorElement.type, {
-            type: 'manual',
-            message: 'Value already in use!'
-          })
-        }
+      return
+    }
 
-        return
-      }
-
-      toggle()
-      reset()
-    },
-    [gender, role, roleError, genderError]
-  )
+    toggle()
+    reset()
+  }
 
   const handleClose = () => {
     toggle()
     reset()
   }
 
-  const handleRoleChange = useCallback(
-    (e: any) => {
-      setRole(e.target.value)
-      setRoleError(false)
-    },
-    [role, roleError]
-  )
-
-  const handleGenderChange = useCallback(
-    (e: any) => {
-      setGender(e.target.value)
-      setGenderError(false)
-    },
-    [role, roleError]
-  )
-
   useEffect(() => {
-    for (const [key, value] of Object.entries(data)) {
-      //@ts-ignore
-      setValue(key, value)
-    }
-    //@ts-ignore
-    setRole(data.role)
-    //@ts-ignore
-    setGender(data.gender)
-  })
+    reset(data)
+  }, [reset, data])
 
   return (
     <Drawer
@@ -217,7 +182,6 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
-              defaultValue={data.email}
               name='email'
               control={control}
               rules={{ required: true }}
@@ -225,44 +189,6 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
             />
             {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
           </FormControl>
-          {/*<FormControl fullWidth sx={{ mb: 4 }}>*/}
-          {/*  <InputLabel htmlFor='auth-register-password'>Password</InputLabel>*/}
-          {/*  <Controller*/}
-          {/*    name='password'*/}
-          {/*    control={control}*/}
-          {/*    rules={{ required: true }}*/}
-          {/*    render={({ field }) => (*/}
-          {/*      <OutlinedInput*/}
-          {/*        {...field}*/}
-          {/*        id='auth-register-password'*/}
-          {/*        type='password'*/}
-          {/*        label='Password'*/}
-          {/*        error={Boolean(errors.password)}*/}
-          {/*      />*/}
-          {/*    )}*/}
-          {/*  />*/}
-          {/*  {errors.password && <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>}*/}
-          {/*</FormControl>*/}
-          {/*<FormControl fullWidth sx={{ mb: 4 }}>*/}
-          {/*  <InputLabel htmlFor='auth-register-confirm-password'>Password Confirm</InputLabel>*/}
-          {/*  <Controller*/}
-          {/*    name='passwordConfirm'*/}
-          {/*    control={control}*/}
-          {/*    rules={{ required: true }}*/}
-          {/*    render={({ field }) => (*/}
-          {/*      <OutlinedInput*/}
-          {/*        {...field}*/}
-          {/*        id='auth-register-confirm-password'*/}
-          {/*        type='password'*/}
-          {/*        label='Password Confirm'*/}
-          {/*        error={Boolean(errors.passwordConfirm)}*/}
-          {/*      />*/}
-          {/*    )}*/}
-          {/*  />*/}
-          {/*  {errors.passwordConfirm && (*/}
-          {/*    <FormHelperText sx={{ color: 'error.main' }}>{errors.passwordConfirm.message}</FormHelperText>*/}
-          {/*  )}*/}
-          {/*</FormControl>*/}
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
               name='fullName'
@@ -273,16 +199,15 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
             {errors.fullName && <FormHelperText sx={{ color: 'error.main' }}>{errors.fullName.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 6 }}>
-            <InputLabel id='gender-select'>Select Gender</InputLabel>
+            <InputLabel id='edit-gender-select'>Select Gender</InputLabel>
             <Select
               fullWidth
-              id='select-gender'
+              id='select-gender-for-edit'
               label='Select Gender'
-              labelId='gender-select'
+              labelId='edit-gender-select'
               value={gender}
-              onChange={e => handleGenderChange(e)}
+              onChange={e => setGender(e.target.value)}
               inputProps={{ placeholder: 'Select Gender' }}
-              error={genderError}
             >
               <MenuItem value='' disabled={true}>
                 Select Gender
@@ -322,16 +247,15 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
             {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 6 }}>
-            <InputLabel id='role-select'>Select Role</InputLabel>
+            <InputLabel id='edit-role-select'>Select Role</InputLabel>
             <Select
               fullWidth
-              id='select-role'
+              id='select-role-for-edit'
               label='Select Role'
-              labelId='role-select'
+              labelId='edit-role-select'
               value={role}
-              onChange={e => handleRoleChange(e)}
+              onChange={e => setRole(e.target.value)}
               inputProps={{ placeholder: 'Select Role' }}
-              error={roleError}
             >
               <MenuItem value='' disabled={true}>
                 Select Role
