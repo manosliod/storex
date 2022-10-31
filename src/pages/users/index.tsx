@@ -24,7 +24,6 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Laptop from 'mdi-material-ui/Laptop'
 import ChartDonut from 'mdi-material-ui/ChartDonut'
 import CogOutline from 'mdi-material-ui/CogOutline'
-import EyeOutline from 'mdi-material-ui/EyeOutline'
 import DotsVertical from 'mdi-material-ui/DotsVertical'
 import PencilOutline from 'mdi-material-ui/PencilOutline'
 import DeleteOutline from 'mdi-material-ui/DeleteOutline'
@@ -34,7 +33,6 @@ import AccountOutline from 'mdi-material-ui/AccountOutline'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Utils Import
@@ -45,7 +43,6 @@ import { fetchData, deleteUser } from 'src/store/apps/user'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
-import { ThemeColor } from 'src/@core/layouts/types'
 import { UsersType } from 'src/types/apps/userTypes'
 
 // ** Custom Components Imports
@@ -56,10 +53,6 @@ import axios from 'axios'
 
 interface UserRoleType {
   [key: string]: ReactElement
-}
-
-interface UserStatusType {
-  [key: string]: ThemeColor
 }
 
 interface UserData {
@@ -93,17 +86,6 @@ interface CellType {
   row: UsersType
 }
 
-const userStatusObj: UserStatusType = {
-  active: 'success',
-  pending: 'warning',
-  inactive: 'secondary'
-}
-
-// ** Styled component for the link for the avatar with image
-const AvatarWithImageLink = styled(Link)(({ theme }) => ({
-  marginRight: theme.spacing(3)
-}))
-
 // ** Styled component for the link for the avatar without image
 const AvatarWithoutImageLink = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -119,27 +101,13 @@ const renderClient = (row: UsersType) => {
       </CustomAvatar>
     </AvatarWithoutImageLink>
   )
-
-  // }
 }
-
-// ** Styled component for the link inside menu
-const MenuItemLink = styled('a')(({ theme }) => ({
-  width: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  textDecoration: 'none',
-  padding: theme.spacing(1.5, 4),
-  color: theme.palette.text.primary
-}))
 
 const Users = () => {
   // ** State
-  const [currentUser, setCurrentUser] = useState<object>(UserDataDefault)
+  const [currentUser, setCurrentUser] = useState<UserData>(UserDataDefault)
   const [role, setRole] = useState<string>('')
-  const [plan, setPlan] = useState<string>('')
   const [value, setValue] = useState<string>('')
-  const [status, setStatus] = useState<string>('')
   const [pageSize, setPageSize] = useState<number>(10)
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [editUserOpen, setEditUserOpen] = useState<boolean>(false)
@@ -217,7 +185,7 @@ const Users = () => {
       field: 'fullName',
       headerName: 'User',
       renderCell: ({ row }: CellType) => {
-        const { _id, fullName } = row
+        const { fullName } = row
 
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -289,7 +257,7 @@ const Users = () => {
         q: value
       })
     )
-  }, [dispatch, plan, role, status, value])
+  }, [dispatch, role, value])
 
   const handleFilter = useCallback((val: string) => {
     setValue(val)
@@ -297,14 +265,6 @@ const Users = () => {
 
   const handleRoleChange = useCallback((e: SelectChangeEvent) => {
     setRole(e.target.value)
-  }, [])
-
-  const handlePlanChange = useCallback((e: SelectChangeEvent) => {
-    setPlan(e.target.value)
-  }, [])
-
-  const handleStatusChange = useCallback((e: SelectChangeEvent) => {
-    setStatus(e.target.value)
   }, [])
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)

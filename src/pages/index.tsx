@@ -9,7 +9,6 @@ import Spinner from 'src/@core/components/spinner'
 
 // ** Hook Imports
 import { useAuth } from 'src/hooks/useAuth'
-import { getCookie } from 'cookies-next'
 
 /**
  *  Set Home URL based on User Roles

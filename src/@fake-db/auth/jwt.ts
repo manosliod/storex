@@ -40,9 +40,14 @@ mock.onPost('/jwt/login').reply(async request => {
     email: ['Something went wrong']
   }
 
-  // @ts-ignore
+  const bufferedBasicAuth = Buffer.from(`${process.env.API_AUTH_USERNAME}:${process.env.API_AUTH_PASSWORD}`).toString('base64');
+
   await axios
-    .post('/api/users/login', { email, password }, process.env.HEADERS)
+    .post('/api/users/login', { email, password }, {
+      headers: {
+        'Authorization': `Basic ${bufferedBasicAuth}`
+      }
+    })
     .then(res => {
       if (res.data.error) {
         status = res.data.error.statusCode

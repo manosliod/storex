@@ -1,5 +1,5 @@
 // ** React Imports
-import { ChangeEvent, MouseEvent, ReactNode, useEffect, useState } from 'react'
+import { MouseEvent, ReactNode, useState } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -30,9 +30,6 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-
-// ** Types
-import { UserDataType } from 'src/context/types'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -73,7 +70,7 @@ interface FormData {
   password: string
 }
 
-const LoginPage = (props: { users: UserDataType[] }) => {
+const LoginPage = () => {
   // ** State
   const [values, setValues] = useState<State>({
     password: '',
@@ -111,15 +108,6 @@ const LoginPage = (props: { users: UserDataType[] }) => {
   const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
   }
-
-  const handleUsers = () => {
-    auth.setUsers(props.users)
-    console.log(props.users)
-  }
-
-  // useEffect(() => {
-  //   handleUsers()
-  // }, [])
 
   return (
     <Box className='content-center'>

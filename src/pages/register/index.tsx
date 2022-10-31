@@ -1,5 +1,5 @@
 // ** React Imports
-import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -20,7 +20,6 @@ import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
-import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Icons Imports
 
@@ -29,9 +28,6 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-
-// ** Types
-import { UserDataType } from 'src/context/types'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -47,14 +43,14 @@ import 'yup-phone'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-interface State {
-  email: string
-  password: string
-  passwordConfirm: string
-  fullName: string
-  birthday: Date
-  phone: string
-}
+// interface State {
+//   email: string
+//   password: string
+//   passwordConfirm: string
+//   fullName: string
+//   birthday: Date
+//   phone: string
+// }
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -87,7 +83,7 @@ interface FormData {
   phone: string
 }
 
-const RegisterPage = (props: { users: UserDataType[] }) => {
+const RegisterPage = () => {
   const {
     control,
     setError,
@@ -125,14 +121,6 @@ const RegisterPage = (props: { users: UserDataType[] }) => {
       })
     })
   }
-
-  const handleUsers = () => {
-    auth.setUsers(props.users)
-  }
-
-  useEffect(() => {
-    handleUsers()
-  }, [])
 
   return (
     <Box className='content-center'>
