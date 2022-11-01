@@ -7,8 +7,6 @@ import { useRouter } from 'next/router'
 // ** Hooks Import
 import { useAuth } from 'src/hooks/useAuth'
 
-import { getCookie, setCookie, getCookies } from 'cookies-next'
-
 interface AuthGuardProps {
   children: ReactNode
   fallback: ReactElement | null
@@ -34,6 +32,7 @@ const AuthGuard = (props: AuthGuardProps) => {
         router.replace('/login')
       }
     }
+
     // else {
     //   if (router.asPath === '/') {
     //     router.replace('/home')

@@ -30,12 +30,10 @@ import { editUser } from 'src/store/apps/user'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
-import OutlinedInput from '@mui/material/OutlinedInput'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 
 interface SidebarEditUserType {
   open: boolean
@@ -50,16 +48,6 @@ interface UserData {
   birthday: string
   phone: string
   role: string
-}
-
-const showErrors = (field: string, valueLen: number, min: number) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
 }
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
@@ -124,7 +112,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
 
     dispatch(editUser({ ...data, role, gender }))
 
-    let error = []
+    const error = []
     for (const user of store.data) {
       // @ts-ignore
       if (user.email === data.email && data._id !== user._id) {
@@ -132,6 +120,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
           type: 'email'
         })
       }
+
       // @ts-ignore
       if (user.phone === data.phone && data._id !== user._id) {
         error.push({

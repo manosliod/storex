@@ -50,16 +50,6 @@ interface UserData {
   phone: string
 }
 
-const showErrors = (field: string, valueLen: number, min: number) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
-}
-
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -111,7 +101,6 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const {
     reset,
     control,
-    setValue,
     setError,
     handleSubmit,
     formState: { errors }
@@ -133,7 +122,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
       dispatch(addUser({ ...data, role, gender }))
 
-      let error = []
+      const error = []
       for (const user of store.data) {
         // @ts-ignore
         if (user.email === data.email) {
@@ -141,6 +130,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
             type: 'email'
           })
         }
+
         // @ts-ignore
         if (user.phone === data.phone) {
           error.push({

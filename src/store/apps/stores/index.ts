@@ -7,7 +7,9 @@ import axios from 'axios'
 
 interface DataParams {
   q?: string
-  role?: string
+  storeType?: string
+  city?: string
+  country?: string
 }
 
 interface Redux {
@@ -15,23 +17,29 @@ interface Redux {
   dispatch: Dispatch<any>
 }
 
-// ** Fetch Users
-export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: DataParams) => {
+// ** Fetch Stores
+export const fetchData = createAsyncThunk('appStores/fetchData', async (params: DataParams) => {
   if (!!Object.keys(params).length) {
     if (params.hasOwnProperty('q') && !Object.keys(params.q!).length) {
       delete params.q
     }
-    if (params.hasOwnProperty('role') && !Object.keys(params.role!).length) {
-      delete params.role
+    if (params.hasOwnProperty('storeType') && !Object.keys(params.storeType!).length) {
+      delete params.storeType
+    }
+    if (params.hasOwnProperty('city') && !Object.keys(params.city!).length) {
+      delete params.city
+    }
+    if (params.hasOwnProperty('country') && !Object.keys(params.country!).length) {
+      delete params.country
     }
   }
 
-  const response = await axios.get('/api/users', {
+  const response = await axios.get('/api/stores', {
     params
   })
 
   const jsonObj = {
-    users: response.data.data,
+    stores: response.data.data,
     total: response.data.results,
     params: params,
     allData: response.data
@@ -41,13 +49,13 @@ export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: D
   return jsonObj
 })
 
-// ** Add User
-export const addUser = createAsyncThunk(
-  'appUsers/addUser',
+// ** Add Store
+export const addStore = createAsyncThunk(
+  'appStores/addStore',
   async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
     let returnObj
     await axios
-      .post('/api/users', {
+      .post('/api/stores', {
         ...data
       })
       .then(res => {
@@ -67,20 +75,20 @@ export const addUser = createAsyncThunk(
     //@ts-ignore
     if (returnObj.error) return
 
-    dispatch(fetchData(getState().user.params))
+    dispatch(fetchData(getState().stores.params))
 
     return returnObj
   }
 )
 
-export const editUser = createAsyncThunk(
-  'appUsers/editUser',
+export const editStore = createAsyncThunk(
+  'appStores/editStore',
   async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
     let returnObj
     const id = data._id
     delete data._id
     await axios
-      .patch(`/api/users/${id}`, {
+      .patch(`/api/stores/${id}`, {
         ...data
       })
       .then(res => {
@@ -100,26 +108,26 @@ export const editUser = createAsyncThunk(
     //@ts-ignore
     if (returnObj.error) return
 
-    dispatch(fetchData(getState().user.params))
+    dispatch(fetchData(getState().stores.params))
 
     return returnObj
   }
 )
 
-// ** Delete User
-export const deleteUser = createAsyncThunk(
-  'appUsers/deleteUser',
+// ** Delete Store
+export const deleteStore = createAsyncThunk(
+  'appStores/deleteStore',
   async (id: number | string, { getState, dispatch }: Redux) => {
-    const response = await axios.delete(`/api/users/${id}`)
+    const response = await axios.delete(`/api/stores/${id}`)
 
-    dispatch(fetchData(getState().user.params))
+    dispatch(fetchData(getState().stores.params))
 
     return response.data
   }
 )
 
-export const appUsersSlice = createSlice({
-  name: 'appUsers',
+export const appStoresSlice = createSlice({
+  name: 'appStores',
   initialState: {
     data: [],
     total: 1,
@@ -130,7 +138,7 @@ export const appUsersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.data = action.payload.users
+      state.data = action.payload.stores
       state.total = action.payload.total
       state.params = action.payload.params
       state.allData = action.payload.allData
@@ -138,4 +146,4 @@ export const appUsersSlice = createSlice({
   }
 })
 
-export default appUsersSlice.reducer
+export default appStoresSlice.reducer

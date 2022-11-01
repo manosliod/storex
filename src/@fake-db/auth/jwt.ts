@@ -36,7 +36,7 @@ mock.onPost('/jwt/login').reply(async request => {
 
   let status
   let response
-  let error = {
+  const error = {
     email: ['Something went wrong']
   }
 
@@ -92,11 +92,6 @@ mock.onPost('/jwt/register').reply(async request => {
       // !error.username &&
       !error.email
     ) {
-      const { length } = users
-      let lastIndex = ''
-      if (length) {
-        lastIndex = <string>users[length - 1].id
-      }
 
       const registerData = {
         email,
@@ -152,7 +147,7 @@ mock.onPost('/jwt/register').reply(async request => {
 
 mock.onGet('/auth/me').reply(async config => {
   // @ts-ignore
-  const token = config.headers.Authorization as string
+  const token = config.Cookies.StorexJWT as string
 
   // get the decoded payload and header
   const accessToken = token.split(' ')[1]
@@ -162,10 +157,8 @@ mock.onGet('/auth/me').reply(async config => {
   let response
   if (decoded) {
     // @ts-ignore
-    const { id: userId } = decoded.payload
-
     await axios
-      .get('/api/users/me', { headers: config.headers })
+      .get('/api/users/me')
       .then(res => {
         if (res.data.error) {
           status = res.data.error.statusCode

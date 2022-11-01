@@ -1,6 +1,4 @@
 // ** Types
-import { ThemeColor } from 'src/@core/layouts/types'
-
 export type UserLayoutType = {
   id: string | undefined
 }

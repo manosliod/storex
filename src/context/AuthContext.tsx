@@ -27,7 +27,7 @@ const defaultProvider: AuthValuesType = {
   logout: () => Promise.resolve(),
   setIsInitialized: () => Boolean,
   register: () => Promise.resolve(),
-  setUsers: (data: UserDataType[]) => []
+  setUsers: () => []
 }
 
 const AuthContext = createContext(defaultProvider)

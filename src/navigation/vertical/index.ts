@@ -3,6 +3,7 @@ import AccountOutline from 'mdi-material-ui/AccountOutline'
 import HomeOutline from 'mdi-material-ui/HomeOutline'
 import EmailOutline from 'mdi-material-ui/EmailOutline'
 import ShieldOutline from 'mdi-material-ui/ShieldOutline'
+import StoreOutline from 'mdi-material-ui/StoreOutline'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -18,6 +19,11 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Users',
       icon: AccountOutline,
       path: '/users'
+    },
+    {
+      title: 'Stores',
+      icon: StoreOutline,
+      path: '/stores'
     },
     {
       title: 'Second Page',
