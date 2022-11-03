@@ -82,8 +82,8 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   })
 
   // ** State
-  const [gender, setGender] = useState<string>(data.gender)
-  const [role, setRole] = useState<string>(data.role)
+  const [gender, setGender] = useState<string>(data?.gender)
+  const [role, setRole] = useState<string>(data?.role)
   const [genderError, setGenderError] = useState<boolean>(false)
   const [roleError, setRoleError] = useState<boolean>(false)
   const store = useSelector((state: RootState) => state.user)

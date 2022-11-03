@@ -38,12 +38,12 @@ interface SidebarAddUserType {
 }
 
 interface StoreData {
-  name?: string | null
-  officialName?: string | null
-  storeType?: string | null
-  address?: string | null
-  city?: string | null
-  country?: string | null
+  name?: string
+  officialName?: string
+  storeType?: string
+  address?: string
+  city?: string
+  country?: string
 }
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({

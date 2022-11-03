@@ -48,12 +48,12 @@ import EditStoreDrawer from 'src/views/apps/stores/EditStoreDrawer'
 import TextField from '@mui/material/TextField'
 
 interface StoreData {
-  name?: string | null
-  officialName?: string | null
-  storeType?: string | null
-  address?: string | null
-  city?: string | null
-  country?: string | null
+  name?: string
+  officialName?: string
+  storeType?: string
+  address?: string
+  city?: string
+  country?: string
 }
 
 const StoreDataDefault: StoreData = {
@@ -313,12 +313,7 @@ const Stores = () => {
               </Grid>
               <Grid item sm={4} xs={12}>
                 <FormControl fullWidth>
-                  <TextField
-                    size='medium'
-                    value={city}
-                    placeholder='City'
-                    onChange={e => setCity(e.target.value)}
-                  />
+                  <TextField size='medium' value={city} placeholder='City' onChange={e => setCity(e.target.value)} />
                 </FormControl>
               </Grid>
               <Grid item sm={4} xs={12}>

@@ -1,16 +1,17 @@
 // ** Types
 export type UserLayoutType = {
-  id: string | undefined
+  id: string | number
 }
 
 export type UsersType = {
   _id: string | number
   id: UsersType['_id']
-  name?: string | null
+  name?: string
   fullName: UsersType['name']
+  gender?: string
   role: string
   email: string
   password: string
-  phone?: string | null
-  birthdate?: string | null
+  phone?: string
+  birthday?: string
 }

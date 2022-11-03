@@ -40,6 +40,10 @@ module.exports = (phase, { defaultConfig }) => {
     async rewrites() {
       return [
         {
+          source: '/:path*/',
+          destination: '/:path*/'
+        },
+        {
           source: '/api/users/login/',
           destination: 'http://localhost:3001/api/v1/users/login/'
         },

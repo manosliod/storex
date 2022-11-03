@@ -134,7 +134,7 @@ const Users = () => {
 
     const handleEdit = async () => {
       const response = await axios.get(`/api/users/${id}`)
-      setCurrentUser(response.data.user)
+      setCurrentUser(response.data.doc)
       setEditUserOpen(true)
       handleRowOptionsClose()
     }

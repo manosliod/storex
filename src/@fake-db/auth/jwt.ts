@@ -92,7 +92,6 @@ mock.onPost('/jwt/register').reply(async request => {
       // !error.username &&
       !error.email
     ) {
-
       const registerData = {
         email,
         password,
@@ -147,7 +146,7 @@ mock.onPost('/jwt/register').reply(async request => {
 
 mock.onGet('/auth/me').reply(async config => {
   // @ts-ignore
-  const token = config.Cookies.StorexJWT as string
+  const token = config.headers.Authorization as string
 
   // get the decoded payload and header
   const accessToken = token.split(' ')[1]
@@ -164,7 +163,7 @@ mock.onGet('/auth/me').reply(async config => {
           status = res.data.error.statusCode
           response = res.data.message
         } else {
-          const userData = JSON.parse(JSON.stringify(res.data.user))
+          const userData = JSON.parse(JSON.stringify(res.data.doc))
 
           status = 200
           response = userData

@@ -48,7 +48,7 @@ const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       setIsInitialized(true)
-      const storedToken = getCookie('StorexJWT', { path: '/' })
+      const storedToken = getCookie('StorexJWT', { path: '/' })!
       if (storedToken) {
         setLoading(true)
         await axios
