@@ -54,6 +54,8 @@ interface UserRoleType {
 }
 
 interface UserData {
+  _id: string | number
+  username: string
   email: string
   fullName: string
   gender: string
@@ -63,6 +65,8 @@ interface UserData {
 }
 
 const UserDataDefault: UserData = {
+  _id: '',
+  username: '',
   email: '',
   fullName: '',
   gender: '',

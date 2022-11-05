@@ -42,6 +42,7 @@ interface SidebarEditUserType {
 }
 
 interface UserData {
+  _id: number | string
   email: string
   username: string
   fullName: string
@@ -115,20 +116,20 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
     dispatch(editUser({ ...data, role, gender }))
 
     const error = []
-    for (const user of store.data) {
-      // @ts-ignore
+    const userData: UserData[] = store.data
+    for (const user of userData) {
       if (user.username === data.username && data._id !== user._id) {
         error.push({
           type: 'username'
         })
       }
+
       if (user.email === data.email && data._id !== user._id) {
         error.push({
           type: 'email'
         })
       }
 
-      // @ts-ignore
       if (user.phone === data.phone && data._id !== user._id) {
         error.push({
           type: 'phone'
