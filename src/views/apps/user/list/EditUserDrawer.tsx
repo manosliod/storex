@@ -43,6 +43,7 @@ interface SidebarEditUserType {
 
 interface UserData {
   email: string
+  username: string
   fullName: string
   gender: string
   birthday: string
@@ -64,6 +65,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
 
   const defaultValues = {
     email: data.email,
+    username: data.username,
     fullName: data.fullName,
     birthday: moment(new Date(data.birthday)).subtract(1, 'days').format('MM/DD/YYYY'),
     phone: data.phone
@@ -115,6 +117,11 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
     const error = []
     for (const user of store.data) {
       // @ts-ignore
+      if (user.username === data.username && data._id !== user._id) {
+        error.push({
+          type: 'username'
+        })
+      }
       if (user.email === data.email && data._id !== user._id) {
         error.push({
           type: 'email'
@@ -169,6 +176,15 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
       </Header>
       <Box sx={{ p: 5 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
+              name='username'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <TextField {...field} autoFocus label='Username' error={Boolean(errors.username)} />}
+            />
+            {errors.username && <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>}
+          </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
               name='email'

@@ -42,6 +42,7 @@ interface SidebarAddUserType {
 }
 
 interface UserData {
+  username: string
   email: string
   password: string
   passwordConfirm: string
@@ -77,6 +78,7 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
+  username: '',
   email: '',
   password: '',
   passwordConfirm: '',
@@ -123,15 +125,20 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       dispatch(addUser({ ...data, role, gender }))
 
       const error = []
-      for (const user of store.data) {
-        // @ts-ignore
+      const userData: UserData[] = store.data
+      for (const user of userData) {
+        if (user.username === data.username) {
+          error.push({
+            type: 'username'
+          })
+        }
+
         if (user.email === data.email) {
           error.push({
             type: 'email'
           })
         }
 
-        // @ts-ignore
         if (user.phone === data.phone) {
           error.push({
             type: 'phone'
@@ -192,6 +199,15 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       </Header>
       <Box sx={{ p: 5 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
+              name='username'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <TextField {...field} autoFocus label='Username' error={Boolean(errors.username)} />}
+            />
+            {errors.username && <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>}
+          </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
               name='email'
