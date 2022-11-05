@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 
 // ** Hooks Import
 import { useAuth } from 'src/hooks/useAuth'
+import {getCookie, setCookie} from "cookies-next"
 
 interface AuthGuardProps {
   children: ReactNode
@@ -22,7 +23,11 @@ const AuthGuard = (props: AuthGuardProps) => {
       return
     }
 
-    if (auth.user === null && !window.localStorage.getItem('userData')) {
+    const myRouter: any = router
+    if(!!myRouter?.components['/']?.props.pageProps.cookie)
+      setCookie('StorexAuth', myRouter.components['/'].props.pageProps.cookie)
+
+    if (auth.user === null && !getCookie('StorexAuth')) {
       if (router.asPath !== '/') {
         router.replace({
           pathname: '/login',
@@ -33,16 +38,7 @@ const AuthGuard = (props: AuthGuardProps) => {
       }
     }
 
-    // else {
-    //   if (router.asPath === '/') {
-    //     router.replace('/home')
-    //     console.log(getCookie('jwt', { path: '/' }), 'authGuard')
-    //     setCookie('jwt', getCookie('jwt', { path: '/' }), { path: '/' })
-    //   } else {
-    //     console.log(getCookies(), 'authGuard')
-    //   }
-    // }
-  }, [router.route, router.isReady])
+  }, [router.route])
 
   if (auth.loading || auth.user === null) {
     return fallback

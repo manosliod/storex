@@ -1,10 +1,16 @@
 // ** Redux Imports
 import { Dispatch } from 'redux'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
 import { UsersType } from 'src/types/apps/userTypes'
+
+interface ReduxReturnParams {
+  user: []
+  allData: []
+  error: {}
+}
 
 interface DataParams {
   q?: string
@@ -34,27 +40,55 @@ export const fetchDataFromServer = createAsyncThunk(
   }
 )
 
-export const fetchUserData = createAsyncThunk('appCurrentUser/fetchUserData', async (id: string | number) => {
-  const response = await axios.get(`/api/users/${id}`)
-  console.log(response, 'fetchUserData')
-  return {
-    user: response.data.doc,
-    allData: response.data
+export const fetchUserData = createAsyncThunk(
+  'appCurrentUser/fetchUserData',
+  async (id: string | null | number, { rejectWithValue }) => {
+    let error = {}
+    try {
+      const res = await axios.get(`/api/users/${id}`)
+      // console.log(res, 'response')
+      return {
+        user: res.data.doc,
+        allData: res.data,
+        error: {}
+      }
+    } catch (err: any) {
+      const { statusCode } = err.response.data
+      if (statusCode === 404) {
+        error = { ...err.response.data }
+      }
+
+      return rejectWithValue({ error })
+    }
   }
-})
+)
 
 export const editUser = createAsyncThunk(
   'appCurrentUser/editUser',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
+  async (data: { [key: string]: number | string }, { getState, rejectWithValue }) => {
     const id = data._id
     delete data._id
-    const response = await axios.patch(`/api/users/${id}`, {
-      ...data
-    })
+    let error = {}
+    try {
+      const res = await axios.patch(`/api/users/${id}`, {
+        ...data
+      })
+      return {
+        user: res.data.doc,
+        allData: res.data,
+        error: {}
+      }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('type:')) {
+        error = {
+          type: message.split('type:')[1],
+          message: message.split('type:')[0]
+        }
+      } else {
+      }
 
-    return {
-      user: response.data.doc,
-      allData: response.data
+      return rejectWithValue({ error })
     }
   }
 )
@@ -77,25 +111,27 @@ export const appCurrentUserSlice = createSlice({
     data: [],
     params: {},
     allData: [],
-    error: {}
+    error: {
+      statusCode: {}
+    }
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchUserData.fulfilled, (state, action) => {
-      state.data = action.payload.user
-      state.allData = action.payload.allData
-    })
-    builder.addCase(editUser.fulfilled, (state, action) => {
-      console.log(action, 'action')
-      state.data = action.payload.user
-      state.allData = action.payload.allData
-      console.log(state, 'state')
-    })
-    builder.addCase(editUser.rejected, (state, action) => {
-      console.log(state, 'state')
-      console.log(action, 'action')
-      state.error = true
-    })
+    builder
+      .addCase(fetchUserData.fulfilled, (state, action: PayloadAction<{} | any>) => {
+        state.data = action.payload.user
+        state.allData = action.payload.allData
+      })
+      .addCase(fetchUserData.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload.error
+      })
+      .addCase(editUser.fulfilled, (state, action: PayloadAction<{} | any>) => {
+        state.data = action.payload.user
+        state.allData = action.payload.allData
+      })
+      .addCase(editUser.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload.error
+      })
   }
 })
 

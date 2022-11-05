@@ -1,6 +1,6 @@
 // ** Types
 export type UserLayoutType = {
-  id: string | number
+  id: string | null | number
 }
 
 export type UsersType = {

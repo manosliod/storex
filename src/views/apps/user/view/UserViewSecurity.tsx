@@ -137,65 +137,65 @@ const UserViewSecurity = () => {
           </Alert>
 
           <form onSubmit={e => e.preventDefault()}>
-            <Grid container spacing={2.5}>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size='small'>
-                  <InputLabel htmlFor='user-view-security-new-password'>New Password</InputLabel>
-                  <OutlinedInput
-                    label='New Password'
-                    value={values.newPassword}
-                    id='user-view-security-new-password'
-                    onChange={handleNewPasswordChange('newPassword')}
-                    type={values.showNewPassword ? 'text' : 'password'}
-                    endAdornment={
-                      <InputAdornment position='end'>
-                        <IconButton
-                          edge='end'
-                          onClick={handleClickShowNewPassword}
-                          aria-label='toggle password visibility'
-                          onMouseDown={handleMouseDownNewPassword}
-                        >
-                          {values.showNewPassword ? <EyeOutline /> : <EyeOffOutline />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-              </Grid>
+            {/*<Grid container spacing={2.5}>*/}
+            {/*  <Grid item xs={12} sm={6}>*/}
+            {/*    <FormControl fullWidth size='small'>*/}
+            {/*      <InputLabel htmlFor='user-view-security-new-password'>New Password</InputLabel>*/}
+            {/*      <OutlinedInput*/}
+            {/*        label='New Password'*/}
+            {/*        value={values.newPassword}*/}
+            {/*        id='user-view-security-new-password'*/}
+            {/*        onChange={handleNewPasswordChange('newPassword')}*/}
+            {/*        type={values.showNewPassword ? 'text' : 'password'}*/}
+            {/*        endAdornment={*/}
+            {/*          <InputAdornment position='end'>*/}
+            {/*            <IconButton*/}
+            {/*              edge='end'*/}
+            {/*              onClick={handleClickShowNewPassword}*/}
+            {/*              aria-label='toggle password visibility'*/}
+            {/*              onMouseDown={handleMouseDownNewPassword}*/}
+            {/*            >*/}
+            {/*              {values.showNewPassword ? <EyeOutline /> : <EyeOffOutline />}*/}
+            {/*            </IconButton>*/}
+            {/*          </InputAdornment>*/}
+            {/*        }*/}
+            {/*      />*/}
+            {/*    </FormControl>*/}
+            {/*  </Grid>*/}
 
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size='small'>
-                  <InputLabel htmlFor='user-view-security-confirm-new-password'>Confirm New Password</InputLabel>
-                  <OutlinedInput
-                    label='Confirm New Password'
-                    value={values.confirmNewPassword}
-                    id='user-view-security-confirm-new-password'
-                    type={values.showConfirmNewPassword ? 'text' : 'password'}
-                    onChange={handleConfirmNewPasswordChange('confirmNewPassword')}
-                    endAdornment={
-                      <InputAdornment position='end'>
-                        <IconButton
-                          edge='end'
-                          aria-label='toggle password visibility'
-                          onClick={handleClickShowConfirmNewPassword}
-                          onMouseDown={handleMouseDownConfirmNewPassword}
-                        >
-                          {values.showConfirmNewPassword ? <EyeOutline /> : <EyeOffOutline />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-              </Grid>
+            {/*  <Grid item xs={12} sm={6}>*/}
+            {/*    <FormControl fullWidth size='small'>*/}
+            {/*      <InputLabel htmlFor='user-view-security-confirm-new-password'>Confirm New Password</InputLabel>*/}
+            {/*      <OutlinedInput*/}
+            {/*        label='Confirm New Password'*/}
+            {/*        value={values.confirmNewPassword}*/}
+            {/*        id='user-view-security-confirm-new-password'*/}
+            {/*        type={values.showConfirmNewPassword ? 'text' : 'password'}*/}
+            {/*        onChange={handleConfirmNewPasswordChange('confirmNewPassword')}*/}
+            {/*        endAdornment={*/}
+            {/*          <InputAdornment position='end'>*/}
+            {/*            <IconButton*/}
+            {/*              edge='end'*/}
+            {/*              aria-label='toggle password visibility'*/}
+            {/*              onClick={handleClickShowConfirmNewPassword}*/}
+            {/*              onMouseDown={handleMouseDownConfirmNewPassword}*/}
+            {/*            >*/}
+            {/*              {values.showConfirmNewPassword ? <EyeOutline /> : <EyeOffOutline />}*/}
+            {/*            </IconButton>*/}
+            {/*          </InputAdornment>*/}
+            {/*        }*/}
+            {/*      />*/}
+            {/*    </FormControl>*/}
+            {/*  </Grid>*/}
 
-              <Grid item xs={12} sx={{ mt: 1.5 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Button type='submit' variant='contained'>
-                    Change Password
-                  </Button>
-                </Box>
-              </Grid>
+            <Grid item xs={12} sx={{ mt: 1.5 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button type='submit' variant='contained'>
+                  Change Password
+                </Button>
+              </Box>
             </Grid>
+            {/*</Grid>*/}
           </form>
         </CardContent>
       </Card>

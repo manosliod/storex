@@ -63,7 +63,7 @@ const statusColors: ColorsType = {
 
 const UserViewLeft = ({ data }: Props) => {
   const renderUserAvatar = () => {
-    if (data) {
+    if (!!Object.keys(data).length) {
       // if (data.avatar.length) {
       //   return (
       //     <CustomAvatar alt='User Image' src={data.avatar} variant='rounded' sx={{ width: 120, height: 120, mb: 4 }} />
@@ -85,7 +85,7 @@ const UserViewLeft = ({ data }: Props) => {
     // }
   }
 
-  if (data) {
+  if (!!Object.keys(data).length) {
     return (
       <Grid container spacing={6}>
         <Grid item xs={12}>

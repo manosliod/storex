@@ -14,7 +14,6 @@ import { ThemeColor } from 'src/@core/layouts/types'
 import { UsersType } from 'src/types/apps/userTypes'
 
 // ** Demo Component Imports
-import DialogContentText from '@mui/material/DialogContentText'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl'
@@ -26,8 +25,10 @@ import FormHelperText from '@mui/material/FormHelperText'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import moment from 'moment'
 import Button from '@mui/material/Button'
+import { editUser } from '../../../../store/apps/currentUser'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '../../../../store'
 
 interface PostData {
   _id?: string | number
@@ -41,11 +42,7 @@ interface PostData {
 
 interface Props {
   userData: UsersType
-  gender: string
-  setGender: (e: string) => void
-  genderError: boolean
-  setGenderError: (state: boolean) => void
-  onEditUserSubmit: (data: PostData) => Promise<void>
+  error: any
 }
 
 interface ProjectListDataType {
@@ -158,13 +155,12 @@ const schema = yup.object().shape({
     .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
 })
 
-const UserViewOverview = ({ userData, gender, setGender, genderError, setGenderError, onEditUserSubmit }: Props) => {
-
+const UserViewOverview = ({ userData, error }: Props) => {
   const defaultValues = {
-    email: userData.email,
-    fullName: userData.fullName,
-    birthday: moment(new Date(userData.birthday!)).subtract(1, 'days').format('MM/DD/YYYY'),
-    phone: userData.phone
+    email: '',
+    fullName: '',
+    birthday: '',
+    phone: ''
   }
 
   const {
@@ -179,9 +175,57 @@ const UserViewOverview = ({ userData, gender, setGender, genderError, setGenderE
     resolver: yupResolver(schema)
   })
 
+  const dispatch = useDispatch<AppDispatch>()
+  const store = useSelector((state: RootState) => state.currentUser)
+  const [gender, setGender] = useState<string>('')
+  const [genderError, setGenderError] = useState<boolean>(false)
+  const onEditUserSubmit = async (data: PostData) => {
+    setGenderError(gender === '')
+    if (gender === '') return
+
+    await dispatch(editUser({ ...data, gender }))
+
+    const error = []
+    const user = store.data
+    // @ts-ignore
+    if (user.email === data.email && data._id !== user._id) {
+      error.push({
+        type: 'email'
+      })
+    }
+
+    // @ts-ignore
+    if (user.phone === data.phone && data._id !== user._id) {
+      error.push({
+        type: 'phone'
+      })
+    }
+
+    if (error.length > 0) {
+      for (const errorElement of error) {
+        // @ts-ignore
+        setError(errorElement.type, {
+          type: 'manual',
+          message: 'Value already in use!'
+        })
+      }
+
+      return
+    }
+  }
+
   useEffect(() => {
+    if (!!Object.keys(error).length && error.hasOwnProperty('type')) {
+      setError(error.type, {
+        type: 'manual',
+        message: error.message
+      })
+      return
+    }
+    if (!Object.keys(userData).length) return
     reset(userData)
-  }, [reset, userData])
+    setGender(userData.gender!)
+  }, [reset, userData, error])
 
   return (
     <Fragment>
@@ -190,9 +234,6 @@ const UserViewOverview = ({ userData, gender, setGender, genderError, setGenderE
 
         <Divider sx={{ m: 0 }} />
         <DialogContent>
-          <DialogContentText variant='body2' id='user-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
-            Update your details.
-          </DialogContentText>
           <form onSubmit={handleSubmit(onEditUserSubmit)}>
             <Grid container spacing={6}>
               <Grid item xs={12} sm={6}>
@@ -253,10 +294,12 @@ const UserViewOverview = ({ userData, gender, setGender, genderError, setGenderE
                     name='phone'
                     control={control}
                     rules={{ required: true }}
-                    render={({ field }) => <TextField {...field} fullWidth label='Mobile Phone' />}
+                    render={({ field }) =>
+                      <TextField {...field} fullWidth label='Mobile Phone' error={Boolean(errors.phone)} />
+                    }
                   />
-                  {errors.fullName && (
-                    <FormHelperText sx={{ color: 'error.main' }}>{errors.fullName.message}</FormHelperText>
+                  {errors.phone && (
+                    <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>
                   )}
                 </FormControl>
               </Grid>

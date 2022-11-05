@@ -44,7 +44,6 @@ export const fetchData = createAsyncThunk('appStores/fetchData', async (params: 
     params: params,
     allData: response.data
   }
-  console.log(jsonObj)
 
   return jsonObj
 })

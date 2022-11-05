@@ -29,11 +29,7 @@ interface PostData {
 
 interface Props {
   userData: any
-  gender: string
-  setGender: (e: string) => void
-  genderError: boolean
-  setGenderError: (state: boolean) => void
-  onEditUserSubmit: (data: PostData) => Promise<void>
+  error: any
 }
 
 // ** Styled Tab component
@@ -46,7 +42,7 @@ const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   }
 }))
 
-const UserViewRight = ({ userData, gender, setGender, genderError, setGenderError, onEditUserSubmit }: Props) => {
+const UserViewRight = ({ userData, error }: Props) => {
   // ** State
   const [value, setValue] = useState<string>('overview')
 
@@ -68,14 +64,7 @@ const UserViewRight = ({ userData, gender, setGender, genderError, setGenderErro
       </TabList>
       <Box sx={{ mt: 3 }}>
         <TabPanel sx={{ p: 0 }} value='overview'>
-          <UserViewOverview
-            userData={userData}
-            gender={gender}
-            setGender={setGender}
-            genderError={genderError}
-            setGenderError={setGenderError}
-            onEditUserSubmit={onEditUserSubmit}
-          />
+          <UserViewOverview userData={userData} error={error} />
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='security'>
           <UserViewSecurity />

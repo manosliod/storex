@@ -48,7 +48,7 @@ const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       setIsInitialized(true)
-      const storedToken = getCookie('StorexJWT', { path: '/' })!
+      const storedToken = getCookie('StorexAuth', { path: '/' })!
       if (storedToken) {
         setLoading(true)
         await axios
@@ -81,8 +81,10 @@ const AuthProvider = ({ children }: Props) => {
       .then(async res => {
         const returnUrl = router.query.returnUrl
 
-        window.localStorage.setItem(authConfig.storageTokenKeyName, res.data.accessToken)
-        setCookie('StorexJWT', res.data.token, { path: '/' })
+        setCookie('StorexAuth', res.data.token, {
+          path: '/'
+          // expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+        })
         setUser(res.data.user)
         await window.localStorage.setItem('userData', JSON.stringify(res.data.user))
 
@@ -101,6 +103,7 @@ const AuthProvider = ({ children }: Props) => {
     window.localStorage.removeItem('userData')
     window.localStorage.removeItem(authConfig.storageTokenKeyName)
     deleteCookie('StorexJWT', { path: '/' })
+    deleteCookie('StorexAuth', { path: '/' })
     router.push('/login')
   }
 
