@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 
 // ** Hooks Import
 import { useAuth } from 'src/hooks/useAuth'
-import {getCookie} from "cookies-next";
+import { getCookie } from 'cookies-next'
 
 interface GuestGuardProps {
   children: ReactNode

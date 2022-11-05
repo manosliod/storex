@@ -28,7 +28,7 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
-import Link from "next/link";
+import Link from 'next/link'
 
 interface Props {
   settings: Settings
@@ -63,10 +63,14 @@ const UserDropdown = (props: Props) => {
 
   const handleDropdownClose = (url?: string, params?: {}) => {
     if (url) {
-      router.replace({
-        pathname: url,
-        query: {...params}
-      }, url, {shallow: true})
+      router.replace(
+        {
+          pathname: url,
+          query: { ...params }
+        },
+        url,
+        { shallow: true }
+      )
     }
     setAnchorEl(null)
   }
@@ -154,7 +158,7 @@ const UserDropdown = (props: Props) => {
           </Box>
         </Box>
         <Divider sx={{ mt: 0, mb: 1 }} />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose(`/profile`, {id: user!._id})}>
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose(`/profile`, { id: user!._id })}>
           <Box sx={styles}>
             <AccountOutline sx={{ marginRight: 2 }} />
             Profile

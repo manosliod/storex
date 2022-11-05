@@ -294,13 +294,11 @@ const UserViewOverview = ({ userData, error }: Props) => {
                     name='phone'
                     control={control}
                     rules={{ required: true }}
-                    render={({ field }) =>
+                    render={({ field }) => (
                       <TextField {...field} fullWidth label='Mobile Phone' error={Boolean(errors.phone)} />
-                    }
+                    )}
                   />
-                  {errors.phone && (
-                    <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>
-                  )}
+                  {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
                 </FormControl>
               </Grid>
               <Grid item xs={12}>

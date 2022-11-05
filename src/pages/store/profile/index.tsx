@@ -11,7 +11,7 @@ import { useAuth } from 'src/hooks/useAuth'
 
 const UserView = ({ id }: StoreLayoutType) => {
   const auth = useAuth()
-  const authUserId = auth?.user !== null ? auth.user._id === undefined ? '' : auth.user._id : ''
+  const authUserId = auth?.user !== null ? (auth.user._id === undefined ? '' : auth.user._id) : ''
   const userId = id ? id : authUserId
 
   return <StoreViewPage id={userId} />

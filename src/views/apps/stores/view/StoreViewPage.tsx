@@ -35,7 +35,8 @@ const StoreView = ({ id }: StoreLayoutType) => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Alert severity='error'>
-            Store with the id: {id} does not exist. Please check the list of stores: <Link href='/stores'>Store List</Link>
+            Store with the id: {id} does not exist. Please check the list of stores:{' '}
+            <Link href='/stores'>Store List</Link>
           </Alert>
         </Grid>
       </Grid>

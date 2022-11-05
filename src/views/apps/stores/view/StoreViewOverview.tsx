@@ -28,7 +28,7 @@ import Button from '@mui/material/Button'
 import { editStore } from 'src/store/apps/currentStore'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
-import {StoresType} from "src/types/apps/storeTypes";
+import { StoresType } from 'src/types/apps/storeTypes'
 
 interface PostData {
   _id?: string | number
@@ -151,10 +151,7 @@ const schema = yup.object().shape({
   address: yup.string().required('Address is a required field'),
   city: yup.string().required('City is a required field'),
   country: yup.string().required('Country is a required field'),
-  phone: yup
-      .string()
-      .required('Phone is a required field')
-      .matches(phoneRegExp, 'Phone is not valid ex. +302101234567')
+  phone: yup.string().required('Phone is a required field').matches(phoneRegExp, 'Phone is not valid ex. +302101234567')
 })
 
 const UserViewOverview = ({ storeData, error }: Props) => {
@@ -232,135 +229,129 @@ const UserViewOverview = ({ storeData, error }: Props) => {
   }, [reset, storeData, error])
 
   return (
-      <Fragment>
-        <Card sx={{ mb: 6 }}>
-          <CardHeader title='Details' titleTypographyProps={{ variant: 'h6' }} />
+    <Fragment>
+      <Card sx={{ mb: 6 }}>
+        <CardHeader title='Details' titleTypographyProps={{ variant: 'h6' }} />
 
-          <Divider sx={{ m: 0 }} />
-          <DialogContent>
-            <form onSubmit={handleSubmit(onEditUserSubmit)}>
-              <Grid container spacing={6}>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <Controller
-                        name='name'
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                            <TextField {...field} fullWidth label='Name' error={Boolean(errors.name)} />
-                        )}
-                    />
-                    {errors.name && <FormHelperText sx={{ color: 'error.main' }}>{errors.name.message}</FormHelperText>}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <Controller
-                        name='officialName'
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                            <TextField {...field} fullWidth label='Official Name' error={Boolean(errors.officialName)} />
-                        )}
-                    />
-                    {errors.officialName && <FormHelperText sx={{ color: 'error.main' }}>{errors.officialName.message}</FormHelperText>}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel id='edit-store-type-select'>Select Store Type</InputLabel>
-                    <Select
-                        fullWidth
-                        id='select-store-type-for-edit'
-                        label='Select Store Type'
-                        labelId='edit-store-type-select'
-                        value={storeType}
-                        onChange={e => setStoreType(e.target.value)}
-                        inputProps={{ placeholder: 'Select Store Type' }}
-                    >
-                      <MenuItem value='' disabled={true}>
-                        Select Store Type
-                      </MenuItem>
-                      <MenuItem value='individual'>Individual</MenuItem>
-                      <MenuItem value='branch'>Branch</MenuItem>
-                    </Select>
-                    {storeTypeError && (
-                        <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <Controller
-                        name='address'
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                            <TextField {...field} fullWidth label='Address' error={Boolean(errors.address)} />
-                        )}
-                    />
-                    {errors.address && (
-                        <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <Controller
-                        name='city'
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                            <TextField {...field} fullWidth label='City' error={Boolean(errors.city)} />
-                        )}
-                    />
-                    {errors.city && (
-                        <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <Controller
-                        name='country'
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                            <TextField {...field} fullWidth label='Country' error={Boolean(errors.country)} />
-                        )}
-                    />
-                    {errors.country && (
-                        <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <Controller
-                        name='phone'
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) =>
-                            <TextField {...field} fullWidth label='Mobile Phone' error={Boolean(errors.phone)} />
-                        }
-                    />
-                    {errors.phone && (
-                        <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button size='large' type='submit' variant='contained'>
-                      Submit
-                    </Button>
-                  </Box>
-                </Grid>
+        <Divider sx={{ m: 0 }} />
+        <DialogContent>
+          <form onSubmit={handleSubmit(onEditUserSubmit)}>
+            <Grid container spacing={6}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='name'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => <TextField {...field} fullWidth label='Name' error={Boolean(errors.name)} />}
+                  />
+                  {errors.name && <FormHelperText sx={{ color: 'error.main' }}>{errors.name.message}</FormHelperText>}
+                </FormControl>
               </Grid>
-            </form>
-          </DialogContent>
-        </Card>
-      </Fragment>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='officialName'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='Official Name' error={Boolean(errors.officialName)} />
+                    )}
+                  />
+                  {errors.officialName && (
+                    <FormHelperText sx={{ color: 'error.main' }}>{errors.officialName.message}</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel id='edit-store-type-select'>Select Store Type</InputLabel>
+                  <Select
+                    fullWidth
+                    id='select-store-type-for-edit'
+                    label='Select Store Type'
+                    labelId='edit-store-type-select'
+                    value={storeType}
+                    onChange={e => setStoreType(e.target.value)}
+                    inputProps={{ placeholder: 'Select Store Type' }}
+                  >
+                    <MenuItem value='' disabled={true}>
+                      Select Store Type
+                    </MenuItem>
+                    <MenuItem value='individual'>Individual</MenuItem>
+                    <MenuItem value='branch'>Branch</MenuItem>
+                  </Select>
+                  {storeTypeError && (
+                    <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='address'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='Address' error={Boolean(errors.address)} />
+                    )}
+                  />
+                  {errors.address && (
+                    <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='city'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => <TextField {...field} fullWidth label='City' error={Boolean(errors.city)} />}
+                  />
+                  {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='country'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='Country' error={Boolean(errors.country)} />
+                    )}
+                  />
+                  {errors.country && (
+                    <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='phone'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='Mobile Phone' error={Boolean(errors.phone)} />
+                    )}
+                  />
+                  {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button size='large' type='submit' variant='contained'>
+                    Submit
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </form>
+        </DialogContent>
+      </Card>
+    </Fragment>
   )
 }
 
