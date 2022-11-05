@@ -15,16 +15,6 @@ import StoreOutline from 'mdi-material-ui/StoreOutline'
 // ** Demo Components Imports
 import StoreViewOverview from 'src/views/apps/stores/view/StoreViewOverview'
 
-interface PostData {
-  _id?: string | number
-  email: string
-  fullName: string
-  gender: string
-  birthday: string
-  phone: string
-  role: string
-}
-
 interface Props {
   storeData: any
   error: any

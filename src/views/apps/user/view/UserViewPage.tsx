@@ -35,7 +35,7 @@ const UserView = ({ id }: UserLayoutType) => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Alert severity='error'>
-            User with the id: {id} does not exist. Please check the list of users: <Link href='/users'>User List</Link>
+            User named: {id} does not exist. Please check the list of users: <Link href='/users'>User List</Link>
           </Alert>
         </Grid>
       </Grid>

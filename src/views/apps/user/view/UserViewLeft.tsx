@@ -1,13 +1,9 @@
-// ** React Imports
-import { useState } from 'react'
-
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
@@ -18,7 +14,6 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Types
 import { ThemeColor } from 'src/@core/layouts/types'
-import { UsersType } from 'src/types/apps/userTypes'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -31,34 +26,12 @@ interface ColorsType {
   [key: string]: ThemeColor
 }
 
-// ** Styled <sup> component
-const Sup = styled('sup')(({ theme }) => ({
-  top: '0.2rem',
-  left: '-0.6rem',
-  position: 'absolute',
-  color: theme.palette.primary.main
-}))
-
-// ** Styled <sub> component
-const Sub = styled('sub')({
-  fontWeight: 400,
-  fontSize: '.875rem',
-  lineHeight: '1.25rem',
-  alignSelf: 'flex-end'
-})
-
 const roleColors: ColorsType = {
   admin: 'error',
   editor: 'info',
   author: 'warning',
   maintainer: 'success',
   subscriber: 'primary'
-}
-
-const statusColors: ColorsType = {
-  active: 'success',
-  pending: 'warning',
-  inactive: 'secondary'
 }
 
 const UserViewLeft = ({ data }: Props) => {
@@ -80,6 +53,7 @@ const UserViewLeft = ({ data }: Props) => {
         </CustomAvatar>
       )
     }
+
     // } else {
     //   return null
     // }
@@ -113,6 +87,12 @@ const UserViewLeft = ({ data }: Props) => {
               <Typography variant='h6'>Details</Typography>
               <Divider sx={{ mt: 4 }} />
               <Box sx={{ pt: 2, pb: 1 }}>
+                <Box sx={{ display: 'flex', mb: 2.7 }}>
+                  <Typography variant='subtitle2' sx={{ mr: 2, color: 'text.primary' }}>
+                    Username:
+                  </Typography>
+                  <Typography variant='body2'>@{data.username}</Typography>
+                </Box>
                 <Box sx={{ display: 'flex', mb: 2.7 }}>
                   <Typography variant='subtitle2' sx={{ mr: 2, color: 'text.primary' }}>
                     Email:

@@ -5,12 +5,9 @@ import { Fragment, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Divider from '@mui/material/Divider'
-import { styled } from '@mui/material/styles'
 import CardHeader from '@mui/material/CardHeader'
-import MuiTimeline, { TimelineProps } from '@mui/lab/Timeline'
 
 // ** Types
-import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Demo Component Imports
 import Grid from '@mui/material/Grid'
@@ -44,105 +41,6 @@ interface Props {
   storeData: StoresType
   error: any
 }
-
-interface ProjectListDataType {
-  img: string
-  hours: string
-  totalTask: string
-  projectType: string
-  projectTitle: string
-  progressValue: number
-  progressColor: ThemeColor
-}
-
-const projectListDate: ProjectListDataType[] = [
-  {
-    hours: '18:42',
-    progressValue: 78,
-    totalTask: '122/240',
-    progressColor: 'success',
-    projectType: 'React Project',
-    projectTitle: 'BGC eCommerce App',
-    img: '/images/icons/project-icons/react.png'
-  },
-  {
-    hours: '20:42',
-    progressValue: 18,
-    totalTask: '9/56',
-    progressColor: 'error',
-    projectType: 'Figma Project',
-    projectTitle: 'Falcon Logo Design',
-    img: '/images/icons/project-icons/figma.png'
-  },
-  {
-    hours: '120:87',
-    progressValue: 62,
-    totalTask: '290/320',
-    progressColor: 'primary',
-    projectType: 'VueJs Project',
-    projectTitle: 'Dashboard Design',
-    img: '/images/icons/project-icons/vue.png'
-  },
-  {
-    hours: '89:19',
-    progressValue: 8,
-    totalTask: '7/63',
-    progressColor: 'error',
-    projectType: 'Xamarin Project',
-    projectTitle: 'Foodista Mobile App',
-    img: '/images/icons/project-icons/xamarin.png'
-  },
-  {
-    hours: '230:10',
-    progressValue: 49,
-    totalTask: '120/186',
-    progressColor: 'warning',
-    projectType: 'Python Project',
-    projectTitle: 'Dojo React Project',
-    img: '/images/icons/project-icons/python.png'
-  },
-  {
-    hours: '342:41',
-    progressValue: 92,
-    totalTask: '99/109',
-    progressColor: 'success',
-    projectType: 'Sketch Project',
-    projectTitle: 'Blockchain Website',
-    img: '/images/icons/project-icons/sketch.png'
-  },
-  {
-    hours: '12:45',
-    progressValue: 88,
-    totalTask: '98/110',
-    progressColor: 'success',
-    projectType: 'HTML Project',
-    projectTitle: 'Hoffman Website',
-    img: '/images/icons/project-icons/html5.png'
-  }
-]
-
-// Styled Timeline component
-const Timeline = styled(MuiTimeline)<TimelineProps>(({ theme }) => ({
-  margin: 0,
-  padding: 0,
-  marginLeft: theme.spacing(0.75),
-  '& .MuiTimelineItem-root': {
-    '&:before': {
-      display: 'none'
-    },
-    '&:last-child': {
-      minHeight: 60
-    }
-  }
-}))
-
-// Styled component for images
-const Img = styled('img')(({ theme }) => ({
-  width: 34,
-  height: 34,
-  borderRadius: '50%',
-  marginRight: theme.spacing(3)
-}))
 
 const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 const schema = yup.object().shape({
@@ -188,6 +86,7 @@ const UserViewOverview = ({ storeData, error }: Props) => {
 
     const error = []
     const currentStore = store.data
+
     // @ts-ignore
     if (currentStore.officialName === data.officialName && data._id !== currentStore._id) {
       error.push({
@@ -221,6 +120,7 @@ const UserViewOverview = ({ storeData, error }: Props) => {
         type: 'manual',
         message: error.message
       })
+
       return
     }
     if (!Object.keys(storeData).length) return

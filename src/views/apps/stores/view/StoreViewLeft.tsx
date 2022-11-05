@@ -1,16 +1,10 @@
-// ** React Imports
-import { useState } from 'react'
-
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
-import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
@@ -30,31 +24,9 @@ interface ColorsType {
   [key: string]: ThemeColor
 }
 
-// ** Styled <sup> component
-const Sup = styled('sup')(({ theme }) => ({
-  top: '0.2rem',
-  left: '-0.6rem',
-  position: 'absolute',
-  color: theme.palette.primary.main
-}))
-
-// ** Styled <sub> component
-const Sub = styled('sub')({
-  fontWeight: 400,
-  fontSize: '.875rem',
-  lineHeight: '1.25rem',
-  alignSelf: 'flex-end'
-})
-
-const roleColors: ColorsType = {
+const storeTypeColors: ColorsType = {
   branch: 'primary',
   individual: 'info'
-}
-
-const statusColors: ColorsType = {
-  active: 'success',
-  pending: 'warning',
-  inactive: 'secondary'
 }
 
 const StoreViewLeft = ({ data }: Props) => {
@@ -76,6 +48,7 @@ const StoreViewLeft = ({ data }: Props) => {
         </CustomAvatar>
       )
     }
+
     // } else {
     //   return null
     // }
@@ -95,7 +68,7 @@ const StoreViewLeft = ({ data }: Props) => {
                 skin='light'
                 size='small'
                 label={data.storeType}
-                color={roleColors[data.storeType]}
+                color={storeTypeColors[data.storeType]}
                 sx={{
                   borderRadius: '4px',
                   fontSize: '0.875rem',

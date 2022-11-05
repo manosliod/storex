@@ -17,16 +17,6 @@ import AccountOutline from 'mdi-material-ui/AccountOutline'
 import UserViewOverview from 'src/views/apps/user/view/UserViewOverview'
 import UserViewSecurity from 'src/views/apps/user/view/UserViewSecurity'
 
-interface PostData {
-  _id?: string | number
-  email: string
-  fullName: string
-  gender: string
-  birthday: string
-  phone: string
-  role: string
-}
-
 interface Props {
   userData: any
   error: any

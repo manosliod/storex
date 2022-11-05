@@ -10,6 +10,7 @@ export type UsersType = {
   fullName: UsersType['name']
   gender?: string
   role: string
+  username: string
   email: string
   password: string
   phone?: string

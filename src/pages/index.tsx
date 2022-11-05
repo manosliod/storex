@@ -9,7 +9,7 @@ import Spinner from 'src/@core/components/spinner'
 
 // ** Hook Imports
 import { useAuth } from 'src/hooks/useAuth'
-import { getCookie, setCookie } from 'cookies-next'
+import { getCookie } from 'cookies-next'
 
 /**
  *  Set Home URL based on User Roles
@@ -44,6 +44,7 @@ export async function getServerSideProps({ req, res }: any) {
   if (getCookie('StorexJWT', { req, res })) {
     cookie = getCookie('StorexJWT', { req, res })
   }
+
   return {
     props: {
       cookie: cookie

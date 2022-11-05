@@ -50,6 +50,7 @@ import TableHeader from 'src/views/apps/user/list/TableHeader'
 import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 import EditUserDrawer from 'src/views/apps/user/list/EditUserDrawer'
 import axios from 'axios'
+import { NextRouter, useRouter } from 'next/router'
 
 interface UserRoleType {
   [key: string]: ReactElement
@@ -87,16 +88,36 @@ interface CellType {
 }
 
 // ** Styled component for the link for the avatar without image
-const AvatarWithoutImageLink = styled(Link)(({ theme }) => ({
+const AvatarWithoutImageLink = styled(Grid)(({ theme }) => ({
   textDecoration: 'none',
   marginRight: theme.spacing(3)
 }))
 
+const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
+  if (url) {
+    router.replace(
+      {
+        pathname: url,
+        query: { ...params }
+      },
+      url,
+      { shallow: true }
+    )
+  }
+}
 // ** renders client column
 const renderClient = (row: UsersType) => {
+  const router = useRouter()
+
   return (
-    <AvatarWithoutImageLink href={`/apps/user/view/${row._id}`}>
-      <CustomAvatar skin='light' color='primary' sx={{ mr: 3, width: 34, height: 34, fontSize: '1rem' }}>
+    <AvatarWithoutImageLink
+      onClick={() => handleRoute(router, `/users/view/${row.username!.toString().toLowerCase().replace(' ', '-')}`)}
+    >
+      <CustomAvatar
+        skin='light'
+        color='primary'
+        sx={{ mr: 3, width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}
+      >
         {getInitials(row.fullName ? row.fullName : 'John Doe')}
       </CustomAvatar>
     </AvatarWithoutImageLink>
@@ -113,6 +134,7 @@ const Users = () => {
   const [editUserOpen, setEditUserOpen] = useState<boolean>(false)
 
   // ** Hooks
+  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.user)
 
@@ -185,27 +207,38 @@ const Users = () => {
       field: 'fullName',
       headerName: 'User',
       renderCell: ({ row }: CellType) => {
-        const { fullName } = row
+        const { fullName, username } = row
 
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {renderClient(row)}
             <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-              {/*<Link href={`/apps/user/view/${id}`} passHref>*/}
               <Typography
                 noWrap
                 component='a'
                 variant='subtitle2'
-                sx={{ color: 'text.primary', textDecoration: 'none' }}
+                sx={{ color: 'text.primary', textDecoration: 'none', cursor: 'pointer' }}
+                onClick={() =>
+                  handleRoute(router, `/users/view/${row.username!.toString().toLowerCase()}`, {
+                    id: row._id
+                  })
+                }
               >
                 {fullName}
               </Typography>
-              {/*</Link>*/}
-              {/*<Link href={`/apps/user/view/${id}`} passHref>*/}
-              <Typography noWrap component='a' variant='caption' sx={{ textDecoration: 'none' }}>
-                @username
+              <Typography
+                noWrap
+                component='a'
+                variant='caption'
+                sx={{ textDecoration: 'none', cursor: 'pointer' }}
+                onClick={() =>
+                  handleRoute(router, `/users/view/${row.username!.toString().toLowerCase()}`, {
+                    id: row._id
+                  })
+                }
+              >
+                {username}
               </Typography>
-              {/*</Link>*/}
             </Box>
           </Box>
         )

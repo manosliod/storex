@@ -17,8 +17,9 @@ const UserView = ({ id }: UserLayoutType) => {
   return <UserViewPage id={userId} />
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { id } = query
+
   return {
     props: {
       id: id ? id : ''

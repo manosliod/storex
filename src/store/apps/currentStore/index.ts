@@ -6,17 +6,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { StoresType } from 'src/types/apps/storeTypes'
 
-interface ReduxReturnParams {
-  user: []
-  allData: []
-  error: {}
-}
-
-interface DataParams {
-  q?: string
-  role?: string
-}
-
 interface Redux {
   getState: any
   dispatch: Dispatch<any>
@@ -31,6 +20,7 @@ export const fetchDataFromServer = createAsyncThunk(
   'appCurrentStore/fetchDataFromServer',
   async (serverData: ServerDataType) => {
     const { userData, userDataError } = serverData
+
     return {
       user: { ...userData },
       total: 1,
@@ -46,6 +36,7 @@ export const fetchStoreData = createAsyncThunk(
     let error = {}
     try {
       const res = await axios.get(`/api/stores/${id}`)
+
       // console.log(res, 'response')
       return {
         user: res.data.doc,
@@ -65,7 +56,7 @@ export const fetchStoreData = createAsyncThunk(
 
 export const editStore = createAsyncThunk(
   'appCurrentStore/editStore',
-  async (data: { [key: string]: number | string }, { getState, rejectWithValue }) => {
+  async (data: { [key: string]: number | string }, { rejectWithValue }) => {
     const id = data._id
     delete data._id
     let error = {}
@@ -73,6 +64,7 @@ export const editStore = createAsyncThunk(
       const res = await axios.patch(`/api/stores/${id}`, {
         ...data
       })
+
       return {
         user: res.data.doc,
         allData: res.data,
@@ -96,7 +88,7 @@ export const editStore = createAsyncThunk(
 // ** Delete Store
 export const deleteStore = createAsyncThunk(
   'appCurrentStore/deleteStore',
-  async (id: number | string, { getState, dispatch }: Redux) => {
+  async (id: number | string, { dispatch }: Redux) => {
     const response = await axios.delete(`/api/stores/${id}`)
 
     dispatch(fetchStoreData(id))
