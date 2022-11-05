@@ -1,6 +1,6 @@
 // ** Types
-export type UserLayoutType = {
-  id: string | undefined
+export type StoreLayoutType = {
+  id: string | null | number
 }
 
 export type StoresType = {

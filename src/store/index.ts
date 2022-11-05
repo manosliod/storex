@@ -5,12 +5,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import user from 'src/store/apps/user'
 import currentUser from 'src/store/apps/currentUser'
 import stores from 'src/store/apps/stores'
+import currentStore from 'src/store/apps/currentStore'
 
 export const store = configureStore({
   reducer: {
     user,
     currentUser,
-    stores
+    stores,
+    currentStore
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

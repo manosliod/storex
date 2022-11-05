@@ -42,9 +42,9 @@ import { RootState, AppDispatch } from 'src/store'
 import { StoresType } from 'src/types/apps/storeTypes'
 
 // ** Custom Components Imports
-import TableHeader from 'src/views/apps/stores/TableHeader'
-import AddStoreDrawer from 'src/views/apps/stores/AddStoreDrawer'
-import EditStoreDrawer from 'src/views/apps/stores/EditStoreDrawer'
+import TableHeader from 'src/views/apps/stores/list/TableHeader'
+import AddStoreDrawer from 'src/views/apps/stores/list/AddStoreDrawer'
+import EditStoreDrawer from 'src/views/apps/stores/list/EditStoreDrawer'
 import TextField from '@mui/material/TextField'
 
 interface StoreData {

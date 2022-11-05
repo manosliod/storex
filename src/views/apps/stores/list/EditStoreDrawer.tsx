@@ -72,9 +72,11 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 
   const schema = yup.object().shape({
-    email: yup.string().email('Email must be a valid email e.g. user@domain.net').required('Email is a required field'),
-    fullName: yup.string().required('Full Name is a required field'),
-    birthday: yup.date().nullable().required('Birthday is a required field'),
+    name: yup.string().required('Name is a required field'),
+    officialName: yup.string().required('Official Name is a required field'),
+    address: yup.string().required('Address is a required field'),
+    city: yup.string().required('City is a required field'),
+    country: yup.string().required('Country is a required field'),
     phone: yup
       .string()
       .required('Phone is a required field')
