@@ -181,7 +181,9 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               name='username'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <TextField {...field} autoFocus label='Username' error={Boolean(errors.username)} />}
+              render={({ field }) => (
+                <TextField {...field} autoFocus label='Username' error={Boolean(errors.username)} />
+              )}
             />
             {errors.username && <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>}
           </FormControl>

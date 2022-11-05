@@ -100,6 +100,9 @@ export const appCurrentUserSlice = createSlice({
       .addCase(editUser.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.data = action.payload.user
         state.allData = action.payload.allData
+        state.error = {
+          statusCode: 200
+        }
       })
       .addCase(editUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error

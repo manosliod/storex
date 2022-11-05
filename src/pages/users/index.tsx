@@ -234,7 +234,7 @@ const Users = () => {
                   })
                 }
               >
-                {username}
+                @{username}
               </Typography>
             </Box>
           </Box>

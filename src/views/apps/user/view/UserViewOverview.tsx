@@ -108,7 +108,7 @@ const UserViewOverview = ({ userData, error }: Props) => {
       `/users/view/${userData.username}`,
       { shallow: true }
     )
-  }, [reset, userData, error, gender])
+  }, [reset, userData, error])
 
   return (
     <Fragment>
