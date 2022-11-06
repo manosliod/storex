@@ -20,17 +20,23 @@ import UserViewRight from 'src/views/apps/user/view/UserViewRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useAuth } from 'src/hooks/useAuth'
+import {useRouter} from "next/router";
 
 const UserView = ({ id }: UserLayoutType) => {
   // ** State
 
   const auth = useAuth()
+  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.currentUser)
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchUserRole(auth.user))
+      const data: any = {
+        ...auth.user,
+        router
+      }
+      await dispatch(fetchUserRole(data))
       dispatch(fetchUserData(id))
     }
     fetchData()
