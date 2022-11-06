@@ -88,7 +88,6 @@ const UserViewOverview = ({ userData, error }: Props) => {
 
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.currentUser)
   const [gender, setGender] = useState<string>('')
   const [genderError, setGenderError] = useState<boolean>(false)
   const onEditUserSubmit = async (data: PostData) => {
@@ -207,7 +206,9 @@ const UserViewOverview = ({ userData, error }: Props) => {
                       <TextField {...field} fullWidth label='Address' error={Boolean(errors.address)} />
                     )}
                   />
-                  {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
+                  {errors.address && (
+                    <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -216,9 +217,7 @@ const UserViewOverview = ({ userData, error }: Props) => {
                     name='city'
                     control={control}
                     rules={{ required: true }}
-                    render={({ field }) => (
-                      <TextField {...field} fullWidth label='City' error={Boolean(errors.city)} />
-                    )}
+                    render={({ field }) => <TextField {...field} fullWidth label='City' error={Boolean(errors.city)} />}
                   />
                   {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
                 </FormControl>
@@ -233,18 +232,20 @@ const UserViewOverview = ({ userData, error }: Props) => {
                       <TextField {...field} fullWidth label='Country' error={Boolean(errors.country)} />
                     )}
                   />
-                  {errors.country && <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>}
+                  {errors.country && (
+                    <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <Controller
-                      name='phone'
-                      control={control}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                          <TextField {...field} fullWidth label='Mobile Phone' error={Boolean(errors.phone)} />
-                      )}
+                    name='phone'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='Mobile Phone' error={Boolean(errors.phone)} />
+                    )}
                   />
                   {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
                 </FormControl>

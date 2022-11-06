@@ -1,5 +1,5 @@
 // ** React Imports
-import {useState, useEffect, useCallback} from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -34,7 +34,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
-import {PayloadAction} from "@reduxjs/toolkit";
+import { PayloadAction } from '@reduxjs/toolkit'
 
 interface SidebarEditUserType {
   open: boolean
@@ -123,7 +123,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
     if (gender === '' || role === '') return
 
     const action: PayloadAction<{} | any> = await dispatch(editUser({ ...data, role, gender }))
-    if(!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')){
+    if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
       setError(type, {
         type: 'manual',

@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid'
 import Alert from '@mui/material/Alert'
 
 // ** Third Party Components
-import { fetchUserData } from 'src/store/apps/currentUser'
+import { fetchUserData, fetchUserRole } from 'src/store/apps/currentUser'
 
 // ** Types
 import { UserLayoutType } from 'src/types/apps/userTypes'
@@ -19,15 +19,21 @@ import UserViewLeft from 'src/views/apps/user/view/UserViewLeft'
 import UserViewRight from 'src/views/apps/user/view/UserViewRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
+import { useAuth } from 'src/hooks/useAuth'
 
 const UserView = ({ id }: UserLayoutType) => {
   // ** State
 
+  const auth = useAuth()
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.currentUser)
 
   useEffect(() => {
-    dispatch(fetchUserData(id))
+    const fetchData = async () => {
+      await dispatch(fetchUserRole(auth.user))
+      dispatch(fetchUserData(id))
+    }
+    fetchData()
   }, [dispatch])
 
   if (!!Object.keys(store.error).length && store.error.statusCode === 404) {

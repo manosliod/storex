@@ -10,12 +10,32 @@ interface Redux {
   dispatch: Dispatch<any>
 }
 
+interface params {
+  id: string | null | number
+  role: string
+}
+
+export const fetchURLForRoles = (role: any, id?: any) => {
+  console.log(role === 'super-admin', 'role')
+  if (role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') {
+    return `/api/users/${id}`
+  }
+
+  return '/api/users/me'
+}
+
+export const fetchUserRole = createAsyncThunk('appCurrentUser/fetchUserRole', (user: any) => {
+  return { role: user.role }
+})
+
 export const fetchUserData = createAsyncThunk(
   'appCurrentUser/fetchUserData',
-  async (id: string | null | number, { rejectWithValue }) => {
+  async (id: string | null | number, { getState, rejectWithValue }) => {
     let error = {}
     try {
-      const res = await axios.get(`/api/users/${id}`)
+      const { currentUser }: any = getState()
+      console.log(currentUser, 'currentUser')
+      const res = await axios.get(fetchURLForRoles(currentUser.role, id))
 
       // console.log(res, 'response')
       return {
@@ -36,12 +56,13 @@ export const fetchUserData = createAsyncThunk(
 
 export const editUser = createAsyncThunk(
   'appCurrentUser/editUser',
-  async (data: { [key: string]: number | string }, { rejectWithValue }) => {
+  async (data: { [key: string]: number | string }, { getState, rejectWithValue }) => {
     const id = data._id
     delete data._id
     let error = {}
     try {
-      const res = await axios.patch(`/api/users/${id}`, {
+      const { currentUser }: any = getState()
+      const res = await axios.patch(fetchURLForRoles(currentUser.role, id), {
         ...data
       })
 
@@ -68,8 +89,9 @@ export const editUser = createAsyncThunk(
 // ** Delete User
 export const deleteUser = createAsyncThunk(
   'appCurrentUser/deleteUser',
-  async (id: number | string, { dispatch }: Redux) => {
-    const response = await axios.delete(`/api/users/${id}`)
+  async (id: number | string, { getState, dispatch }: Redux) => {
+    const { currentUser }: any = getState()
+    const response = await axios.delete(fetchURLForRoles(currentUser.role, id))
 
     dispatch(fetchUserData(id))
 
@@ -80,6 +102,7 @@ export const deleteUser = createAsyncThunk(
 export const appCurrentUserSlice = createSlice({
   name: 'appCurrentUser',
   initialState: {
+    role: 'user',
     data: [],
     params: {},
     allData: [],
@@ -106,6 +129,12 @@ export const appCurrentUserSlice = createSlice({
       })
       .addCase(editUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
+      })
+      .addCase(fetchUserRole.fulfilled, (state, action: PayloadAction<{} | any>) => {
+        state.role = action.payload.role
+      })
+      .addCase(fetchUserRole.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.role = 'user'
       })
   }
 })

@@ -35,7 +35,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
-import {PayloadAction} from "@reduxjs/toolkit";
+import { PayloadAction } from '@reduxjs/toolkit'
 
 interface SidebarAddUserType {
   open: boolean
@@ -129,7 +129,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       if (gender === '' || role === '') return
 
       const action: PayloadAction<{} | any> = await dispatch(addUser({ ...data, role, gender }))
-      if(!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')){
+      if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
         const { type, message }: any = action.payload.error
         setError(type, {
           type: 'manual',
@@ -289,28 +289,28 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
-                name='address'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
+              name='address'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
             />
             {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
-                name='city'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
+              name='city'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
             />
             {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
-                name='country'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
+              name='country'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
             />
             {errors.country && <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>}
           </FormControl>
