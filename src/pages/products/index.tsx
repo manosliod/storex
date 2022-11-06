@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback, ReactElement } from 'react'
+import { useState, useEffect, MouseEvent, useCallback } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -18,13 +18,9 @@ import CardContent from '@mui/material/CardContent'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
 // ** Icons Imports
-import Laptop from 'mdi-material-ui/Laptop'
-import ChartDonut from 'mdi-material-ui/ChartDonut'
-import CogOutline from 'mdi-material-ui/CogOutline'
 import DotsVertical from 'mdi-material-ui/DotsVertical'
 import PencilOutline from 'mdi-material-ui/PencilOutline'
 import DeleteOutline from 'mdi-material-ui/DeleteOutline'
-import AccountOutline from 'mdi-material-ui/AccountOutline'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -36,62 +32,39 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Actions Imports
-import {fetchData, setUrl, deleteUser, setUpdateDeleteUrl} from 'src/store/apps/user'
+import { fetchData, deleteStore } from 'src/store/apps/stores'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
-import { UsersType } from 'src/types/apps/userTypes'
+import { StoresType } from 'src/types/apps/storeTypes'
 
 // ** Custom Components Imports
-import TableHeader from 'src/views/apps/user/list/TableHeader'
-import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
-import EditUserDrawer from 'src/views/apps/user/list/EditUserDrawer'
-import axios from 'axios'
-import { NextRouter, useRouter } from 'next/router'
+import TableHeader from 'src/views/apps/stores/list/TableHeader'
+import AddStoreDrawer from 'src/views/apps/stores/list/AddStoreDrawer'
+import EditStoreDrawer from 'src/views/apps/stores/list/EditStoreDrawer'
+import TextField from '@mui/material/TextField'
+import {NextRouter, useRouter} from "next/router";
 
-interface UserRoleType {
-  [key: string]: ReactElement
+interface StoreData {
+  name?: string
+  officialName?: string
+  storeType?: string
+  address?: string
+  city?: string
+  country?: string
 }
 
-interface UserData {
-  _id: string | number
-  username: string
-  email: string
-  fullName: string
-  gender: string
-  address: string
-  city: string
-  country: string
-  birthday: string
-  phone: string
-  role: string
-}
-
-const UserDataDefault: UserData = {
-  _id: '',
-  username: '',
-  email: '',
-  fullName: '',
-  gender: '',
+const StoreDataDefault: StoreData = {
+  name: '',
+  officialName: '',
+  storeType: '',
   address: '',
   city: '',
-  country: '',
-  birthday: '',
-  phone: '',
-  role: ''
-}
-
-// ** Vars
-const userRoleObj: UserRoleType = {
-  admin: <Laptop sx={{ mr: 2, color: 'error.main' }} />,
-  author: <CogOutline sx={{ mr: 2, color: 'warning.main' }} />,
-  editor: <PencilOutline sx={{ mr: 2, color: 'info.main' }} />,
-  maintainer: <ChartDonut sx={{ mr: 2, color: 'success.main' }} />,
-  subscriber: <AccountOutline sx={{ mr: 2, color: 'primary.main' }} />
+  country: ''
 }
 
 interface CellType {
-  row: UsersType
+  row: StoresType
 }
 
 // ** Styled component for the link for the avatar without image
@@ -103,46 +76,44 @@ const AvatarWithoutImageLink = styled(Grid)(({ theme }) => ({
 const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
   if (url) {
     router.replace(
-      {
-        pathname: url,
-        query: { ...params }
-      },
-      url,
-      { shallow: true }
+        {
+          pathname: url,
+          query: { ...params }
+        },
+        url,
+        { shallow: true }
     )
   }
 }
 
-const Users = ({ storeData = null }: any) => {
+// ** renders client column
+const RenderClient = (row: StoresType) => {
+  const router = useRouter()
+
+  return (
+    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/stores/view/${row.id}`)} >
+      <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
+        {getInitials(row.name ? row.name : 'John Doe')}
+      </CustomAvatar>
+    </AvatarWithoutImageLink>
+  )
+}
+
+const Stores = () => {
   // ** State
-  const [currentUser, setCurrentUser] = useState<UserData>(UserDataDefault)
-  const [role, setRole] = useState<string>('')
+  const [currentStore, setCurrentStore] = useState<StoreData>(StoreDataDefault)
+  const [storeType, setStoreType] = useState<string>('')
+  const [city, setCity] = useState<string>('')
+  const [country, setCountry] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [pageSize, setPageSize] = useState<number>(10)
-  const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
-  const [editUserOpen, setEditUserOpen] = useState<boolean>(false)
+  const [addStoreOpen, setAddStoreOpen] = useState<boolean>(false)
+  const [editStoreOpen, setEditStoreOpen] = useState<boolean>(false)
 
   // ** Hooks
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.user)
-
-  // ** renders client column
-  const RenderClient = (row: UsersType) => {
-    return (
-      <AvatarWithoutImageLink
-          onClick={() => handleRoute(router, `/users/view/${row.username!.toString().toLowerCase().replace(' ', '-')}`)}
-      >
-        <CustomAvatar
-            skin='light'
-            color='primary'
-            sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}
-        >
-          {getInitials(row.fullName ? row.fullName : 'John Doe')}
-        </CustomAvatar>
-      </AvatarWithoutImageLink>
-    )
-  }
+  const store = useSelector((state: RootState) => state.stores)
 
   const RowOptions = ({ id }: { id: number | string }) => {
     // ** Hooks
@@ -161,23 +132,14 @@ const Users = ({ storeData = null }: any) => {
     }
 
     const handleEdit = async () => {
-      let url = `/api/users/${id}`;
-      if(storeData !== null){
-        url = `/api/users/${id}/store/${storeData._id}`
-      }
-      const response = await axios.get(url)
-      setCurrentUser(response.data.doc)
-      setEditUserOpen(true)
+      const foundedStore = store.data.find((store: StoresType) => store._id === id)
+      setCurrentStore(foundedStore!)
+      setEditStoreOpen(true)
       handleRowOptionsClose()
     }
 
-    const handleDelete = async () => {
-      if(storeData !== null){
-        await dispatch(setUpdateDeleteUrl(`/api/users/${id}/store/${storeData._id}`))
-      } else {
-        await dispatch(setUpdateDeleteUrl(`/api/users/${id}`))
-      }
-      dispatch(deleteUser(id))
+    const handleDelete = () => {
+      dispatch(deleteStore(id))
       handleRowOptionsClose()
     }
 
@@ -219,10 +181,10 @@ const Users = ({ storeData = null }: any) => {
     {
       flex: 0.2,
       minWidth: 230,
-      field: 'fullName',
-      headerName: 'User',
+      field: 'name',
+      headerName: 'Store',
       renderCell: ({ row }: CellType) => {
-        const { fullName, username } = row
+        const { name, officialName } = row
 
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -233,26 +195,18 @@ const Users = ({ storeData = null }: any) => {
                 component='a'
                 variant='subtitle2'
                 sx={{ color: 'text.primary', textDecoration: 'none', cursor: 'pointer' }}
-                onClick={() =>
-                  handleRoute(router, `/users/view/${row.username!.toString().toLowerCase()}`, {
-                    id: row._id
-                  })
-                }
+                onClick={() => handleRoute(router, `/stores/view/${row.id}`)}
               >
-                {fullName}
+                {name}
               </Typography>
               <Typography
                 noWrap
                 component='a'
                 variant='caption'
                 sx={{ textDecoration: 'none', cursor: 'pointer' }}
-                onClick={() =>
-                  handleRoute(router, `/users/view/${row.username!.toString().toLowerCase()}`, {
-                    id: row._id
-                  })
-                }
+                onClick={() => handleRoute(router, `/stores/view/${row.id}`)}
               >
-                @{username}
+                {officialName}
               </Typography>
             </Box>
           </Box>
@@ -261,30 +215,53 @@ const Users = ({ storeData = null }: any) => {
     },
     {
       flex: 0.2,
-      minWidth: 250,
-      field: 'email',
-      headerName: 'Email',
+      minWidth: 150,
+      field: 'storeType',
+      headerName: 'Store Type',
       renderCell: ({ row }: CellType) => {
         return (
-          <Typography noWrap variant='body2'>
-            {row.email}
+          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+            {row.storeType}
           </Typography>
         )
       }
     },
     {
       flex: 0.15,
-      field: 'role',
-      minWidth: 150,
-      headerName: 'Role',
+      field: 'address',
+      minWidth: 250,
+      headerName: 'Address',
       renderCell: ({ row }: CellType) => {
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {userRoleObj[row.role]}
-            <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-              {row.role}
-            </Typography>
-          </Box>
+          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+            {row.address}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      field: 'city',
+      minWidth: 150,
+      headerName: 'City',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+            {row.city}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      field: 'country',
+      minWidth: 150,
+      headerName: 'Country',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+            {row.country}
+          </Typography>
         )
       }
     },
@@ -299,35 +276,32 @@ const Users = ({ storeData = null }: any) => {
   ]
 
   useEffect(() => {
-    const initUsers = async () =>{
-      if(storeData !== null)
-        await dispatch(setUrl(`/api/users/store/${storeData.id}`))
-      dispatch(
-        fetchData({
-          role,
-          q: value
-        })
-      )
-    }
-    initUsers()
-  }, [dispatch, role, value, storeData])
+    dispatch(
+      fetchData({
+        storeType,
+        city,
+        country,
+        q: value
+      })
+    )
+  }, [dispatch, storeType, city, country, value])
 
   const handleFilter = useCallback((val: string) => {
     setValue(val)
   }, [])
 
-  const handleRoleChange = useCallback((e: SelectChangeEvent) => {
-    setRole(e.target.value)
+  const handleStoreTypeChange = useCallback((e: SelectChangeEvent) => {
+    setStoreType(e.target.value)
   }, [])
 
-  const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
-  const toggleEditUserDrawer = () => setEditUserOpen(!editUserOpen)
+  const toggleAddStoreDrawer = () => setAddStoreOpen(!addStoreOpen)
+  const toggleEditStoreDrawer = () => setEditStoreOpen(!editStoreOpen)
 
   useEffect(() => {
-    if (!editUserOpen) {
-      setCurrentUser(UserDataDefault)
+    if (!editStoreOpen) {
+      setCurrentStore(StoreDataDefault)
     }
-  }, [editUserOpen])
+  }, [editStoreOpen])
 
   return (
     <Grid container spacing={6}>
@@ -338,25 +312,35 @@ const Users = ({ storeData = null }: any) => {
             <Grid container spacing={6}>
               <Grid item sm={4} xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel id='role-select'>Select Role</InputLabel>
+                  <InputLabel id='store-select'>Select Store Type</InputLabel>
                   <Select
                     fullWidth
-                    value={role}
-                    id='select-role'
-                    label='Select Role'
-                    labelId='role-select'
-                    onChange={handleRoleChange}
-                    inputProps={{ placeholder: 'Select Role' }}
+                    value={storeType}
+                    id='select-store-type'
+                    label='Select Store Type'
+                    labelId='store-type-select'
+                    onChange={handleStoreTypeChange}
+                    inputProps={{ placeholder: 'Select Store Type' }}
                   >
-                    <MenuItem value=''>Select Role</MenuItem>
-                    <MenuItem value='super-admin'>Super Admin</MenuItem>
-                    <MenuItem value='store-admin'>Stores Admin</MenuItem>
-                    <MenuItem value='admin'>Admin</MenuItem>
-                    <MenuItem value='lead-tech'>Lead Tech</MenuItem>
-                    <MenuItem value='accountant'>Accountant</MenuItem>
-                    <MenuItem value='salesman'>Salesman</MenuItem>
-                    <MenuItem value='tech'>Tech</MenuItem>
+                    <MenuItem value=''>Select Store Type</MenuItem>
+                    <MenuItem value='individual'>Individual</MenuItem>
+                    <MenuItem value='branch'>Branch</MenuItem>
                   </Select>
+                </FormControl>
+              </Grid>
+              <Grid item sm={4} xs={12}>
+                <FormControl fullWidth>
+                  <TextField size='medium' value={city} placeholder='City' onChange={e => setCity(e.target.value)} />
+                </FormControl>
+              </Grid>
+              <Grid item sm={4} xs={12}>
+                <FormControl fullWidth>
+                  <TextField
+                    size='medium'
+                    value={country}
+                    placeholder='Country'
+                    onChange={e => setCountry(e.target.value)}
+                  />
                 </FormControl>
               </Grid>
             </Grid>
@@ -366,7 +350,7 @@ const Users = ({ storeData = null }: any) => {
 
       <Grid item xs={12}>
         <Card>
-          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
+          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddStoreDrawer} />
           <DataGrid
             autoHeight
             rows={store.data}
@@ -382,15 +366,10 @@ const Users = ({ storeData = null }: any) => {
         </Card>
       </Grid>
 
-      <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
-      <EditUserDrawer open={editUserOpen} toggle={toggleEditUserDrawer} data={currentUser} storeData={storeData} />
+      <AddStoreDrawer open={addStoreOpen} toggle={toggleAddStoreDrawer} />
+      <EditStoreDrawer open={editStoreOpen} toggle={toggleEditStoreDrawer} data={currentStore} />
     </Grid>
   )
 }
 
-Users.acl = {
-  action: 'manage',
-  subject: 'users'
-}
-
-export default Users
+export default Stores

@@ -1,9 +1,6 @@
 // ** React Imports
 import { useState, useEffect, MouseEvent, useCallback } from 'react'
 
-// ** Next Import
-import Link from 'next/link'
-
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -46,6 +43,7 @@ import TableHeader from 'src/views/apps/stores/list/TableHeader'
 import AddStoreDrawer from 'src/views/apps/stores/list/AddStoreDrawer'
 import EditStoreDrawer from 'src/views/apps/stores/list/EditStoreDrawer'
 import TextField from '@mui/material/TextField'
+import {NextRouter, useRouter} from "next/router";
 
 interface StoreData {
   name?: string
@@ -70,16 +68,31 @@ interface CellType {
 }
 
 // ** Styled component for the link for the avatar without image
-const AvatarWithoutImageLink = styled(Link)(({ theme }) => ({
+const AvatarWithoutImageLink = styled(Grid)(({ theme }) => ({
   textDecoration: 'none',
   marginRight: theme.spacing(3)
 }))
 
+const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
+  if (url) {
+    router.replace(
+        {
+          pathname: url,
+          query: { ...params }
+        },
+        url,
+        { shallow: true }
+    )
+  }
+}
+
 // ** renders client column
-const renderClient = (row: StoresType) => {
+const RenderClient = (row: StoresType) => {
+  const router = useRouter()
+
   return (
-    <AvatarWithoutImageLink href={`/apps/stores/view/${row._id}`}>
-      <CustomAvatar skin='light' color='primary' sx={{ mr: 3, width: 34, height: 34, fontSize: '1rem' }}>
+    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/stores/view/${row.id}`)} >
+      <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
         {getInitials(row.name ? row.name : 'John Doe')}
       </CustomAvatar>
     </AvatarWithoutImageLink>
@@ -98,6 +111,7 @@ const Stores = () => {
   const [editStoreOpen, setEditStoreOpen] = useState<boolean>(false)
 
   // ** Hooks
+  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.stores)
 
@@ -174,23 +188,26 @@ const Stores = () => {
 
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {renderClient(row)}
+            {RenderClient(row)}
             <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-              {/*<Link href={`/apps/stores/view/${id}`} passHref>*/}
               <Typography
                 noWrap
                 component='a'
                 variant='subtitle2'
-                sx={{ color: 'text.primary', textDecoration: 'none' }}
+                sx={{ color: 'text.primary', textDecoration: 'none', cursor: 'pointer' }}
+                onClick={() => handleRoute(router, `/stores/view/${row.id}`)}
               >
                 {name}
               </Typography>
-              {/*</Link>*/}
-              {/*<Link href={`/apps/stores/view/${id}`} passHref>*/}
-              <Typography noWrap component='a' variant='caption' sx={{ textDecoration: 'none' }}>
+              <Typography
+                noWrap
+                component='a'
+                variant='caption'
+                sx={{ textDecoration: 'none', cursor: 'pointer' }}
+                onClick={() => handleRoute(router, `/stores/view/${row.id}`)}
+              >
                 {officialName}
               </Typography>
-              {/*</Link>*/}
             </Box>
           </Box>
         )
@@ -353,6 +370,11 @@ const Stores = () => {
       <EditStoreDrawer open={editStoreOpen} toggle={toggleEditStoreDrawer} data={currentStore} />
     </Grid>
   )
+}
+
+Stores.acl = {
+  action: 'manage',
+  subject: 'stores'
 }
 
 export default Stores

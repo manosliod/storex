@@ -60,12 +60,24 @@ module.exports = (phase, { defaultConfig }) => {
           destination: 'http://localhost:3001/api/v1/users/:id/'
         },
         {
+          source: '/api/users/store/:storeId/',
+          destination: 'http://localhost:3001/api/v1/users/store/:storeId/'
+        },
+        {
+          source: '/api/users/:id/store/:storeId/',
+          destination: 'http://localhost:3001/api/v1/users/:id/store/:storeId/'
+        },
+        {
           source: '/api/stores/',
           destination: 'http://localhost:3001/api/v1/stores/'
         },
         {
           source: '/api/stores/:id/',
           destination: 'http://localhost:3001/api/v1/stores/:id/'
+        },
+        {
+          source: '/api/stores/:id/user/:userId/',
+          destination: 'http://localhost:3001/api/v1/stores/:id/user/:userId/'
         },
         {
           source: '/users/view/profile/:id',

@@ -26,7 +26,7 @@ import Close from 'mdi-material-ui/Close'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { editUser } from 'src/store/apps/user'
+import {editUser, setUpdateDeleteUrl, setUrl} from 'src/store/apps/user'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -35,11 +35,13 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
 import { PayloadAction } from '@reduxjs/toolkit'
+import toast from "react-hot-toast";
 
 interface SidebarEditUserType {
   open: boolean
   toggle: () => void
   data: UserData
+  storeData: any
 }
 
 interface UserData {
@@ -66,7 +68,7 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 
 const SidebarEditUser = (props: SidebarEditUserType) => {
   // ** Props
-  const { open, toggle, data } = props
+  const { open, toggle, data, storeData } = props
 
   const defaultValues = {
     email: data.email ?? '',
@@ -122,13 +124,22 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
     setRoleError(role === '')
     if (gender === '' || role === '') return
 
+    if(storeData !== null){
+      await dispatch(setUpdateDeleteUrl(`/api/users/${data._id}/store/${storeData._id}`))
+    } else {
+      await dispatch(setUpdateDeleteUrl(`/api/users/${data._id}`))
+    }
     const action: PayloadAction<{} | any> = await dispatch(editUser({ ...data, role, gender }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
-      setError(type, {
-        type: 'manual',
-        message
-      })
+      if (type === 'fail') {
+        toast.error(message, {duration: 5000})
+      } else {
+        setError(type, {
+          type: 'manual',
+          message
+        })
+      }
 
       return
     }

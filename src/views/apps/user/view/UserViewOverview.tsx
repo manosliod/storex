@@ -27,6 +27,8 @@ import { editUser } from '../../../../store/apps/currentUser'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../../../store'
 import { useRouter } from 'next/router'
+import toast from "react-hot-toast";
+import {PayloadAction} from "@reduxjs/toolkit";
 
 interface PostData {
   _id?: string | number
@@ -90,6 +92,7 @@ const UserViewOverview = ({ userData, error }: Props) => {
   const dispatch = useDispatch<AppDispatch>()
   const [gender, setGender] = useState<string>('')
   const [genderError, setGenderError] = useState<boolean>(false)
+  const [storeError, setStoreError] = useState<boolean>(false)
   const onEditUserSubmit = async (data: PostData) => {
     setGenderError(gender === '')
     if (gender === '') return

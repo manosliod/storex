@@ -5,17 +5,18 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
 
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
+interface ParamTypes {
+    id?: any
+    data?: any
+  storeId: any
 }
 
-export const fetchStoreData = createAsyncThunk(
-  'appCurrentStore/fetchStoreData',
-  async (id: string | null | number, { rejectWithValue }) => {
+export const fetchStoreUserData = createAsyncThunk(
+  'appCurrentStore/fetchStoreUserData',
+  async (params: ParamTypes, { rejectWithValue }) => {
     let error = {}
     try {
-      const res = await axios.get(`/api/stores/${id}`)
+      const res = await axios.get(`/api/users/${params.id}/store/${params.storeId}`)
 
       // console.log(res, 'response')
       return {
@@ -39,15 +40,14 @@ export const fetchStoreData = createAsyncThunk(
   }
 )
 
-export const editStore = createAsyncThunk(
-  'appCurrentStore/editStore',
-  async (data: { [key: string]: number | string }, { rejectWithValue }) => {
-    const id = data._id
-    delete data._id
+export const editStoreUser = createAsyncThunk(
+  'appCurrentStore/editStoreUser',
+  async (params: ParamTypes, { rejectWithValue }) => {
+    delete params.data._id
     let error = {}
     try {
-      const res = await axios.patch(`/api/stores/${id}`, {
-        ...data
+      const res = await axios.patch(`/api/users/${params.id}/store/${params.storeId}`, {
+        ...params.data
       })
 
       return {
@@ -74,20 +74,8 @@ export const editStore = createAsyncThunk(
   }
 )
 
-// ** Delete Store
-export const deleteStore = createAsyncThunk(
-  'appCurrentStore/deleteStore',
-  async (id: number | string, { dispatch }: Redux) => {
-    const response = await axios.delete(`/api/stores/${id}`)
-
-    dispatch(fetchStoreData(id))
-
-    return response.data
-  }
-)
-
-export const appCurrentStoreSlice = createSlice({
-  name: 'appCurrentStore',
+export const appCurrentStoreUserSlice = createSlice({
+  name: 'appCurrentStoreUser',
   initialState: {
     data: [],
     params: {},
@@ -99,27 +87,27 @@ export const appCurrentStoreSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchStoreData.fulfilled, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchStoreUserData.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.data = action.payload.store
         state.allData = action.payload.allData
         state.error = {
           statusCode: 200
         }
       })
-      .addCase(fetchStoreData.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchStoreUserData.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editStore.fulfilled, (state, action: PayloadAction<{} | any>) => {
+      .addCase(editStoreUser.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.data = action.payload.store
         state.allData = action.payload.allData
         state.error = {
           statusCode: 200
         }
       })
-      .addCase(editStore.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(editStoreUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
   }
 })
 
-export default appCurrentStoreSlice.reducer
+export default appCurrentStoreUserSlice.reducer

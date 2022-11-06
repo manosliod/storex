@@ -5,35 +5,31 @@ import { GetServerSideProps } from 'next/types'
 import { UserLayoutType, UsersType } from 'src/types/apps/userTypes'
 
 // ** Demo Components Imports
-import UserViewPage from 'src/views/apps/user/view/UserViewPage'
+import StoreUserViewPage from 'src/views/apps/stores/user/StoreUserViewPage'
 import { useAuth } from 'src/hooks/useAuth'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
-import { useEffect } from 'react'
-import { fetchUserRole } from 'src/store/apps/currentUser'
 
 type Props = UserLayoutType & {
   users: any
+  storeId: any
 }
 
-const UserView = ({ id, users }: Props) => {
+const UserView = ({ id, users, storeId }: Props) => {
   const auth = useAuth()
   const dispatch = useDispatch<AppDispatch>()
-  useEffect(() => {
-    dispatch(fetchUserRole(auth.user))
-  }, [dispatch])
 
-  const authUser = users.find((user: UsersType) => user.username!.toString().toLowerCase() === id)
+  const authUser = users.find((user: UsersType) => user.username!.toString() === id)
   const userId = authUser === undefined || authUser === null ? id : !!Object.keys(authUser).length ? authUser._id : id
 
-  return <UserViewPage id={userId} />
+  return <StoreUserViewPage id={userId} storeId={storeId} />
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { all } = query
+  const { all, store_id } = query
 
   const bufferedBasicAuth = Buffer.from(`${process.env.API_AUTH_USERNAME}:${process.env.API_AUTH_PASSWORD}`).toString(
-    'base64'
+      'base64'
   )
   const allUsers = await fetch('http://localhost:3001/api/v1/console/users', {
     headers: {
@@ -45,7 +41,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return {
     props: {
       id: all,
-      users: res.data
+      users: res.data,
+      storeId: store_id
     }
   }
 }

@@ -10,16 +10,15 @@ import { styled } from '@mui/material/styles'
 import MuiTab, { TabProps } from '@mui/material/Tab'
 
 // ** Icons Imports
-import StoreOutline from 'mdi-material-ui/StoreOutline'
 import AccountOutline from 'mdi-material-ui/AccountOutline'
 
 // ** Demo Components Imports
-import StoreViewStaff from 'src/pages/users'
-import StoreViewOverview from 'src/views/apps/stores/view/StoreViewOverview'
+import StoreUserViewOverview from 'src/views/apps/stores/user/StoreUserViewOverview'
 
 interface Props {
-  storeData: any
+  userData: any
   error: any
+    storeId: any
 }
 
 // ** Styled Tab component
@@ -32,7 +31,7 @@ const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   }
 }))
 
-const StoreViewRight = ({ storeData, error }: Props) => {
+const StoreUserViewRight = ({ userData, error, storeId }: Props) => {
   // ** State
   const [value, setValue] = useState<string>('overview')
 
@@ -49,19 +48,15 @@ const StoreViewRight = ({ storeData, error }: Props) => {
         aria-label='forced scroll tabs example'
         sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
       >
-        <Tab value='overview' label='Overview' icon={<StoreOutline sx={{ fontSize: '18px' }} />} />
-        <Tab value='staff' label='Staff' icon={<AccountOutline sx={{ fontSize: '18px' }} />} />
+        <Tab value='overview' label='Overview' icon={<AccountOutline sx={{ fontSize: '18px' }} />} />
       </TabList>
       <Box sx={{ mt: 3 }}>
         <TabPanel sx={{ p: 0 }} value='overview'>
-          <StoreViewOverview storeData={storeData} error={error} />
-        </TabPanel>
-        <TabPanel sx={{ p: 0 }} value='staff'>
-          <StoreViewStaff storeData={storeData} />
+          <StoreUserViewOverview userData={userData} error={error} storeId={storeId} />
         </TabPanel>
       </Box>
     </TabContext>
   )
 }
 
-export default StoreViewRight
+export default StoreUserViewRight

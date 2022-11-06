@@ -7,7 +7,7 @@ import { UserLayoutType } from 'src/types/apps/userTypes'
 // ** Demo Components Imports
 import StoreViewPage from 'src/views/apps/stores/view/StoreViewPage'
 
-const StoreView = ({ id }: UserLayoutType) => {
+const UserView = ({ id }: UserLayoutType) => {
   return <StoreViewPage id={id} />
 }
 
@@ -21,9 +21,4 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   }
 }
 
-StoreView.acl = {
-  action: 'manage',
-  subject: 'store-view'
-}
-
-export default StoreView
+export default UserView

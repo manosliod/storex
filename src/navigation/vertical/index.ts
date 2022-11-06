@@ -1,9 +1,9 @@
 // ** Icon imports
 import AccountOutline from 'mdi-material-ui/AccountOutline'
 import HomeOutline from 'mdi-material-ui/HomeOutline'
-import EmailOutline from 'mdi-material-ui/EmailOutline'
-import ShieldOutline from 'mdi-material-ui/ShieldOutline'
 import StoreOutline from 'mdi-material-ui/StoreOutline'
+import ShapeOutline from 'mdi-material-ui/ShapeOutline'
+import PackageVariantClosed from 'mdi-material-ui/PackageVariantClosed'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -13,29 +13,35 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Home',
       icon: HomeOutline,
-      path: '/home'
+      path: '/home',
+      subject: 'home',
+      action: 'manage'
     },
     {
       title: 'Users',
       icon: AccountOutline,
-      path: '/users'
+      path: '/users',
+      subject: 'users',
+      action: 'read'
     },
     {
       title: 'Stores',
       icon: StoreOutline,
-      path: '/stores'
+      path: '/stores',
+      subject: 'stores',
+      action: 'read'
     },
     {
-      title: 'Second Page',
-      icon: EmailOutline,
-      path: '/second-page'
+      title: 'Categories',
+      icon: ShapeOutline,
+      path: '/categories',
+      subject: 'categories'
     },
     {
-      title: 'Access Control',
-      icon: ShieldOutline,
-      path: '/acl',
-      action: 'read',
-      subject: 'acl-page'
+      title: 'Products',
+      icon: PackageVariantClosed,
+      path: '/products',
+      subject: 'products'
     }
   ]
 }

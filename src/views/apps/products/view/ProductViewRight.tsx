@@ -11,10 +11,8 @@ import MuiTab, { TabProps } from '@mui/material/Tab'
 
 // ** Icons Imports
 import StoreOutline from 'mdi-material-ui/StoreOutline'
-import AccountOutline from 'mdi-material-ui/AccountOutline'
 
 // ** Demo Components Imports
-import StoreViewStaff from 'src/pages/users'
 import StoreViewOverview from 'src/views/apps/stores/view/StoreViewOverview'
 
 interface Props {
@@ -32,7 +30,7 @@ const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   }
 }))
 
-const StoreViewRight = ({ storeData, error }: Props) => {
+const UserViewRight = ({ storeData, error }: Props) => {
   // ** State
   const [value, setValue] = useState<string>('overview')
 
@@ -50,18 +48,14 @@ const StoreViewRight = ({ storeData, error }: Props) => {
         sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
       >
         <Tab value='overview' label='Overview' icon={<StoreOutline sx={{ fontSize: '18px' }} />} />
-        <Tab value='staff' label='Staff' icon={<AccountOutline sx={{ fontSize: '18px' }} />} />
       </TabList>
       <Box sx={{ mt: 3 }}>
         <TabPanel sx={{ p: 0 }} value='overview'>
           <StoreViewOverview storeData={storeData} error={error} />
-        </TabPanel>
-        <TabPanel sx={{ p: 0 }} value='staff'>
-          <StoreViewStaff storeData={storeData} />
         </TabPanel>
       </Box>
     </TabContext>
   )
 }
 
-export default StoreViewRight
+export default UserViewRight

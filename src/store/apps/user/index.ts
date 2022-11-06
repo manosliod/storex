@@ -15,8 +15,20 @@ interface Redux {
   dispatch: Dispatch<any>
 }
 
+export const setUrl = createAsyncThunk('appCurrentUser/setUrl', (url: any) => {
+  return {
+    pathname: url
+  }
+})
+
+export const setUpdateDeleteUrl = createAsyncThunk('appCurrentUser/setUpdateDeleteUrl', (url: any) => {
+  return {
+    pathnameUpdateDelete: url
+  }
+})
+
 // ** Fetch Users
-export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: DataParams) => {
+export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: DataParams, { getState }) => {
   if (!!Object.keys(params).length) {
     if (params.hasOwnProperty('q') && !Object.keys(params.q!).length) {
       delete params.q
@@ -26,7 +38,8 @@ export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: D
     }
   }
 
-  const response = await axios.get('/api/users', {
+  const { user }: any = getState()
+  const response = await axios.get(user.pathname, {
     params
   })
 
@@ -45,10 +58,10 @@ export const addUser = createAsyncThunk(
     let error
 
     try {
-      const res = await axios.post('/api/users', {
+      const { user }: any = getState()
+      const res = await axios.post(user.pathname, {
         ...data
       })
-      const { user }: any = getState()
       dispatch(fetchData(user.params))
 
       return { ...res.data }
@@ -78,10 +91,10 @@ export const editUser = createAsyncThunk(
     delete data._id
     let error
     try {
-      const res = await axios.patch(`/api/users/${id}`, {
+      const { user }: any = getState()
+      const res = await axios.patch(user.pathnameUpdateDelete, {
         ...data
       })
-      const { user }: any = getState()
       dispatch(fetchData(user.params))
 
       return { ...res.data }
@@ -110,8 +123,8 @@ export const deleteUser = createAsyncThunk(
   async (id: number | string, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
-      const res = await axios.delete(`/api/users/${id}`)
       const { user }: any = getState()
+      const res = await axios.delete(user.pathnameUpdateDelete)
       dispatch(fetchData(user.params))
 
       return { ...res.data }
@@ -141,6 +154,8 @@ interface error {
 export const appUsersSlice = createSlice({
   name: 'appUsers',
   initialState: {
+    pathname: '/api/users',
+    pathnameUpdateDelete: '',
     data: [],
     total: 1,
     params: {},
@@ -181,6 +196,18 @@ export const appUsersSlice = createSlice({
       })
       .addCase(deleteUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
+      })
+      .addCase(setUrl.fulfilled, (state, action) => {
+        state.pathname = action.payload.pathname
+      })
+      .addCase(setUrl.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.pathname = '/api/users'
+      })
+      .addCase(setUpdateDeleteUrl.fulfilled, (state, action) => {
+        state.pathnameUpdateDelete = action.payload.pathnameUpdateDelete
+      })
+      .addCase(setUpdateDeleteUrl.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.pathname = ''
       })
   }
 })

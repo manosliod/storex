@@ -36,4 +36,9 @@ const Home = () => {
   )
 }
 
+Home.acl = {
+  action: 'manage',
+  subject: 'home'
+}
+
 export default Home

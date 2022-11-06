@@ -19,12 +19,21 @@ export type ACLObj = {
 const defineRulesFor = (role: string, subject: string) => {
   const { can, rules } = new AbilityBuilder(AppAbility)
 
-  if (role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') {
-    can('manage', 'all')
-  } else if (role === 'accountant') {
-    can('manage', 'all')
-  } else {
-    can(['read', 'create', 'update', 'delete'], subject)
+  if (role === 'super-admin'){
+    can('manage', ['home', 'users', 'user-view', 'stores', 'store-view'])
+
+  } else if (role === 'store-admin' || role === 'store-sub-admin') {
+    can('manage', ['home', 'users', 'categories', 'products'])
+
+  } else if (role === 'lead-tech') {
+    can('manage', ['home', 'categories', 'products'])
+
+  } else if (role === 'tech') {
+    can('manage', ['home', 'categories', 'products'])
+
+  } else if (role === 'accountant' || role === 'salesman' || role === 'user') {
+    can('manage', 'home')
+
   }
 
   return rules

@@ -62,7 +62,7 @@ export const addStore = createAsyncThunk(
       return { ...res.data }
     } catch (err: any) {
       const { message } = err.response.data
-      if (message.includes('/type:')) {
+      if (message?.includes('/type:')) {
         error = {
           type: message.split('/type:')[1],
           message: message.split('/type:')[0]
@@ -84,7 +84,7 @@ export const editStore = createAsyncThunk(
   async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
-      const res = await axios.patch('/api/stores', {
+      const res = await axios.patch(`/api/stores/${data.id}`, {
         ...data
       })
       const { stores }: any = getState()
@@ -93,7 +93,7 @@ export const editStore = createAsyncThunk(
       return { ...res.data }
     } catch (err: any) {
       const { message } = err.response.data
-      if (message.includes('/type:')) {
+      if (message?.includes('/type:')) {
         error = {
           type: message.split('/type:')[1],
           message: message.split('/type:')[0]
@@ -123,7 +123,7 @@ export const deleteStore = createAsyncThunk(
       return { ...res.data }
     } catch (err: any) {
       const { message } = err.response.data
-      if (message.includes('/type:')) {
+      if (message?.includes('/type:')) {
         error = {
           type: message.split('/type:')[1],
           message: message.split('/type:')[0]

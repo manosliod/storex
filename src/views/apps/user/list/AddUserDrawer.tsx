@@ -23,7 +23,7 @@ import { useForm, Controller } from 'react-hook-form'
 import Close from 'mdi-material-ui/Close'
 
 // ** Store Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
 import { addUser } from 'src/store/apps/user'
@@ -36,6 +36,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
 import { PayloadAction } from '@reduxjs/toolkit'
+import toast from "react-hot-toast";
 
 interface SidebarAddUserType {
   open: boolean
@@ -131,10 +132,14 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       const action: PayloadAction<{} | any> = await dispatch(addUser({ ...data, role, gender }))
       if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
         const { type, message }: any = action.payload.error
-        setError(type, {
-          type: 'manual',
-          message
-        })
+        if(type === 'fail'){
+          toast.error(message, { duration: 5000 })
+        } else {
+          setError(type, {
+            type: 'manual',
+            message
+          })
+        }
 
         return
       }
