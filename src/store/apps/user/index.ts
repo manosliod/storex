@@ -1,6 +1,6 @@
 // ** Redux Imports
 import { Dispatch } from 'redux'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -30,78 +30,69 @@ export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: D
     params
   })
 
-  const jsonObj = {
+  return {
     users: response.data.data,
     total: response.data.results,
     params: params,
     allData: response.data
   }
-
-  return jsonObj
 })
 
 // ** Add User
 export const addUser = createAsyncThunk(
   'appUsers/addUser',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
-    let returnObj
-    await axios
-      .post('/api/users', {
+  async (data: { [key: string]: number | string }, { dispatch, getState, rejectWithValue }) => {
+    let error
+
+    try {
+      const res = await axios.post('/api/users', {
         ...data
       })
-      .then(res => {
-        returnObj = {
-          ...res.data
+      const { user }: any = getState()
+      dispatch(fetchData(user.params))
+
+      return { ...res.data }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('/type:')) {
+        error = {
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
         }
-      })
-      .catch(er => {
-        returnObj = {
-          error: {
-            type: er.response.data.message.split('type:')[1],
-            message: 'Value already in use!'
-          }
-        }
-      })
+      } else {
+      }
 
-    //@ts-ignore
-    if (returnObj.error) return
-
-    dispatch(fetchData(getState().user.params))
-
-    return returnObj
+      return rejectWithValue({ error })
+    }
   }
 )
 
 export const editUser = createAsyncThunk(
   'appUsers/editUser',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
-    let returnObj
+  async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     const id = data._id
     delete data._id
-    await axios
-      .patch(`/api/users/${id}`, {
+    let error
+    try {
+      const res = await axios.patch(`/api/users/${id}`, {
         ...data
       })
-      .then(res => {
-        returnObj = {
-          ...res.data
+      const { user }: any = getState()
+      dispatch(fetchData(user.params))
+
+      return { ...res.data }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('/type:')) {
+        error = {
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
         }
-      })
-      .catch(er => {
-        returnObj = {
-          error: {
-            type: er.response.data.message.split('type:')[1],
-            message: 'Value already in use!'
-          }
-        }
-      })
+      } else {
+      }
 
-    //@ts-ignore
-    if (returnObj.error) return
-
-    dispatch(fetchData(getState().user.params))
-
-    return returnObj
+      return rejectWithValue({ error })
+    }
   }
 )
 
@@ -117,6 +108,10 @@ export const deleteUser = createAsyncThunk(
   }
 )
 
+interface error {
+  type?: {}
+  message?: {}
+}
 export const appUsersSlice = createSlice({
   name: 'appUsers',
   initialState: {
@@ -124,16 +119,37 @@ export const appUsersSlice = createSlice({
     total: 1,
     params: {},
     allData: [],
-    error: {}
+    error: {
+      type: '',
+      message: ''
+    }
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.data = action.payload.users
-      state.total = action.payload.total
-      state.params = action.payload.params
-      state.allData = action.payload.allData
-    })
+    const error = {
+      type: '',
+      message: ''
+    }
+    builder
+      .addCase(fetchData.fulfilled, (state, action) => {
+        state.data = action.payload.users
+        state.total = action.payload.total
+        state.params = action.payload.params
+        state.allData = action.payload.allData
+        state.error = error
+      })
+      .addCase(addUser.fulfilled, (state, action) => {
+        state.error = error
+      })
+      .addCase(addUser.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload.error
+      })
+      .addCase(editUser.fulfilled, (state, action) => {
+        state.error = error
+      })
+      .addCase(editUser.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload.error
+      })
   }
 })
 

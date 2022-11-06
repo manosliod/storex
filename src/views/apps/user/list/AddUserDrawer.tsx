@@ -35,6 +35,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
+import {PayloadAction} from "@reduxjs/toolkit";
 
 interface SidebarAddUserType {
   open: boolean
@@ -70,6 +71,9 @@ const schema = yup.object().shape({
     .required('Password Confirm is a required field')
     .oneOf([yup.ref('password')], 'Passwords do not match'),
   fullName: yup.string().required('Full Name is a required field'),
+  address: yup.string().required('Address is a required field'),
+  city: yup.string().required('City is a required field'),
+  country: yup.string().required('Country is a required field'),
   birthday: yup.date().nullable().required('Birthday is a required field'),
   phone: yup
     .string()
@@ -83,6 +87,9 @@ const defaultValues = {
   password: '',
   passwordConfirm: '',
   fullName: '',
+  address: '',
+  city: '',
+  country: '',
   birthday: new Date(moment().subtract(18, 'years').format('MM/DD/YYYY')),
   phone: ''
 }
@@ -96,7 +103,6 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const [role, setRole] = useState<string>('')
   const [genderError, setGenderError] = useState<boolean>(false)
   const [roleError, setRoleError] = useState<boolean>(false)
-  const store = useSelector((state: RootState) => state.user)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -122,38 +128,13 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
       if (gender === '' || role === '') return
 
-      dispatch(addUser({ ...data, role, gender }))
-
-      const error = []
-      const userData: UserData[] = store.data
-      for (const user of userData) {
-        if (user.username === data.username) {
-          error.push({
-            type: 'username'
-          })
-        }
-
-        if (user.email === data.email) {
-          error.push({
-            type: 'email'
-          })
-        }
-
-        if (user.phone === data.phone) {
-          error.push({
-            type: 'phone'
-          })
-        }
-      }
-
-      if (error.length > 0) {
-        for (const errorElement of error) {
-          // @ts-ignore
-          setError(errorElement.type, {
-            type: 'manual',
-            message: 'Value already in use!'
-          })
-        }
+      const action: PayloadAction<{} | any> = await dispatch(addUser({ ...data, role, gender }))
+      if(!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')){
+        const { type, message }: any = action.payload.error
+        setError(type, {
+          type: 'manual',
+          message
+        })
 
         return
       }
@@ -305,6 +286,33 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               )}
             />
             {errors.birthday && <FormHelperText sx={{ color: 'error.main' }}>{errors.birthday.message}</FormHelperText>}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
+                name='address'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
+            />
+            {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
+                name='city'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
+            />
+            {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
+                name='country'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
+            />
+            {errors.country && <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller

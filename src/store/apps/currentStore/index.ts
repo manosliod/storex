@@ -72,10 +72,10 @@ export const editStore = createAsyncThunk(
       }
     } catch (err: any) {
       const { message } = err.response.data
-      if (message.includes('type:')) {
+      if (message.includes('/type:')) {
         error = {
-          type: message.split('type:')[1],
-          message: message.split('type:')[0]
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
         }
       } else {
       }

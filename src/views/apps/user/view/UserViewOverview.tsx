@@ -101,13 +101,15 @@ const UserViewOverview = ({ userData, error }: Props) => {
     if (!Object.keys(userData).length) return
     reset(userData)
     setGender(userData.gender!)
-    router.push(
-      {
-        pathname: `/users/view/${userData.username}`
-      },
-      `/users/view/${userData.username}`,
-      { shallow: true }
-    )
+    if (router.pathname !== '/profile') {
+      router.push(
+        {
+          pathname: `/users/view/${userData.username}`
+        },
+        `/users/view/${userData.username}`,
+        { shallow: true }
+      )
+    }
   }, [reset, userData, error])
 
   return (

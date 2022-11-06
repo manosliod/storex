@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import {useState, useEffect, useCallback} from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -34,6 +34,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
+import {PayloadAction} from "@reduxjs/toolkit";
 
 interface SidebarEditUserType {
   open: boolean
@@ -48,6 +49,9 @@ interface UserData {
   fullName: string
   gender: string
   birthday: string
+  address: string
+  city: string
+  country: string
   phone: string
   role: string
 }
@@ -65,11 +69,14 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const { open, toggle, data } = props
 
   const defaultValues = {
-    email: data.email,
-    username: data.username,
-    fullName: data.fullName,
-    birthday: moment(new Date(data.birthday)).subtract(1, 'days').format('MM/DD/YYYY'),
-    phone: data.phone
+    email: data.email ?? '',
+    username: data.username ?? '',
+    fullName: data.fullName ?? '',
+    address: data.address ?? '',
+    city: data.city ?? '',
+    country: data.country ?? '',
+    birthday: moment(new Date(data.birthday)).subtract(1, 'days').format('MM/DD/YYYY') ?? '',
+    phone: data.phone ?? ''
   }
 
   const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
@@ -77,6 +84,9 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const schema = yup.object().shape({
     email: yup.string().email('Email must be a valid email e.g. user@domain.net').required('Email is a required field'),
     fullName: yup.string().required('Full Name is a required field'),
+    address: yup.string().required('Address is a required field'),
+    city: yup.string().required('City is a required field'),
+    country: yup.string().required('Country is a required field'),
     birthday: yup.date().nullable().required('Birthday is a required field'),
     phone: yup
       .string()
@@ -89,7 +99,6 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const [role, setRole] = useState<string>(data?.role)
   const [genderError, setGenderError] = useState<boolean>(false)
   const [roleError, setRoleError] = useState<boolean>(false)
-  const store = useSelector((state: RootState) => state.user)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -108,47 +117,21 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const minDate = moment().subtract(120, 'years').format('MM/DD/YYYY')
   const maxDate = moment().subtract(18, 'years').format('MM/DD/YYYY')
 
-  const onSubmit = (data: UserData) => {
+  const onSubmit = async (data: UserData) => {
     setGenderError(gender === '')
     setRoleError(role === '')
     if (gender === '' || role === '') return
 
-    dispatch(editUser({ ...data, role, gender }))
-
-    const error = []
-    const userData: UserData[] = store.data
-    for (const user of userData) {
-      if (user.username === data.username && data._id !== user._id) {
-        error.push({
-          type: 'username'
-        })
-      }
-
-      if (user.email === data.email && data._id !== user._id) {
-        error.push({
-          type: 'email'
-        })
-      }
-
-      if (user.phone === data.phone && data._id !== user._id) {
-        error.push({
-          type: 'phone'
-        })
-      }
-    }
-
-    if (error.length > 0) {
-      for (const errorElement of error) {
-        // @ts-ignore
-        setError(errorElement.type, {
-          type: 'manual',
-          message: 'Value already in use!'
-        })
-      }
+    const action: PayloadAction<{} | any> = await dispatch(editUser({ ...data, role, gender }))
+    if(!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')){
+      const { type, message }: any = action.payload.error
+      setError(type, {
+        type: 'manual',
+        message
+      })
 
       return
     }
-
     toggle()
     reset()
   }
@@ -160,6 +143,8 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
 
   useEffect(() => {
     reset(data)
+    setRole(data.role!)
+    setGender(data.gender!)
   }, [reset, data])
 
   return (
@@ -216,6 +201,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               value={gender}
               onChange={e => setGender(e.target.value)}
               inputProps={{ placeholder: 'Select Gender' }}
+              error={Boolean(genderError)}
             >
               <MenuItem value='' disabled={true}>
                 Select Gender
@@ -247,6 +233,33 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
+              name='address'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
+            />
+            {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
+              name='city'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
+            />
+            {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
+              name='country'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
+            />
+            {errors.country && <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
               name='phone'
               control={control}
               rules={{ required: true }}
@@ -264,6 +277,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               value={role}
               onChange={e => setRole(e.target.value)}
               inputProps={{ placeholder: 'Select Role' }}
+              error={Boolean(roleError)}
             >
               <MenuItem value='' disabled={true}>
                 Select Role

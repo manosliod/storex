@@ -65,7 +65,7 @@ export const addStore = createAsyncThunk(
       .catch(er => {
         returnObj = {
           error: {
-            type: er.response.data.message.split('type:')[1],
+            type: er.response.data.message.split('/type:')[1],
             message: 'Value already in use!'
           }
         }
@@ -98,7 +98,7 @@ export const editStore = createAsyncThunk(
       .catch(er => {
         returnObj = {
           error: {
-            type: er.response.data.message.split('type:')[1],
+            type: er.response.data.message.split('/type:')[1],
             message: 'Value already in use!'
           }
         }

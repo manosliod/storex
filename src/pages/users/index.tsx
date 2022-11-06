@@ -59,6 +59,9 @@ interface UserData {
   email: string
   fullName: string
   gender: string
+  address: string
+  city: string
+  country: string
   birthday: string
   phone: string
   role: string
@@ -70,6 +73,9 @@ const UserDataDefault: UserData = {
   email: '',
   fullName: '',
   gender: '',
+  address: '',
+  city: '',
+  country: '',
   birthday: '',
   phone: '',
   role: ''
