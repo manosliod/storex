@@ -106,25 +106,23 @@ const UserViewLeft = ({ data }: Props) => {
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', mb: 2.7 }}>
-                  <Typography sx={{ mr: 2, fontWeight: 500, fontSize: '0.875rem' }}>Tax ID:</Typography>
-                  <Typography variant='body2'>Tax-8894</Typography>
+                  <Typography sx={{ mr: 2, fontWeight: 500, fontSize: '0.875rem' }}>Address:</Typography>
+                  <Typography variant='body2'>{data.address}</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', mb: 2.7 }}>
+                  <Typography sx={{ mr: 2, fontWeight: 500, fontSize: '0.875rem' }}>City:</Typography>
+                  <Typography variant='body2'>{data.city}</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', mb: 2.7 }}>
+                  <Typography sx={{ mr: 2, fontWeight: 500, fontSize: '0.875rem' }}>Country:</Typography>
+                  <Typography variant='body2'>{data.country}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', mb: 2.7 }}>
                   <Typography sx={{ mr: 2, fontWeight: 500, fontSize: '0.875rem' }}>Mobile Phone:</Typography>
                   <Typography variant='body2'>{data.phone}</Typography>
                 </Box>
-                {/*<Box sx={{ display: 'flex' }}>*/}
-                {/*  <Typography sx={{ mr: 2, fontWeight: 500, fontSize: '0.875rem' }}>Country:</Typography>*/}
-                {/*  <Typography variant='body2'>{data.country}</Typography>*/}
-                {/*</Box>*/}
               </Box>
             </CardContent>
-
-            <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Button color='error' variant='outlined'>
-                Suspend
-              </Button>
-            </CardActions>
           </Card>
         </Grid>
       </Grid>

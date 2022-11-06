@@ -34,6 +34,9 @@ interface PostData {
   username: string
   fullName: string
   gender: string
+  address: string
+  city: string
+  country: string
   birthday: string
   phone: string
   role: string
@@ -49,6 +52,9 @@ const schema = yup.object().shape({
   email: yup.string().email('Email must be a valid email e.g. user@domain.net').required('Email is a required field'),
   username: yup.string().required('Username is a required field'),
   fullName: yup.string().required('Full Name is a required field'),
+  address: yup.string().required('Address is a required field'),
+  city: yup.string().required('City is a required field'),
+  country: yup.string().required('Country is a required field'),
   birthday: yup.date().nullable().required('Birthday is a required field'),
   phone: yup
     .string()
@@ -61,6 +67,9 @@ const UserViewOverview = ({ userData, error }: Props) => {
     email: '',
     username: '',
     fullName: '',
+    address: '',
+    city: '',
+    country: '',
     birthday: '',
     phone: ''
   }
@@ -191,12 +200,51 @@ const UserViewOverview = ({ userData, error }: Props) => {
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <Controller
-                    name='phone'
+                    name='address'
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
-                      <TextField {...field} fullWidth label='Mobile Phone' error={Boolean(errors.phone)} />
+                      <TextField {...field} fullWidth label='Address' error={Boolean(errors.address)} />
                     )}
+                  />
+                  {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='city'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='City' error={Boolean(errors.city)} />
+                    )}
+                  />
+                  {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='country'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='Country' error={Boolean(errors.country)} />
+                    )}
+                  />
+                  {errors.country && <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                      name='phone'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                          <TextField {...field} fullWidth label='Mobile Phone' error={Boolean(errors.phone)} />
+                      )}
                   />
                   {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
                 </FormControl>
