@@ -20,7 +20,7 @@ import UserViewRight from 'src/views/apps/user/view/UserViewRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useAuth } from 'src/hooks/useAuth'
-import {useRouter} from "next/router";
+import { useRouter } from 'next/router'
 
 const UserView = ({ id }: UserLayoutType) => {
   // ** State

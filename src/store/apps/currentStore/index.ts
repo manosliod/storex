@@ -4,31 +4,11 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { StoresType } from 'src/types/apps/storeTypes'
 
 interface Redux {
   getState: any
   dispatch: Dispatch<any>
 }
-
-interface ServerDataType {
-  userData: StoresType
-  userDataError: boolean
-}
-
-export const fetchDataFromServer = createAsyncThunk(
-  'appCurrentStore/fetchDataFromServer',
-  async (serverData: ServerDataType) => {
-    const { userData, userDataError } = serverData
-
-    return {
-      user: { ...userData },
-      total: 1,
-      allData: { ...userData },
-      error: { userDataError }
-    }
-  }
-)
 
 export const fetchStoreData = createAsyncThunk(
   'appCurrentStore/fetchStoreData',
@@ -47,6 +27,11 @@ export const fetchStoreData = createAsyncThunk(
       const { statusCode } = err.response.data
       if (statusCode === 404) {
         error = { ...err.response.data }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
       }
 
       return rejectWithValue({ error })
@@ -78,6 +63,10 @@ export const editStore = createAsyncThunk(
           message: message.split('/type:')[0]
         }
       } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
       }
 
       return rejectWithValue({ error })

@@ -1,9 +1,10 @@
 // ** Redux Imports
 import { Dispatch } from 'redux'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
+import { addUser, editUser } from '../user'
 
 interface DataParams {
   q?: string
@@ -38,90 +39,104 @@ export const fetchData = createAsyncThunk('appStores/fetchData', async (params: 
     params
   })
 
-  const jsonObj = {
+  return {
     stores: response.data.data,
     total: response.data.results,
     params: params,
     allData: response.data
   }
-
-  return jsonObj
 })
 
 // ** Add Store
 export const addStore = createAsyncThunk(
   'appStores/addStore',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
-    let returnObj
-    await axios
-      .post('/api/stores', {
+  async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
+    let error
+    try {
+      const res = await axios.post('/api/stores', {
         ...data
       })
-      .then(res => {
-        returnObj = {
-          ...res.data
+      const { stores }: any = getState()
+      dispatch(fetchData(stores.params))
+
+      return { ...res.data }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('/type:')) {
+        error = {
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
         }
-      })
-      .catch(er => {
-        returnObj = {
-          error: {
-            type: er.response.data.message.split('/type:')[1],
-            message: 'Value already in use!'
-          }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
         }
-      })
+      }
 
-    //@ts-ignore
-    if (returnObj.error) return
-
-    dispatch(fetchData(getState().stores.params))
-
-    return returnObj
+      return rejectWithValue({ error })
+    }
   }
 )
 
 export const editStore = createAsyncThunk(
   'appStores/editStore',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
-    let returnObj
-    const id = data._id
-    delete data._id
-    await axios
-      .patch(`/api/stores/${id}`, {
+  async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
+    let error
+    try {
+      const res = await axios.patch('/api/stores', {
         ...data
       })
-      .then(res => {
-        returnObj = {
-          ...res.data
+      const { stores }: any = getState()
+      dispatch(fetchData(stores.params))
+
+      return { ...res.data }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('/type:')) {
+        error = {
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
         }
-      })
-      .catch(er => {
-        returnObj = {
-          error: {
-            type: er.response.data.message.split('/type:')[1],
-            message: 'Value already in use!'
-          }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
         }
-      })
+      }
 
-    //@ts-ignore
-    if (returnObj.error) return
-
-    dispatch(fetchData(getState().stores.params))
-
-    return returnObj
+      return rejectWithValue({ error })
+    }
   }
 )
 
 // ** Delete Store
 export const deleteStore = createAsyncThunk(
   'appStores/deleteStore',
-  async (id: number | string, { getState, dispatch }: Redux) => {
-    const response = await axios.delete(`/api/stores/${id}`)
+  async (id: number | string, { getState, dispatch, rejectWithValue }) => {
+    let error
+    try {
+      const res = await axios.delete(`/api/stores/${id}`)
+      const { stores }: any = getState()
+      dispatch(fetchData(stores.params))
 
-    dispatch(fetchData(getState().stores.params))
+      return { ...res.data }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('/type:')) {
+        error = {
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
+        }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
+      }
 
-    return response.data
+      return rejectWithValue({ error })
+    }
   }
 )
 
@@ -132,16 +147,43 @@ export const appStoresSlice = createSlice({
     total: 1,
     params: {},
     allData: [],
-    error: {}
+    error: {
+      type: '',
+      message: ''
+    }
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.data = action.payload.stores
-      state.total = action.payload.total
-      state.params = action.payload.params
-      state.allData = action.payload.allData
-    })
+    const error = {
+      type: '',
+      message: ''
+    }
+    builder
+      .addCase(fetchData.fulfilled, (state, action) => {
+        state.data = action.payload.stores
+        state.total = action.payload.total
+        state.params = action.payload.params
+        state.allData = action.payload.allData
+        state.error = error
+      })
+      .addCase(addStore.fulfilled, (state, action) => {
+        state.error = error
+      })
+      .addCase(addStore.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload.error
+      })
+      .addCase(editStore.fulfilled, (state, action) => {
+        state.error = error
+      })
+      .addCase(editStore.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload.error
+      })
+      .addCase(deleteStore.fulfilled, (state, action) => {
+        state.error = error
+      })
+      .addCase(deleteStore.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload.error
+      })
   }
 })
 

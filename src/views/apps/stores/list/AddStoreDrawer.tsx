@@ -31,6 +31,7 @@ import { addStore } from 'src/store/apps/stores'
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 interface SidebarAddUserType {
   open: boolean
@@ -40,6 +41,7 @@ interface SidebarAddUserType {
 interface StoreData {
   name?: string
   officialName?: string
+  taxId?: number
   storeType?: string
   address?: string
   city?: string
@@ -59,6 +61,7 @@ const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 const schema = yup.object().shape({
   name: yup.string().required('Name is a required field'),
   officialName: yup.string().required('Official Name is a required field'),
+  taxId: yup.number().typeError('Tax ID must be a number').required('Tax ID Number is a required field'),
   address: yup.string().required('Address is a required field'),
   city: yup.string().required('City is a required field'),
   country: yup.string().required('Country is a required field'),
@@ -71,6 +74,7 @@ const schema = yup.object().shape({
 const defaultValues = {
   name: '',
   officialName: '',
+  taxId: '',
   address: '',
   city: '',
   country: '',
@@ -100,48 +104,25 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = useCallback(
-    async (data: StoreData) => {
-      setStoreTypeError(storeType === '')
+  const onSubmit = async (data: StoreData) => {
+    setStoreTypeError(storeType === '')
 
-      if (storeType === '') return
+    if (storeType === '') return
 
-      dispatch(addStore({ ...data, storeType }))
+    const action: PayloadAction<{} | any> = await dispatch(addStore({ ...data, storeType }))
+    if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
+      const { type, message }: any = action.payload.error
+      setError(type, {
+        type: 'manual',
+        message
+      })
 
-      const error = []
-      for (const storeData of store.data) {
-        // @ts-ignore
-        if (storeData.phone === data.phone) {
-          error.push({
-            type: 'phone'
-          })
-        }
-      }
+      return
+    }
 
-      if (error.length > 0) {
-        for (const errorElement of error) {
-          // @ts-ignore
-          setError(errorElement.type, {
-            type: 'manual',
-            message: 'Value already in use!'
-          })
-        }
-
-        return
-      }
-      toggle()
-      reset()
-    },
-    [storeType, storeTypeError]
-  )
-
-  const handleStoreTypeChange = useCallback(
-    (e: SelectChangeEvent) => {
-      setStoreType(e.target.value)
-      setStoreTypeError(false)
-    },
-    [storeType, storeTypeError]
-  )
+    toggle()
+    reset()
+  }
 
   const handleClose = () => {
     toggle()
@@ -185,7 +166,18 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               <FormHelperText sx={{ color: 'error.main' }}>{errors.officialName.message}</FormHelperText>
             )}
           </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <Controller
+              name='taxId'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField {...field} autoFocus label='Tax ID Number' error={Boolean(errors.taxId)} />
+              )}
+            />
+            {errors.taxId && <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 4 }}>
             <InputLabel id='store-type-select'>Select Store Type</InputLabel>
             <Select
               fullWidth
@@ -193,7 +185,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               label='Select Store Type'
               labelId='store-type-select'
               value={storeType}
-              onChange={e => handleStoreTypeChange(e)}
+              onChange={e => setStoreType(e.target.value)}
               inputProps={{ placeholder: 'Select Store Type' }}
               error={storeTypeError}
             >
@@ -239,7 +231,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               name='phone'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <TextField {...field} label='Mobile Phone' error={Boolean(errors.phone)} />}
+              render={({ field }) => <TextField {...field} label='Phone' error={Boolean(errors.phone)} />}
             />
             {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
           </FormControl>

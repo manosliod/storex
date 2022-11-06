@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import {NextRouter} from "next/router";
+import { NextRouter } from 'next/router'
 
 interface Redux {
   getState: any
@@ -17,10 +17,7 @@ interface params {
 }
 
 export const fetchURLForRoles = (role: any, id?: any, router?: any) => {
-  if (
-      (role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') &&
-      router !== '/profile'
-  ) {
+  if ((role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') && router !== '/profile') {
     return `/api/users/${id}`
   }
 
@@ -53,6 +50,11 @@ export const fetchUserData = createAsyncThunk(
       const { statusCode } = err.response.data
       if (statusCode === 404) {
         error = { ...err.response.data }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
       }
 
       return rejectWithValue({ error })
@@ -85,6 +87,10 @@ export const editUser = createAsyncThunk(
           message: message.split('/type:')[0]
         }
       } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
       }
 
       return rejectWithValue({ error })
@@ -95,13 +101,33 @@ export const editUser = createAsyncThunk(
 // ** Delete User
 export const deleteUser = createAsyncThunk(
   'appCurrentUser/deleteUser',
-  async (id: number | string, { getState, dispatch }: Redux) => {
-    const { currentUser }: any = getState()
-    const response = await axios.delete(fetchURLForRoles(currentUser.role, id, currentUser.pathaname))
+  async (id: number | string, { getState, dispatch, rejectWithValue }) => {
+    let error = {}
+    try {
+      const { currentUser }: any = getState()
+      const res = await axios.delete(fetchURLForRoles(currentUser.role, id, currentUser.pathaname))
 
-    dispatch(fetchUserData(id))
+      return {
+        user: res.data.doc,
+        allData: res.data,
+        error: {}
+      }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('/type:')) {
+        error = {
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
+        }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
+      }
 
-    return response.data
+      return rejectWithValue({ error })
+    }
   }
 )
 

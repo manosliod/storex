@@ -60,6 +60,10 @@ export const addUser = createAsyncThunk(
           message: message.split('/type:')[0]
         }
       } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
       }
 
       return rejectWithValue({ error })
@@ -89,6 +93,10 @@ export const editUser = createAsyncThunk(
           message: message.split('/type:')[0]
         }
       } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
       }
 
       return rejectWithValue({ error })
@@ -99,12 +107,30 @@ export const editUser = createAsyncThunk(
 // ** Delete User
 export const deleteUser = createAsyncThunk(
   'appUsers/deleteUser',
-  async (id: number | string, { getState, dispatch }: Redux) => {
-    const response = await axios.delete(`/api/users/${id}`)
+  async (id: number | string, { getState, dispatch, rejectWithValue }) => {
+    let error
+    try {
+      const res = await axios.delete(`/api/users/${id}`)
+      const { user }: any = getState()
+      dispatch(fetchData(user.params))
 
-    dispatch(fetchData(getState().user.params))
+      return { ...res.data }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('/type:')) {
+        error = {
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
+        }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
+      }
 
-    return response.data
+      return rejectWithValue({ error })
+    }
   }
 )
 
@@ -148,6 +174,12 @@ export const appUsersSlice = createSlice({
         state.error = error
       })
       .addCase(editUser.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload.error
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.error = error
+      })
+      .addCase(deleteUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
   }
