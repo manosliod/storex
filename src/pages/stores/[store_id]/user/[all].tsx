@@ -5,10 +5,7 @@ import { GetServerSideProps } from 'next/types'
 import { UserLayoutType, UsersType } from 'src/types/apps/userTypes'
 
 // ** Demo Components Imports
-import StoreUserViewPage from 'src/views/apps/stores/user/StoreUserViewPage'
-import { useAuth } from 'src/hooks/useAuth'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'src/store'
+import UserViewPage from 'src/views/apps/user/view/UserViewPage'
 
 type Props = UserLayoutType & {
   users: any
@@ -16,13 +13,10 @@ type Props = UserLayoutType & {
 }
 
 const UserView = ({ id, users, storeId }: Props) => {
-  const auth = useAuth()
-  const dispatch = useDispatch<AppDispatch>()
-
   const authUser = users.find((user: UsersType) => user.username!.toString() === id)
   const userId = authUser === undefined || authUser === null ? id : !!Object.keys(authUser).length ? authUser._id : id
 
-  return <StoreUserViewPage id={userId} storeId={storeId} />
+  return <UserViewPage id={userId} storeId={storeId} />
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {

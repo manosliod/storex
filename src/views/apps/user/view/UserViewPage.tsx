@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid'
 import Alert from '@mui/material/Alert'
 
 // ** Third Party Components
-import { fetchUserData, fetchUserRole } from 'src/store/apps/currentUser'
+import { fetchURLForRoles, fetchUserData } from 'src/store/apps/currentUser'
 
 // ** Types
 import { UserLayoutType } from 'src/types/apps/userTypes'
@@ -22,7 +22,11 @@ import { AppDispatch, RootState } from 'src/store'
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 
-const UserView = ({ id }: UserLayoutType) => {
+type Props = UserLayoutType & {
+  storeId: any
+}
+
+const UserView = ({ id, storeId = null }: Props) => {
   // ** State
 
   const auth = useAuth()
@@ -32,11 +36,14 @@ const UserView = ({ id }: UserLayoutType) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const { role }: any = auth.user
       const data: any = {
-        ...auth.user,
-        router
+        role: role,
+        id: id,
+        router,
+        storeId
       }
-      await dispatch(fetchUserRole(data))
+      await dispatch(fetchURLForRoles(data))
       dispatch(fetchUserData(id))
     }
     fetchData()
@@ -59,7 +66,7 @@ const UserView = ({ id }: UserLayoutType) => {
           <UserViewLeft data={store.data} />
         </Grid>
         <Grid item xs={12} md={7} lg={8}>
-          <UserViewRight userData={store.data} error={store.error} />
+          <UserViewRight userData={store.data} error={store.error} storeId={storeId} />
         </Grid>
       </Grid>
     )

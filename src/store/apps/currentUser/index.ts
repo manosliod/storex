@@ -4,30 +4,30 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { NextRouter } from 'next/router'
+import {NextRouter} from "next/router";
 
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
+interface data {
+  role: any,
+  id: any,
+  router: NextRouter,
+  storeId: any
 }
 
-interface params {
-  id: string | null | number
-  role: string
-}
+export const fetchURLForRoles = createAsyncThunk(
+  'appCurrentUser/fetchURLForRoles',
+  (data: data) => {
+    if (data.router.pathname.includes('/stores') && data.storeId !== null){
+      return `/api/stores/${data.storeId}/user/${data.id}`
+    } else if ((data.role === 'super-admin' || data.role === 'store-admin' || data.role === 'store-sub-admin') && !data.router.pathname.includes('/profile')) {
+      return `/api/users/${data.id}`
+    }
 
-export const fetchURLForRoles = (role: any, id?: any, router?: any) => {
-  if ((role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') && router !== '/profile') {
-    return `/api/users/${id}`
-  }
-
-  return '/api/users/me'
-}
+    return '/api/users/me'
+})
 
 export const fetchUserRole = createAsyncThunk('appCurrentUser/fetchUserRole', (data: any) => {
   return {
-    role: data.user.role,
-    pathname: data.router.pathname
+    role: data
   }
 })
 
@@ -38,7 +38,7 @@ export const fetchUserData = createAsyncThunk(
     try {
       const { currentUser }: any = getState()
       console.log(currentUser, 'currentUser')
-      const res = await axios.get(fetchURLForRoles(currentUser.role, id, currentUser.pathaname))
+      const res = await axios.get(currentUser.pathname)
 
       // console.log(res, 'response')
       return {
@@ -70,7 +70,7 @@ export const editUser = createAsyncThunk(
     let error = {}
     try {
       const { currentUser }: any = getState()
-      const res = await axios.patch(fetchURLForRoles(currentUser.role, id, currentUser.pathaname), {
+      const res = await axios.patch(currentUser.pathname, {
         ...data
       })
 
@@ -105,7 +105,7 @@ export const deleteUser = createAsyncThunk(
     let error = {}
     try {
       const { currentUser }: any = getState()
-      const res = await axios.delete(fetchURLForRoles(currentUser.role, id, currentUser.pathaname))
+      const res = await axios.delete(currentUser.pathname)
 
       return {
         user: res.data.doc,
@@ -165,10 +165,14 @@ export const appCurrentUserSlice = createSlice({
       })
       .addCase(fetchUserRole.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.role = action.payload.role
-        state.pathname = action.payload.pathname
       })
       .addCase(fetchUserRole.rejected, (state, action: PayloadAction<{} | any>) => {
         state.role = 'user'
+      })
+      .addCase(fetchURLForRoles.fulfilled, (state, action: PayloadAction<{} | any>) => {
+        state.pathname = action.payload
+      })
+      .addCase(fetchURLForRoles.rejected, (state, action: PayloadAction<{} | any>) => {
         state.pathname = ''
       })
   }

@@ -47,6 +47,7 @@ interface PostData {
 interface Props {
   userData: UsersType
   error: any
+  storeId: any
 }
 
 const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
@@ -64,7 +65,7 @@ const schema = yup.object().shape({
     .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
 })
 
-const UserViewOverview = ({ userData, error }: Props) => {
+const UserViewOverview = ({ userData, error, storeId = null }: Props) => {
   const defaultValues = {
     email: '',
     username: '',
@@ -113,11 +114,12 @@ const UserViewOverview = ({ userData, error }: Props) => {
     reset(userData)
     setGender(userData.gender!)
     if (router.pathname !== '/profile') {
+      const url = storeId !== null ? `/stores/${storeId}/user/${userData.username}` : `/users/view/${userData.username}`
       router.push(
         {
-          pathname: `/users/view/${userData.username}`
+          pathname: url
         },
-        `/users/view/${userData.username}`,
+          url,
         { shallow: true }
       )
     }

@@ -16,10 +16,12 @@ import AccountOutline from 'mdi-material-ui/AccountOutline'
 // ** Demo Components Imports
 import UserViewOverview from 'src/views/apps/user/view/UserViewOverview'
 import UserViewSecurity from 'src/views/apps/user/view/UserViewSecurity'
+import {useRouter} from "next/router";
 
 interface Props {
   userData: any
   error: any
+  storeId: any
 }
 
 // ** Styled Tab component
@@ -32,10 +34,11 @@ const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   }
 }))
 
-const UserViewRight = ({ userData, error }: Props) => {
+const UserViewRight = ({ userData, error, storeId = null }: Props) => {
   // ** State
   const [value, setValue] = useState<string>('overview')
 
+  const router = useRouter()
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
@@ -50,15 +53,19 @@ const UserViewRight = ({ userData, error }: Props) => {
         sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
       >
         <Tab value='overview' label='Overview' icon={<AccountOutline sx={{ fontSize: '18px' }} />} />
-        <Tab value='security' label='Security' icon={<LockOutline sx={{ fontSize: '18px' }} />} />
+        {router.pathname.includes('/profile') &&
+          <Tab value='security' label='Security' icon={<LockOutline sx={{fontSize: '18px'}}/>}/>
+        }
       </TabList>
       <Box sx={{ mt: 3 }}>
         <TabPanel sx={{ p: 0 }} value='overview'>
-          <UserViewOverview userData={userData} error={error} />
+          <UserViewOverview userData={userData} error={error} storeId={storeId} />
         </TabPanel>
-        <TabPanel sx={{ p: 0 }} value='security'>
-          <UserViewSecurity />
-        </TabPanel>
+        {router.pathname.includes('/profile') &&
+          <TabPanel sx={{p: 0}} value='security'>
+            <UserViewSecurity/>
+          </TabPanel>
+        }
       </Box>
     </TabContext>
   )

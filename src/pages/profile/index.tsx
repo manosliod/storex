@@ -14,7 +14,7 @@ const UserView = ({ id }: UserLayoutType) => {
   const authUserId = auth?.user !== null ? (auth.user._id === undefined ? '' : auth.user._id) : ''
   const userId = id ? id : authUserId
 
-  return <UserViewPage id={userId} />
+  return <UserViewPage id={userId} storeId={null} />
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
@@ -25,6 +25,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       id: id ? id : ''
     }
   }
+}
+
+UserView.acl = {
+  action: 'manage',
+  subject: 'profile'
 }
 
 export default UserView
