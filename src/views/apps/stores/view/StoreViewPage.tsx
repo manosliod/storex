@@ -19,18 +19,19 @@ import StoreViewLeft from 'src/views/apps/stores/view/StoreViewLeft'
 import StoreViewRight from 'src/views/apps/stores/view/StoreViewRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
+import { useRouter } from 'next/router'
 
 const StoreView = ({ id }: StoreLayoutType) => {
   // ** State
-
+  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.currentStore)
 
   useEffect(() => {
-    dispatch(fetchStoreData(id))
+    if (id !== undefined) dispatch(fetchStoreData(id))
   }, [dispatch])
 
-  if (!!Object.keys(store.error).length && store.error.statusCode === 404) {
+  if (!!Object.keys(store.error).length && store.error.statusCode === 404 && !router.pathname.includes('/home')) {
     return (
       <Grid container spacing={6}>
         <Grid item xs={12}>

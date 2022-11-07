@@ -26,6 +26,7 @@ export type UserDataType = {
   password: string
   phone?: string | null
   birthdate?: string | null
+  store?: string | null
 
   // avatar?: string | null
 }

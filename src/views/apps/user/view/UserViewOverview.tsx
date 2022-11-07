@@ -115,7 +115,7 @@ const UserViewOverview = ({ userData, error, storeId = null }: Props) => {
     setGender(userData.gender!)
     if (router.pathname !== '/profile') {
       const url = storeId !== null ? `/stores/${storeId}/user/${userData.username}` : `/users/view/${userData.username}`
-      router.push(
+      router.replace(
         {
           pathname: url
         },

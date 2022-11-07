@@ -113,6 +113,14 @@ const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
   }
 }
 
+const changeUserRoute = (userId: any, storeData: any) => {
+  let url = `/users/${userId}`
+  if (storeData !== null) {
+    url = `/stores/${storeData._id}/user/${userId}`
+  }
+  return url
+}
+
 const Users = ({ storeData = null }: any) => {
   // ** State
   const [currentUser, setCurrentUser] = useState<UserData>(UserDataDefault)
@@ -130,9 +138,7 @@ const Users = ({ storeData = null }: any) => {
   // ** renders client column
   const RenderClient = (row: UsersType) => {
     return (
-      <AvatarWithoutImageLink
-        onClick={() => handleRoute(router, `/users/view/${row.username!.toString().toLowerCase().replace(' ', '-')}`)}
-      >
+      <AvatarWithoutImageLink onClick={() => handleRoute(router, changeUserRoute(row.username!.toString(), storeData))}>
         <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
           {getInitials(row.fullName ? row.fullName : 'John Doe')}
         </CustomAvatar>
@@ -230,7 +236,7 @@ const Users = ({ storeData = null }: any) => {
                 variant='subtitle2'
                 sx={{ color: 'text.primary', textDecoration: 'none', cursor: 'pointer' }}
                 onClick={() =>
-                  handleRoute(router, `/users/view/${row.username!.toString().toLowerCase()}`, {
+                  handleRoute(router, changeUserRoute(row.username!.toString(), storeData), {
                     id: row._id
                   })
                 }
@@ -243,7 +249,7 @@ const Users = ({ storeData = null }: any) => {
                 variant='caption'
                 sx={{ textDecoration: 'none', cursor: 'pointer' }}
                 onClick={() =>
-                  handleRoute(router, `/users/view/${row.username!.toString().toLowerCase()}`, {
+                  handleRoute(router, changeUserRoute(row.username!.toString(), storeData), {
                     id: row._id
                   })
                 }

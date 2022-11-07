@@ -37,7 +37,7 @@ const AuthGuard = (props: AuthGuardProps) => {
         router.replace('/login')
       }
     }
-  }, [router.route])
+  }, [router.route, router.isReady])
 
   if (auth.loading || auth.user === null) {
     return fallback
