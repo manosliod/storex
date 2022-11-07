@@ -1,5 +1,5 @@
 // ** React Imports
-import { ChangeEvent, Fragment, MouseEvent, useState } from 'react'
+import { Fragment, MouseEvent, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -22,10 +22,9 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 import * as yup from 'yup'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { editUser, updatePassword } from 'src/store/apps/currentUser'
+import { updatePassword } from 'src/store/apps/currentUser'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
-import TextField from '@mui/material/TextField'
 import FormHelperText from '@mui/material/FormHelperText'
 import { PayloadAction } from '@reduxjs/toolkit'
 import toast from 'react-hot-toast'
