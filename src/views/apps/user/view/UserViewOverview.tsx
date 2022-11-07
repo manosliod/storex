@@ -27,8 +27,8 @@ import { editUser } from '../../../../store/apps/currentUser'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../../../store'
 import { useRouter } from 'next/router'
-import toast from "react-hot-toast";
-import {PayloadAction} from "@reduxjs/toolkit";
+import toast from 'react-hot-toast'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 interface PostData {
   _id?: string | number
@@ -119,7 +119,7 @@ const UserViewOverview = ({ userData, error, storeId = null }: Props) => {
         {
           pathname: url
         },
-          url,
+        url,
         { shallow: true }
       )
     }

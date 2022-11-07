@@ -62,10 +62,7 @@ const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 const schema = yup.object().shape({
   name: yup.string().required('Name is a required field'),
   officialName: yup.string().required('Official Name is a required field'),
-  taxId: yup
-      .string()
-      .required('Tax ID Number is a required field')
-      .matches(/^\d+$/, 'Tax ID must be a number'),
+  taxId: yup.string().required('Tax ID Number is a required field').matches(/^\d+$/, 'Tax ID must be a number'),
   address: yup.string().required('Address is a required field'),
   city: yup.string().required('City is a required field'),
   country: yup.string().required('Country is a required field'),
@@ -115,7 +112,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     const action: PayloadAction<{} | any> = await dispatch(addStore({ ...data, storeType }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
-      if(type === 'fail'){
+      if (type === 'fail' || type === 'error') {
         toast.error(message, { duration: 5000 })
       } else {
         setError(type, {

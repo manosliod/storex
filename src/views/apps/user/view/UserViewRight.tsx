@@ -16,7 +16,7 @@ import AccountOutline from 'mdi-material-ui/AccountOutline'
 // ** Demo Components Imports
 import UserViewOverview from 'src/views/apps/user/view/UserViewOverview'
 import UserViewSecurity from 'src/views/apps/user/view/UserViewSecurity'
-import {useRouter} from "next/router";
+import { useRouter } from 'next/router'
 
 interface Props {
   userData: any
@@ -53,19 +53,19 @@ const UserViewRight = ({ userData, error, storeId = null }: Props) => {
         sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
       >
         <Tab value='overview' label='Overview' icon={<AccountOutline sx={{ fontSize: '18px' }} />} />
-        {router.pathname.includes('/profile') &&
-          <Tab value='security' label='Security' icon={<LockOutline sx={{fontSize: '18px'}}/>}/>
-        }
+        {router.pathname.includes('/profile') && (
+          <Tab value='security' label='Security' icon={<LockOutline sx={{ fontSize: '18px' }} />} />
+        )}
       </TabList>
       <Box sx={{ mt: 3 }}>
         <TabPanel sx={{ p: 0 }} value='overview'>
           <UserViewOverview userData={userData} error={error} storeId={storeId} />
         </TabPanel>
-        {router.pathname.includes('/profile') &&
-          <TabPanel sx={{p: 0}} value='security'>
-            <UserViewSecurity/>
+        {router.pathname.includes('/profile') && (
+          <TabPanel sx={{ p: 0 }} value='security'>
+            <UserViewSecurity />
           </TabPanel>
-        }
+        )}
       </Box>
     </TabContext>
   )

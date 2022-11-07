@@ -6,8 +6,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 interface ParamTypes {
-    id?: any
-    data?: any
+  id?: any
+  data?: any
   storeId: any
 }
 

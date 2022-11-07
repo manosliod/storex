@@ -43,7 +43,7 @@ import TableHeader from 'src/views/apps/stores/list/TableHeader'
 import AddStoreDrawer from 'src/views/apps/stores/list/AddStoreDrawer'
 import EditStoreDrawer from 'src/views/apps/stores/list/EditStoreDrawer'
 import TextField from '@mui/material/TextField'
-import {NextRouter, useRouter} from "next/router";
+import { NextRouter, useRouter } from 'next/router'
 
 interface StoreData {
   name?: string
@@ -76,12 +76,12 @@ const AvatarWithoutImageLink = styled(Grid)(({ theme }) => ({
 const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
   if (url) {
     router.replace(
-        {
-          pathname: url,
-          query: { ...params }
-        },
-        url,
-        { shallow: true }
+      {
+        pathname: url,
+        query: { ...params }
+      },
+      url,
+      { shallow: true }
     )
   }
 }
@@ -91,7 +91,7 @@ const RenderClient = (row: StoresType) => {
   const router = useRouter()
 
   return (
-    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/stores/view/${row.id}`)} >
+    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/stores/view/${row.id}`)}>
       <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
         {getInitials(row.name ? row.name : 'John Doe')}
       </CustomAvatar>

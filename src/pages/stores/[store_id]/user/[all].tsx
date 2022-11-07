@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { all, store_id } = query
 
   const bufferedBasicAuth = Buffer.from(`${process.env.API_AUTH_USERNAME}:${process.env.API_AUTH_PASSWORD}`).toString(
-      'base64'
+    'base64'
   )
   const allUsers = await fetch('http://localhost:3001/api/v1/console/users', {
     headers: {

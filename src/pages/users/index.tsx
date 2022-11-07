@@ -36,7 +36,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Actions Imports
-import {fetchData, setUrl, deleteUser, setUpdateDeleteUrl} from 'src/store/apps/user'
+import { fetchData, setUrl, deleteUser, setUpdateDeleteUrl } from 'src/store/apps/user'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
@@ -131,13 +131,9 @@ const Users = ({ storeData = null }: any) => {
   const RenderClient = (row: UsersType) => {
     return (
       <AvatarWithoutImageLink
-          onClick={() => handleRoute(router, `/users/view/${row.username!.toString().toLowerCase().replace(' ', '-')}`)}
+        onClick={() => handleRoute(router, `/users/view/${row.username!.toString().toLowerCase().replace(' ', '-')}`)}
       >
-        <CustomAvatar
-            skin='light'
-            color='primary'
-            sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}
-        >
+        <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
           {getInitials(row.fullName ? row.fullName : 'John Doe')}
         </CustomAvatar>
       </AvatarWithoutImageLink>
@@ -161,8 +157,8 @@ const Users = ({ storeData = null }: any) => {
     }
 
     const handleEdit = async () => {
-      let url = `/api/users/${id}`;
-      if(storeData !== null){
+      let url = `/api/users/${id}`
+      if (storeData !== null) {
         url = `/api/users/${id}/store/${storeData._id}`
       }
       const response = await axios.get(url)
@@ -172,7 +168,7 @@ const Users = ({ storeData = null }: any) => {
     }
 
     const handleDelete = async () => {
-      if(storeData !== null){
+      if (storeData !== null) {
         await dispatch(setUpdateDeleteUrl(`/api/users/${id}/store/${storeData._id}`))
       } else {
         await dispatch(setUpdateDeleteUrl(`/api/users/${id}`))
@@ -299,9 +295,8 @@ const Users = ({ storeData = null }: any) => {
   ]
 
   useEffect(() => {
-    const initUsers = async () =>{
-      if(storeData !== null)
-        await dispatch(setUrl(`/api/users/store/${storeData.id}`))
+    const initUsers = async () => {
+      if (storeData !== null) await dispatch(setUrl(`/api/users/store/${storeData.id}`))
       dispatch(
         fetchData({
           role,

@@ -4,25 +4,26 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import {NextRouter} from "next/router";
+import { NextRouter } from 'next/router'
 
 interface data {
-  role: any,
-  id: any,
-  router: NextRouter,
+  role: any
+  id: any
+  router: NextRouter
   storeId: any
 }
 
-export const fetchURLForRoles = createAsyncThunk(
-  'appCurrentUser/fetchURLForRoles',
-  (data: data) => {
-    if (data.router.pathname.includes('/stores') && data.storeId !== null){
-      return `/api/stores/${data.storeId}/user/${data.id}`
-    } else if ((data.role === 'super-admin' || data.role === 'store-admin' || data.role === 'store-sub-admin') && !data.router.pathname.includes('/profile')) {
-      return `/api/users/${data.id}`
-    }
+export const fetchURLForRoles = createAsyncThunk('appCurrentUser/fetchURLForRoles', (data: data) => {
+  if (data.router.pathname.includes('/stores') && data.storeId !== null) {
+    return `/api/stores/${data.storeId}/user/${data.id}`
+  } else if (
+    (data.role === 'super-admin' || data.role === 'store-admin' || data.role === 'store-sub-admin') &&
+    !data.router.pathname.includes('/profile')
+  ) {
+    return `/api/users/${data.id}`
+  }
 
-    return '/api/users/me'
+  return '/api/users/me'
 })
 
 export const fetchUserRole = createAsyncThunk('appCurrentUser/fetchUserRole', (data: any) => {
@@ -37,10 +38,8 @@ export const fetchUserData = createAsyncThunk(
     let error = {}
     try {
       const { currentUser }: any = getState()
-      console.log(currentUser, 'currentUser')
       const res = await axios.get(currentUser.pathname)
 
-      // console.log(res, 'response')
       return {
         user: res.data.doc,
         allData: res.data,
@@ -131,6 +130,37 @@ export const deleteUser = createAsyncThunk(
   }
 )
 
+export const updatePassword = createAsyncThunk(
+  'appCurrentUserSlice/updatePassWord',
+  async (data: any, { rejectWithValue }) => {
+    let error
+    try {
+      const res = await axios.patch('/api/users/updateMyPassword', data)
+      return res.data
+    } catch (err: any) {
+      const { status, statusCode, message } = err.response.data
+      if (message.includes('`password`')) {
+        error = {
+          type: 'password',
+          message: message
+        }
+      } else if (statusCode === 401) {
+        error = {
+          statusCode,
+          status,
+          message
+        }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
+      }
+      return rejectWithValue({ error })
+    }
+  }
+)
+
 export const appCurrentUserSlice = createSlice({
   name: 'appCurrentUser',
   initialState: {
@@ -174,6 +204,16 @@ export const appCurrentUserSlice = createSlice({
       })
       .addCase(fetchURLForRoles.rejected, (state, action: PayloadAction<{} | any>) => {
         state.pathname = ''
+      })
+      .addCase(updatePassword.fulfilled, (state, action: PayloadAction<{} | any>) => {
+        state.error = {
+          statusCode: 200
+        }
+      })
+      .addCase(updatePassword.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = {
+          ...action.payload.error
+        }
       })
   }
 })

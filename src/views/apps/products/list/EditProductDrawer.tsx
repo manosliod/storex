@@ -31,8 +31,8 @@ import { editStore } from 'src/store/apps/stores'
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
-import toast from "react-hot-toast";
-import {PayloadAction} from "@reduxjs/toolkit";
+import toast from 'react-hot-toast'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 interface SidebarEditUserType {
   open: boolean
@@ -78,10 +78,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const schema = yup.object().shape({
     name: yup.string().required('Name is a required field'),
     officialName: yup.string().required('Official Name is a required field'),
-    taxId: yup
-        .string()
-        .required('Tax ID Number is a required field')
-        .matches(/^\d+$/, 'Tax ID must be a number'),
+    taxId: yup.string().required('Tax ID Number is a required field').matches(/^\d+$/, 'Tax ID must be a number'),
     address: yup.string().required('Address is a required field'),
     city: yup.string().required('City is a required field'),
     country: yup.string().required('Country is a required field'),
@@ -116,10 +113,10 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
     const action: PayloadAction<{} | any> = await dispatch(editStore({ ...data, storeType }))
     console.log(action)
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
-      const {type, message}: any = action.payload.error
+      const { type, message }: any = action.payload.error
 
-      if (type === 'fail') {
-        toast.error(message, {duration: 5000})
+      if (type === 'fail' || type === 'error') {
+        toast.error(message, { duration: 5000 })
       } else {
         setError(type, {
           type: 'manual',
@@ -190,9 +187,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
                 <TextField {...field} autoFocus label='Tax ID Number' error={Boolean(errors.taxId)} />
               )}
             />
-            {errors.taxId && (
-              <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>
-            )}
+            {errors.taxId && <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <InputLabel id='store-type-select'>Select Store Type</InputLabel>

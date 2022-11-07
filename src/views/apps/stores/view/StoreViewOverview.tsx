@@ -26,9 +26,9 @@ import { editStore } from 'src/store/apps/currentStore'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { StoresType } from 'src/types/apps/storeTypes'
-import {PayloadAction} from "@reduxjs/toolkit";
-import {addStore} from "../../../../store/apps/stores";
-import toast from "react-hot-toast";
+import { PayloadAction } from '@reduxjs/toolkit'
+import { addStore } from '../../../../store/apps/stores'
+import toast from 'react-hot-toast'
 
 interface PostData {
   name?: string
@@ -49,10 +49,7 @@ const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 const schema = yup.object().shape({
   name: yup.string().required('Name is a required field'),
   officialName: yup.string().required('Official Name is a required field'),
-  taxId: yup
-      .string()
-      .required('Tax ID Number is a required field')
-      .matches(/^\d+$/, 'Tax ID must be a number'),
+  taxId: yup.string().required('Tax ID Number is a required field').matches(/^\d+$/, 'Tax ID must be a number'),
   address: yup.string().required('Address is a required field'),
   city: yup.string().required('City is a required field'),
   country: yup.string().required('Country is a required field'),
@@ -151,9 +148,7 @@ const StoreViewOverview = ({ storeData, error }: Props) => {
                       <TextField {...field} fullWidth label='Tax ID Number' error={Boolean(errors.taxId)} />
                     )}
                   />
-                  {errors.taxId && (
-                    <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>
-                  )}
+                  {errors.taxId && <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>}
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>

@@ -36,7 +36,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
 import { PayloadAction } from '@reduxjs/toolkit'
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast'
 
 interface SidebarAddUserType {
   open: boolean
@@ -132,7 +132,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       const action: PayloadAction<{} | any> = await dispatch(addUser({ ...data, role, gender }))
       if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
         const { type, message }: any = action.payload.error
-        if(type === 'fail'){
+        if (type === 'fail' || type === 'error') {
           toast.error(message, { duration: 5000 })
         } else {
           setError(type, {
