@@ -351,7 +351,7 @@ const Users = ({ storeData = null }: any) => {
                     <MenuItem value=''>Select Role</MenuItem>
                     <MenuItem value='super-admin'>Super Admin</MenuItem>
                     <MenuItem value='store-admin'>Stores Admin</MenuItem>
-                    <MenuItem value='admin'>Admin</MenuItem>
+                    <MenuItem value='store-sub-admin'>Store Sub-Admin</MenuItem>
                     <MenuItem value='lead-tech'>Lead Tech</MenuItem>
                     <MenuItem value='accountant'>Accountant</MenuItem>
                     <MenuItem value='salesman'>Salesman</MenuItem>
@@ -372,7 +372,6 @@ const Users = ({ storeData = null }: any) => {
             rows={store.data}
             getRowId={(row: any) => row._id}
             columns={columns}
-            checkboxSelection
             pageSize={pageSize}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
