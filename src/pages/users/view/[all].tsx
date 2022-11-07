@@ -26,7 +26,7 @@ const UserView = ({ id, users }: Props) => {
   const authUser = users.find((user: UsersType) => user.username!.toString().toLowerCase() === id)
   const userId = authUser === undefined || authUser === null ? id : !!Object.keys(authUser).length ? authUser._id : id
 
-  return <UserViewPage id={userId} />
+  return <UserViewPage id={userId} storeId={null} />
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
