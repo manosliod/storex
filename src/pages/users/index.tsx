@@ -48,6 +48,7 @@ import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 import EditUserDrawer from 'src/views/apps/user/list/EditUserDrawer'
 import axios from 'axios'
 import { NextRouter, useRouter } from 'next/router'
+import { useAuth } from '../../hooks/useAuth'
 
 interface UserRoleType {
   [key: string]: ReactElement
@@ -131,6 +132,9 @@ const Users = ({ storeData = null }: any) => {
   const [editUserOpen, setEditUserOpen] = useState<boolean>(false)
 
   // ** Hooks
+  const auth = useAuth()
+  const { user }: any = auth
+  const currentUserRole = user.role
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.user)
@@ -350,8 +354,8 @@ const Users = ({ storeData = null }: any) => {
                     inputProps={{ placeholder: 'Select Role' }}
                   >
                     <MenuItem value=''>Select Role</MenuItem>
-                    <MenuItem value='super-admin'>Super Admin</MenuItem>
-                    <MenuItem value='store-admin'>Stores Admin</MenuItem>
+                    {currentUserRole === 'super-admin' && <MenuItem value='super-admin'>Super Admin</MenuItem>}
+                    <MenuItem value='store-admin'>Store Admin</MenuItem>
                     <MenuItem value='store-sub-admin'>Store Sub-Admin</MenuItem>
                     <MenuItem value='lead-tech'>Lead Tech</MenuItem>
                     <MenuItem value='accountant'>Accountant</MenuItem>

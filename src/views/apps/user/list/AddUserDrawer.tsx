@@ -37,6 +37,7 @@ import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
 import { PayloadAction } from '@reduxjs/toolkit'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../../../hooks/useAuth'
 
 interface SidebarAddUserType {
   open: boolean
@@ -106,6 +107,9 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const [roleError, setRoleError] = useState<boolean>(false)
 
   // ** Hooks
+  const auth = useAuth()
+  const { user }: any = auth
+  const currentUserRole = user.role
   const dispatch = useDispatch<AppDispatch>()
   const {
     reset,
@@ -343,9 +347,9 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               <MenuItem value='' disabled={true}>
                 Select Role
               </MenuItem>
-              <MenuItem value='super-admin'>Super Admin</MenuItem>
-              <MenuItem value='store-admin'>Stores Admin</MenuItem>
-              <MenuItem value='admin'>Admin</MenuItem>
+              {currentUserRole === 'super-admin' && <MenuItem value='super-admin'>Super Admin</MenuItem>}
+              <MenuItem value='store-admin'>Store Admin</MenuItem>
+              <MenuItem value='store-sub-admin'>Store Sub-Admin</MenuItem>
               <MenuItem value='lead-tech'>Lead Tech</MenuItem>
               <MenuItem value='accountant'>Accountant</MenuItem>
               <MenuItem value='salesman'>Salesman</MenuItem>

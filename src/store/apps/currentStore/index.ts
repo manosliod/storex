@@ -17,7 +17,6 @@ export const fetchStoreData = createAsyncThunk(
     try {
       const res = await axios.get(`/api/stores/${id}`)
 
-      // console.log(res, 'response')
       return {
         store: res.data.doc,
         allData: res.data,
