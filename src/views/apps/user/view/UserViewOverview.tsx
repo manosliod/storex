@@ -114,7 +114,12 @@ const UserViewOverview = ({ userData, error, storeId = null }: Props) => {
     reset(userData)
     setGender(userData.gender!)
     if (router.pathname !== '/profile') {
-      const url = storeId !== null ? `/stores/${storeId}/user/${userData.username}` : `/users/view/${userData.username}`
+      const url =
+        storeId !== null
+          ? router.pathname.includes('/home')
+            ? `/home/${storeId}/user/${userData.username}`
+            : `/stores/${storeId}/user/${userData.username}`
+          : `/users/view/${userData.username}`
       router.replace(
         {
           pathname: url

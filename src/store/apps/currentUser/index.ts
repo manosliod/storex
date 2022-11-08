@@ -16,7 +16,10 @@ interface data {
 export const fetchURLForRoles = createAsyncThunk('appCurrentUser/fetchURLForRoles', (data: data) => {
   if (data.role === null || data.router === null || data.storeId === null) {
     return '/api/users/me'
-  } else if (data.router.pathname.includes('/stores') && data.storeId !== null) {
+  } else if (
+    (data.router.pathname.includes('/home') || data.router.pathname.includes('/stores')) &&
+    data.storeId !== null
+  ) {
     return `/api/stores/${data.storeId}/user/${data.id}`
   } else if (
     (data.role === 'super-admin' || data.role === 'store-admin' || data.role === 'store-sub-admin') &&
@@ -179,7 +182,6 @@ export const appCurrentUserSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchUserData.fulfilled, (state, action: PayloadAction<{} | any>) => {
-        console.log(action.payload, 'payload')
         state.data = action.payload.user
         state.allData = action.payload.allData
       })

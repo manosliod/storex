@@ -114,9 +114,11 @@ const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
   }
 }
 
-const changeUserRoute = (userId: any, storeData: any) => {
+const changeUserRoute = (userId: any, storeData: any, router: NextRouter) => {
   let url = `/users/${userId}`
-  if (storeData !== null) {
+  if (router.pathname.includes('/home')) {
+    url = `/home/${storeData._id}/user/${userId}`
+  } else if (storeData !== null) {
     url = `/stores/${storeData._id}/user/${userId}`
   }
   return url
@@ -142,7 +144,9 @@ const Users = ({ storeData = null }: any) => {
   // ** renders client column
   const RenderClient = (row: UsersType) => {
     return (
-      <AvatarWithoutImageLink onClick={() => handleRoute(router, changeUserRoute(row.username!.toString(), storeData))}>
+      <AvatarWithoutImageLink
+        onClick={() => handleRoute(router, changeUserRoute(row.username!.toString(), storeData, router))}
+      >
         <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
           {getInitials(row.fullName ? row.fullName : 'John Doe')}
         </CustomAvatar>
@@ -240,7 +244,7 @@ const Users = ({ storeData = null }: any) => {
                 variant='subtitle2'
                 sx={{ color: 'text.primary', textDecoration: 'none', cursor: 'pointer' }}
                 onClick={() =>
-                  handleRoute(router, changeUserRoute(row.username!.toString(), storeData), {
+                  handleRoute(router, changeUserRoute(row.username!.toString(), storeData, router), {
                     id: row._id
                   })
                 }
@@ -253,7 +257,7 @@ const Users = ({ storeData = null }: any) => {
                 variant='caption'
                 sx={{ textDecoration: 'none', cursor: 'pointer' }}
                 onClick={() =>
-                  handleRoute(router, changeUserRoute(row.username!.toString(), storeData), {
+                  handleRoute(router, changeUserRoute(row.username!.toString(), storeData, router), {
                     id: row._id
                   })
                 }
