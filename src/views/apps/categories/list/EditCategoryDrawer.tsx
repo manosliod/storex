@@ -59,13 +59,15 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const { open, toggle, data, techUsers } = props
 
   const defaultValues = {
-    name: ''
+    name: '',
+    user: ''
   }
 
   const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 
   const schema = yup.object().shape({
-    name: yup.string().required('Name is a required field')
+    name: yup.string().required('Name is a required field'),
+    user: yup.string().required('User is a required field')
   })
 
   // ** State
@@ -89,11 +91,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   })
 
   const onSubmit = async (data: CategoryData) => {
-    console.log(12345)
-    setCategoryUserError(categoryUser === '')
-    if (categoryUser === '') return
-
-    const action: PayloadAction<{} | any> = await dispatch(editCategory({ ...data, user: categoryUser }))
+    const action: PayloadAction<{} | any> = await dispatch(editCategory({ ...data }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
 
@@ -121,7 +119,6 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
 
   useEffect(() => {
     reset(data)
-    setCategoryUser(data.user!)
   }, [reset, data])
 
   return (
@@ -150,31 +147,31 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <InputLabel id='user-select'>Select User</InputLabel>
-            <Select
-              defaultValue={''}
-              fullWidth
-              id='select-user'
-              label='Select User'
-              labelId='user-select'
-              value={categoryUser}
-              onChange={e => setCategoryUser(e.target.value)}
-              inputProps={{ placeholder: 'Select User' }}
-              error={categoryUserError}
-            >
-              <MenuItem value='' disabled={true}>
-                Select User
-              </MenuItem>
-              {techUsers !== undefined &&
-                techUsers.length > 0 &&
-                techUsers.map((techUser: any) => (
-                  <MenuItem key={techUser.id.toString()} value={techUser.id}>
-                    {techUser.fullName}
-                  </MenuItem>
-                ))}
-            </Select>
-            {categoryUserError && (
-              <FormHelperText sx={{ color: 'error.main' }}>User is a required field!</FormHelperText>
-            )}
+            <Controller
+              name='user'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select
+                  fullWidth
+                  id='select-user'
+                  label='Select User'
+                  labelId='user-select'
+                  inputProps={{ placeholder: 'Select User' }}
+                  error={Boolean(user.error)}
+                  {...field}
+                >
+                  {techUsers !== undefined &&
+                    techUsers.length > 0 &&
+                    techUsers.map((techUser: any) => (
+                      <MenuItem key={techUser.id.toString()} value={techUser.id}>
+                        {techUser.fullName}
+                      </MenuItem>
+                    ))}
+                </Select>
+              )}
+            />
+            {user.error && <FormHelperText sx={{ color: 'error.main' }}>{user.error.value}</FormHelperText>}
           </FormControl>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>

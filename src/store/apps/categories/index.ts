@@ -73,7 +73,6 @@ export const editCategory = createAsyncThunk(
   'appCategories/editCategory',
   async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     let error
-    console.log(data, 'data')
     try {
       const res = await axios.patch(`/api/categories/${data._id}`, {
         ...data
