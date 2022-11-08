@@ -1,5 +1,5 @@
 // ** React Imports
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'

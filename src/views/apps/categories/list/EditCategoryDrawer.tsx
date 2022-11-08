@@ -23,17 +23,16 @@ import { useForm, Controller } from 'react-hook-form'
 import Close from 'mdi-material-ui/Close'
 
 // ** Store Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
 import { editCategory } from 'src/store/apps/categories'
 
 // ** Types Imports
-import { AppDispatch, RootState } from 'src/store'
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { AppDispatch } from 'src/store'
 import toast from 'react-hot-toast'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { useAuth } from '../../../../hooks/useAuth'
+import { useAuth } from 'src/hooks/useAuth'
 
 interface SidebarEditUserType {
   open: boolean

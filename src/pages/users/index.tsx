@@ -48,7 +48,7 @@ import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 import EditUserDrawer from 'src/views/apps/user/list/EditUserDrawer'
 import axios from 'axios'
 import { NextRouter, useRouter } from 'next/router'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from 'src/hooks/useAuth'
 
 interface UserRoleType {
   [key: string]: ReactElement

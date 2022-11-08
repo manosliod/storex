@@ -29,7 +29,7 @@ import { useDispatch } from 'react-redux'
 import { addUser } from 'src/store/apps/user'
 
 // ** Types Imports
-import { AppDispatch, RootState } from 'src/store'
+import { AppDispatch } from 'src/store'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
@@ -37,7 +37,7 @@ import MobileDatePicker from '@mui/lab/MobileDatePicker'
 import moment from 'moment/moment'
 import { PayloadAction } from '@reduxjs/toolkit'
 import toast from 'react-hot-toast'
-import { useAuth } from '../../../../hooks/useAuth'
+import { useAuth } from 'src/hooks/useAuth'
 
 interface SidebarAddUserType {
   open: boolean

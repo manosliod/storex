@@ -4,7 +4,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { addUser, editUser } from '../user'
 
 interface DataParams {
   q?: string
