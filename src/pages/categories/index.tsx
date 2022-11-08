@@ -254,7 +254,7 @@ const Categories = ({ users }: any) => {
         </Card>
       </Grid>
 
-      <AddCategoryDrawer open={addCategoryOpen} toggle={toggleAddCategoryDrawer} techUsers={store.availableTechUsers} />
+      <AddCategoryDrawer open={addCategoryOpen} toggle={toggleAddCategoryDrawer} techUsers={store.techUsers} />
       <EditCategoryDrawer
         open={editCategoryOpen}
         toggle={toggleEditCategoryDrawer}

@@ -27,12 +27,10 @@ export const fetchData = createAsyncThunk('appCategories/fetchData', async (para
     params
   })
   const response_2 = await axios.get(`/api/users/store/${params.store}?role=tech`)
-  const response_3 = await axios.get(`/api/categories/availableUsers/store/${params.store}?role=tech`)
 
   return {
     categories: response.data.data,
     techUsers: response_2.data.data,
-    availableTechUsers: response_3.data.data,
     total: response.data.results,
     params: params,
     allData: response.data
@@ -137,7 +135,6 @@ export const appCategoriesSlice = createSlice({
   name: 'appCategories',
   initialState: {
     techUsers: [],
-    availableTechUsers: [],
     data: [],
     total: 1,
     params: {},
@@ -157,7 +154,6 @@ export const appCategoriesSlice = createSlice({
       .addCase(fetchData.fulfilled, (state, action) => {
         state.data = action.payload.categories
         state.techUsers = action.payload.techUsers
-        state.availableTechUsers = action.payload.availableTechUsers
         state.total = action.payload.total
         state.params = action.payload.params
         state.allData = action.payload.allData
