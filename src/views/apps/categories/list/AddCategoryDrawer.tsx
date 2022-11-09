@@ -145,7 +145,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   label='Select User'
                   labelId='user-select'
                   inputProps={{ placeholder: 'Select User' }}
-                  error={Boolean(user.error)}
+                  error={Boolean(errors.user)}
                   {...field}
                 >
                   <MenuItem value='' disabled={true}>
@@ -161,7 +161,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 </Select>
               )}
             />
-            {user.error && <FormHelperText sx={{ color: 'error.main' }}>{user.error.value}</FormHelperText>}
+            {errors.user && <FormHelperText sx={{ color: 'error.main' }}>{errors.user.message}</FormHelperText>}
           </FormControl>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>

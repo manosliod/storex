@@ -78,7 +78,7 @@ const RenderClient = (row: CategoriesType) => {
   const router = useRouter()
 
   return (
-    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/categories/view/${row.id}`)}>
+    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/categories/view/${row._id}`)}>
       <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
         {getInitials(row.name ? row.name : 'John Doe')}
       </CustomAvatar>

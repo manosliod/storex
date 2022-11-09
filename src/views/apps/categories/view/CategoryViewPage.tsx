@@ -9,26 +9,40 @@ import Grid from '@mui/material/Grid'
 import Alert from '@mui/material/Alert'
 
 // ** Third Party Components
-import { fetchStoreData } from 'src/store/apps/currentStore'
+import { fetchCategoryData } from 'src/store/apps/currentCategory'
 
 // ** Types
-import { StoreLayoutType } from 'src/types/apps/storeTypes'
+import { CategoriesLayoutType } from 'src/types/apps/catgoryTypes'
 
 // ** Demo Components Imports
-import StoreViewLeft from 'src/views/apps/stores/view/StoreViewLeft'
-import StoreViewRight from 'src/views/apps/stores/view/StoreViewRight'
+import CategoryViewLeft from 'src/views/apps/categories/view/CategoryViewLeft'
+import CategoryViewRight from 'src/views/apps/categories/view/CategoryViewRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
+import { fetchURLForRoles } from 'src/store/apps/currentCategory'
 
-const StoreView = ({ id }: StoreLayoutType) => {
+import { useAuth } from 'src/hooks/useAuth'
+
+const CategoryView = ({ id }: CategoriesLayoutType) => {
   // ** State
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.currentStore)
+  const store = useSelector((state: RootState) => state.currentCategory)
+
+  const auth = useAuth()
 
   useEffect(() => {
-    if (id !== undefined) dispatch(fetchStoreData(id))
+    const fetchData = async () => {
+      const { user }: any = auth
+      const data: any = {
+        id: id,
+        storeId: user.store
+      }
+      await dispatch(fetchURLForRoles(data))
+      dispatch(fetchCategoryData(id))
+    }
+    if (id !== undefined) fetchData()
   }, [dispatch])
 
   if (!!Object.keys(store.error).length && store.error.statusCode === 404 && !router.pathname.includes('/home')) {
@@ -37,7 +51,7 @@ const StoreView = ({ id }: StoreLayoutType) => {
         <Grid item xs={12}>
           <Alert severity='error'>
             Store with the id: {id} does not exist. Please check the list of stores:{' '}
-            <Link href='/stores'>Store List</Link>
+            <Link href='/categories'>Category List</Link>
           </Alert>
         </Grid>
       </Grid>
@@ -46,10 +60,10 @@ const StoreView = ({ id }: StoreLayoutType) => {
     return (
       <Grid container spacing={6}>
         <Grid item xs={12} md={5} lg={4}>
-          <StoreViewLeft data={store.data} />
+          <CategoryViewLeft data={store.data} />
         </Grid>
         <Grid item xs={12} md={7} lg={8}>
-          <StoreViewRight storeData={store.data} error={store.error} />
+          <CategoryViewRight categoryData={store.data} techUsers={store.techUsers} error={store.error} />
         </Grid>
       </Grid>
     )
@@ -58,4 +72,4 @@ const StoreView = ({ id }: StoreLayoutType) => {
   }
 }
 
-export default StoreView
+export default CategoryView
