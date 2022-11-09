@@ -39,7 +39,7 @@ import AddCategoryDrawer from 'src/views/apps/categories/list/AddCategoryDrawer'
 import EditCategoryDrawer from 'src/views/apps/categories/list/EditCategoryDrawer'
 import { NextRouter, useRouter } from 'next/router'
 import { useAuth } from '../../hooks/useAuth'
-import {fetchCategoryData} from "../../store/apps/currentCategory";
+import { fetchCategoryData } from '../../store/apps/currentCategory'
 
 interface CategoryData {
   name?: string
@@ -126,7 +126,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
 
     const handleEdit = async () => {
       let foundedCategory: any
-      if (currentCategoryData){
+      if (currentCategoryData) {
         foundedCategory = subcategories.find((category: CategoriesType) => category._id === id)
       } else {
         foundedCategory = store.data.find((category: CategoriesType) => category._id === id)
@@ -139,12 +139,12 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     const handleDelete = async () => {
       let storeId
       let dontFetch = 0
-      if(router.pathname.includes('/categories/view')) {
+      if (router.pathname.includes('/categories/view')) {
         dontFetch = 1
         storeId = user.store
       }
-      await dispatch(deleteCategory({id, storeId, dontFetch }))
-      if(router.pathname.includes('/categories/view')) dispatch(fetchCategoryData(currentCategoryData._id))
+      await dispatch(deleteCategory({ id, storeId, dontFetch }))
+      if (router.pathname.includes('/categories/view')) dispatch(fetchCategoryData(currentCategoryData._id))
       handleRowOptionsClose()
     }
 
@@ -240,7 +240,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
         storeId: user.store
       }
       await dispatch(fetchURLForRoles(data))
-      if(!router.pathname.includes('/categories/view'))
+      if (!router.pathname.includes('/categories/view'))
         dispatch(
           fetchData({
             store: user.store
@@ -265,10 +265,10 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
 
   const [filteredData, setFilteredData] = useState([])
   useEffect(() => {
-    if(subcategories !== undefined) {
+    if (subcategories !== undefined) {
       setFilteredData(subcategories.filter((category: any) => category.name.includes(value)))
-    }else{
-      if(store.data.length > 0) setFilteredData(store.data.filter((category: any) => category.name.includes(value)))
+    } else {
+      if (store.data.length > 0) setFilteredData(store.data.filter((category: any) => category.name.includes(value)))
     }
   }, [value, store.data, subcategories])
 

@@ -88,7 +88,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
 
   const onSubmit = async (data: CategoryData) => {
     let dontFetch = 0
-    if(currentCategoryData) dontFetch = 1
+    if (currentCategoryData) dontFetch = 1
     const action: PayloadAction<{} | any> = await dispatch(editCategory({ ...data, dontFetch }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error

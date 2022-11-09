@@ -31,7 +31,7 @@ import { AppDispatch } from 'src/store'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { useAuth } from 'src/hooks/useAuth'
-import {fetchCategoryData, fetchURLForCategory} from '../../../../store/apps/currentCategory'
+import { fetchCategoryData, fetchURLForCategory } from '../../../../store/apps/currentCategory'
 
 interface SidebarAddUserType {
   open: boolean
@@ -84,7 +84,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
   const onSubmit = async (data: CategoryData) => {
     let dontFetch = 0
-    if(currentCategoryData) dontFetch = 1
+    if (currentCategoryData) dontFetch = 1
     const action: PayloadAction<{} | any> = await dispatch(addCategory({ ...data, store: user.store, dontFetch }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error

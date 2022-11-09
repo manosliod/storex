@@ -68,7 +68,7 @@ export const addCategory = createAsyncThunk(
       const res = await axios.post(categories.pathname, {
         ...data
       })
-      if(data.dontFetch === 0) dispatch(fetchData(categories.params))
+      if (data.dontFetch === 0) dispatch(fetchData(categories.params))
 
       return { ...res.data }
     } catch (err: any) {
@@ -99,7 +99,7 @@ export const editCategory = createAsyncThunk(
         ...data
       })
       const { categories }: any = getState()
-      if(data.dontFetch === 0) dispatch(fetchData(categories.params))
+      if (data.dontFetch === 0) dispatch(fetchData(categories.params))
 
       return { ...res.data }
     } catch (err: any) {
@@ -127,10 +127,10 @@ export const deleteCategory = createAsyncThunk(
   async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
-      let res;
-      if(data.storeId){
+      let res
+      if (data.storeId) {
         res = await axios.delete(`/api/stores/${data.storeId}/category/${data.id}`)
-      }else{
+      } else {
         res = await axios.delete(`/api/categories/${data.id}`)
       }
       const { categories }: any = getState()

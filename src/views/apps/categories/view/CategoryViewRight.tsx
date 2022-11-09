@@ -21,13 +21,13 @@ import Categories from 'src/pages/categories'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-import {useRouter} from "next/router";
+import { useRouter } from 'next/router'
 
 interface Props {
   categoryData: any
   techUsers: any
   error: any
-    subcategories: any
+  subcategories: any
 }
 
 // ** Styled Tab component
@@ -57,7 +57,7 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
   const router = useRouter()
   useEffect(() => {
     setValue('overview')
-  }, [router.asPath]);
+  }, [router.asPath])
 
   return (
     <TabContext value={value}>
