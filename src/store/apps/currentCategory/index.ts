@@ -11,7 +11,7 @@ interface data {
   storeId: any
 }
 
-export const fetchURLForRoles = createAsyncThunk('appCurrentCategory/fetchURLForRoles', (data: data) => {
+export const fetchURLForCategory = createAsyncThunk('appCurrentCategory/fetchURLForRoles', (data: data) => {
   return {
     pathname: `/api/stores/${data.storeId}/category/${data.id}`,
     techUsersPathname: `/api/users/store/${data.storeId}?role=tech`
@@ -148,6 +148,8 @@ export const appCurrentCategorySlice = createSlice({
         state.allData = action.payload.allData
       })
       .addCase(fetchCategoryData.rejected, (state, action: PayloadAction<{} | any>) => {
+        console.log(action)
+        console.log(state.pathname)
         state.error = action.payload.error
       })
       .addCase(editCategory.fulfilled, (state, action: PayloadAction<{} | any>) => {
@@ -161,11 +163,11 @@ export const appCurrentCategorySlice = createSlice({
       .addCase(editCategory.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(fetchURLForRoles.fulfilled, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchURLForCategory.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.pathname = action.payload.pathname
         state.techUsersPathname = action.payload.techUsersPathname
       })
-      .addCase(fetchURLForRoles.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchURLForCategory.rejected, (state, action: PayloadAction<{} | any>) => {
         state.pathname = ''
         state.techUsersPathname = ''
       })

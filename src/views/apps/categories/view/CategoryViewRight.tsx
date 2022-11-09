@@ -17,6 +17,7 @@ import PackageVariantClosed from 'mdi-material-ui/PackageVariantClosed'
 
 // ** Demo Components Imports
 import CategoryViewOverview from 'src/views/apps/categories/view/CategoryViewOverview'
+import Categories from 'src/pages/categories'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -96,7 +97,11 @@ const StoreViewRight = ({ categoryData, techUsers, error }: Props) => {
           role === 'store-admin' ||
           role === 'store-sub-admin' ||
           role === 'lead-tech' ||
-          role === 'tech') && <TabPanel sx={{ p: 0 }} value='subCategories'></TabPanel>}
+          role === 'tech') && (
+          <TabPanel sx={{ p: 0 }} value='subCategories'>
+            <Categories currentCategoryData={categoryData} />
+          </TabPanel>
+        )}
         {(role === 'super-admin' ||
           role === 'store-admin' ||
           role === 'store-sub-admin' ||

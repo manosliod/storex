@@ -27,7 +27,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Actions Imports
-import { fetchData, deleteCategory } from 'src/store/apps/categories'
+import { fetchData, deleteCategory, fetchURLForRoles } from 'src/store/apps/categories'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
@@ -86,7 +86,7 @@ const RenderClient = (row: CategoriesType) => {
   )
 }
 
-const Categories = ({ users }: any) => {
+const Categories = ({ currentCategoryData }: any) => {
   // ** State
   const [currentCategory, setCurrentCategory] = useState<CategoryData>(CategoryDataDefault)
   const [value, setValue] = useState<string>('')
@@ -181,7 +181,7 @@ const Categories = ({ users }: any) => {
                 component='a'
                 variant='subtitle2'
                 sx={{ color: 'text.primary', textDecoration: 'none', cursor: 'pointer' }}
-                onClick={() => handleRoute(router, `/categories/view/${row.id}`)}
+                onClick={() => handleRoute(router, `/categories/view/${row._id}`)}
               >
                 {name}
               </Typography>
@@ -198,7 +198,7 @@ const Categories = ({ users }: any) => {
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.subCategories !== undefined ? row.subCategories.length : 0}
+            {row.subcategories !== undefined ? row.subcategories.length : 0}
           </Typography>
         )
       }
@@ -214,13 +214,23 @@ const Categories = ({ users }: any) => {
   ]
 
   useEffect(() => {
-    dispatch(
-      fetchData({
-        q: value,
-        store: user.store
-      })
-    )
-  }, [dispatch, value])
+    const fetch = async () => {
+      if (currentCategoryData?.subcategories) {
+        const data: any = {
+          id: currentCategoryData._id,
+          router,
+          storeId: user.store
+        }
+        await dispatch(fetchURLForRoles(data))
+      }
+      dispatch(
+        fetchData({
+          store: user.store
+        })
+      )
+    }
+    fetch()
+  }, [dispatch, currentCategoryData])
 
   const handleFilter = useCallback((val: string) => {
     setValue(val)
@@ -235,6 +245,12 @@ const Categories = ({ users }: any) => {
     }
   }, [editCategoryOpen])
 
+  let subcategories = currentCategoryData?.subcategories ?? store.data
+  const [filteredData, setFilteredData] = useState([])
+  useEffect(() => {
+    setFilteredData(subcategories.filter((category: any) => category.name.includes(value)))
+  }, [value])
+
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
@@ -242,7 +258,7 @@ const Categories = ({ users }: any) => {
           <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddCategoryDrawer} />
           <DataGrid
             autoHeight
-            rows={store.data}
+            rows={filteredData ?? subcategories}
             getRowId={(row: any) => row._id}
             columns={columns}
             pageSize={pageSize}
@@ -254,12 +270,18 @@ const Categories = ({ users }: any) => {
         </Card>
       </Grid>
 
-      <AddCategoryDrawer open={addCategoryOpen} toggle={toggleAddCategoryDrawer} techUsers={store.techUsers} />
+      <AddCategoryDrawer
+        open={addCategoryOpen}
+        toggle={toggleAddCategoryDrawer}
+        techUsers={store.techUsers}
+        currentCategoryData={currentCategoryData}
+      />
       <EditCategoryDrawer
         open={editCategoryOpen}
         toggle={toggleEditCategoryDrawer}
         data={currentCategory}
         techUsers={store.techUsers}
+        currentCategoryData={currentCategoryData}
       />
     </Grid>
   )

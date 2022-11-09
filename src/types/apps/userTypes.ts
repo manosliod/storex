@@ -15,4 +15,7 @@ export type UsersType = {
   password: string
   phone?: string
   birthday?: string
+  address?: string
+  city?: string
+  phone?: string
 }

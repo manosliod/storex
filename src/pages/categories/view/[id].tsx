@@ -8,7 +8,6 @@ import { UserLayoutType } from 'src/types/apps/userTypes'
 import CategoryViewPage from 'src/views/apps/categories/view/CategoryViewPage'
 
 const CategoryView = ({ id }: UserLayoutType) => {
-  console.log(id, 'id')
   return <CategoryViewPage id={id} />
 }
 

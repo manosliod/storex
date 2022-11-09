@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid'
 import Alert from '@mui/material/Alert'
 
 // ** Third Party Components
-import { fetchCategoryData } from 'src/store/apps/currentCategory'
+import { fetchCategoryData, fetchURLForCategory } from 'src/store/apps/currentCategory'
 
 // ** Types
 import { CategoriesLayoutType } from 'src/types/apps/catgoryTypes'
@@ -20,7 +20,6 @@ import CategoryViewRight from 'src/views/apps/categories/view/CategoryViewRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
-import { fetchURLForRoles } from 'src/store/apps/currentCategory'
 
 import { useAuth } from 'src/hooks/useAuth'
 
@@ -39,7 +38,7 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
         id: id,
         storeId: user.store
       }
-      await dispatch(fetchURLForRoles(data))
+      await dispatch(fetchURLForCategory(data))
       dispatch(fetchCategoryData(id))
     }
     if (id !== undefined) fetchData()
@@ -50,7 +49,7 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Alert severity='error'>
-            Store with the id: {id} does not exist. Please check the list of stores:{' '}
+            Category with the id: {id} does not exist. Please check the list of stores:{' '}
             <Link href='/categories'>Category List</Link>
           </Alert>
         </Grid>

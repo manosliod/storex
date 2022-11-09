@@ -31,11 +31,13 @@ import { AppDispatch } from 'src/store'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { useAuth } from 'src/hooks/useAuth'
+import { fetchCategoryData } from '../../../../store/apps/currentCategory'
 
 interface SidebarAddUserType {
   open: boolean
   toggle: () => void
   techUsers: any
+  currentCategoryData: any
 }
 
 interface CategoryData {
@@ -62,7 +64,7 @@ const defaultValues = {
 
 const SidebarAddUser = (props: SidebarAddUserType) => {
   // ** Props
-  const { open, toggle, techUsers } = props
+  const { open, toggle, techUsers, currentCategoryData } = props
 
   // ** Hooks
   const auth = useAuth()
@@ -95,6 +97,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
       return
     }
+    if (currentCategoryData) dispatch(fetchCategoryData(currentCategoryData._id))
 
     toggle()
     reset()

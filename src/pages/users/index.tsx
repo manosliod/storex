@@ -299,6 +299,51 @@ const Users = ({ storeData = null }: any) => {
       }
     },
     {
+      flex: 0.15,
+      field: 'address',
+      minWidth: 150,
+      headerName: 'Address',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+              {row.address}
+            </Typography>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      field: 'city',
+      minWidth: 150,
+      headerName: 'City',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+              {row.city}
+            </Typography>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      field: 'phone',
+      minWidth: 150,
+      headerName: 'Phone',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+              {row.phone}
+            </Typography>
+          </Box>
+        )
+      }
+    },
+    {
       flex: 0.1,
       minWidth: 90,
       sortable: false,
@@ -313,13 +358,12 @@ const Users = ({ storeData = null }: any) => {
       if (storeData !== null) await dispatch(setUrl(`/api/users/store/${storeData.id}`))
       dispatch(
         fetchData({
-          role,
-          q: value
+          role
         })
       )
     }
     initUsers()
-  }, [dispatch, role, value, storeData])
+  }, [dispatch, role, storeData])
 
   const handleFilter = useCallback((val: string) => {
     setValue(val)
@@ -337,6 +381,21 @@ const Users = ({ storeData = null }: any) => {
       setCurrentUser(UserDataDefault)
     }
   }, [editUserOpen])
+
+  const [filteredData, setFilteredData] = useState([])
+  useEffect(() => {
+    setFilteredData(
+      store.data.filter(
+        (storeData: any) =>
+          storeData.fullName.includes(value) ||
+          storeData.username.includes(value) ||
+          storeData.email.includes(value) ||
+          storeData.address.includes(value) ||
+          storeData.city.includes(value) ||
+          storeData.phone.includes(value)
+      )
+    )
+  }, [value, store.data])
 
   return (
     <Grid container spacing={6}>
@@ -378,7 +437,7 @@ const Users = ({ storeData = null }: any) => {
           <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
           <DataGrid
             autoHeight
-            rows={store.data}
+            rows={filteredData ?? store.data}
             getRowId={(row: any) => row._id}
             columns={columns}
             pageSize={pageSize}

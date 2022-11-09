@@ -280,11 +280,10 @@ const Stores = () => {
       fetchData({
         storeType,
         city,
-        country,
-        q: value
+        country
       })
     )
-  }, [dispatch, storeType, city, country, value])
+  }, [dispatch, storeType, city, country])
 
   const handleFilter = useCallback((val: string) => {
     setValue(val)
@@ -302,6 +301,14 @@ const Stores = () => {
       setCurrentStore(StoreDataDefault)
     }
   }, [editStoreOpen])
+
+  const [filteredData, setFilteredData] = useState([])
+  useEffect(() => {
+    console.log(filteredData)
+    setFilteredData(
+      store.data.filter((storeData: any) => storeData.name.includes(value) || storeData.officialName.includes(value))
+    )
+  }, [value, store.data])
 
   return (
     <Grid container spacing={6}>
@@ -353,7 +360,7 @@ const Stores = () => {
           <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddStoreDrawer} />
           <DataGrid
             autoHeight
-            rows={store.data}
+            rows={filteredData ?? store.data}
             getRowId={(row: any) => row._id}
             columns={columns}
             pageSize={pageSize}

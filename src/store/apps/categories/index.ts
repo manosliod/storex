@@ -4,6 +4,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
+import { NextRouter } from 'next/router'
 
 interface DataParams {
   q?: string
@@ -15,14 +16,31 @@ interface Redux {
   dispatch: Dispatch<any>
 }
 
+interface data {
+  id: any
+  router: NextRouter
+  storeId: any
+}
+
+export const fetchURLForRoles = createAsyncThunk('appCurrentCategory/fetchURLForRoles', (data: data) => {
+  if (data.router.pathname.includes('/categories/view') || data.router.pathname.includes('/home/category')) {
+    return {
+      pathname: `/api/stores/${data.storeId}/category/${data.id}`
+    }
+  }
+
+  return {
+    pathname: `/api/categories`
+  }
+})
+
 // ** Fetch Categories
-export const fetchData = createAsyncThunk('appCategories/fetchData', async (params: DataParams) => {
+export const fetchData = createAsyncThunk('appCategories/fetchData', async (params: DataParams, { getState }) => {
   if (!!Object.keys(params).length) {
     if (params.hasOwnProperty('q') && !Object.keys(params.q!).length) {
       delete params.q
     }
   }
-
   const response = await axios.get('/api/categories', {
     params
   })
@@ -43,10 +61,10 @@ export const addCategory = createAsyncThunk(
   async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
-      const res = await axios.post('/api/categories', {
+      const { categories }: any = getState()
+      const res = await axios.post(categories.pathname, {
         ...data
       })
-      const { categories }: any = getState()
       dispatch(fetchData(categories.params))
 
       return { ...res.data }
@@ -133,6 +151,7 @@ export const deleteCategory = createAsyncThunk(
 export const appCategoriesSlice = createSlice({
   name: 'appCategories',
   initialState: {
+    pathname: '',
     techUsers: [],
     data: [],
     total: 1,
@@ -175,6 +194,12 @@ export const appCategoriesSlice = createSlice({
       })
       .addCase(deleteCategory.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
+      })
+      .addCase(fetchURLForRoles.fulfilled, (state, action: PayloadAction<{} | any>) => {
+        state.pathname = action.payload.pathname
+      })
+      .addCase(fetchURLForRoles.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.pathname = ''
       })
   }
 })

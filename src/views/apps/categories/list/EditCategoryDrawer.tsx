@@ -33,12 +33,14 @@ import { AppDispatch } from 'src/store'
 import toast from 'react-hot-toast'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { useAuth } from 'src/hooks/useAuth'
+import { fetchCategoryData } from '../../../../store/apps/currentCategory'
 
 interface SidebarEditUserType {
   open: boolean
   toggle: () => void
   data: CategoryData
   techUsers: any
+  currentCategoryData: any
 }
 
 interface CategoryData {
@@ -56,23 +58,17 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 
 const SidebarEditUser = (props: SidebarEditUserType) => {
   // ** Props
-  const { open, toggle, data, techUsers } = props
+  const { open, toggle, data, techUsers, currentCategoryData } = props
 
   const defaultValues = {
     name: '',
     user: ''
   }
 
-  const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
-
   const schema = yup.object().shape({
     name: yup.string().required('Name is a required field'),
     user: yup.string().required('User is a required field')
   })
-
-  // ** State
-  const [categoryUser, setCategoryUser] = useState('')
-  const [categoryUserError, setCategoryUserError] = useState<boolean>(false)
 
   // ** Hooks
   const auth = useAuth()
@@ -107,7 +103,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
 
       return
     }
-
+    if (currentCategoryData) dispatch(fetchCategoryData(currentCategoryData._id))
     toggle()
     reset()
   }
