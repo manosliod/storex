@@ -25,12 +25,14 @@ interface data {
 export const fetchURLForRoles = createAsyncThunk('appCurrentCategory/fetchURLForRoles', (data: data) => {
   if (data.router.pathname.includes('/categories/view') || data.router.pathname.includes('/home/category')) {
     return {
-      pathname: `/api/stores/${data.storeId}/category/${data.id}`
+      pathname: `/api/stores/${data.storeId}/category/${data.id}`,
+      techUsersPathname: `/api/users/store/${data.storeId}?role=tech`
     }
   }
 
   return {
-    pathname: `/api/categories`
+    pathname: `/api/categories`,
+    techUsersPathname: `/api/users/store/${data.storeId}?role=tech`
   }
 })
 
@@ -45,7 +47,7 @@ export const fetchData = createAsyncThunk('appCategories/fetchData', async (para
   const response = await axios.get(categories.pathname, {
     params
   })
-  const response_2 = await axios.get(`/api/users/store/${params.store}?role=tech`)
+  const response_2 = await axios.get(categories.techUsersPathname)
 
   return {
     categories: response.data.data,
@@ -66,7 +68,7 @@ export const addCategory = createAsyncThunk(
       const res = await axios.post(categories.pathname, {
         ...data
       })
-      dispatch(fetchData(categories.params))
+      if(data.dontFetch === 0) dispatch(fetchData(categories.params))
 
       return { ...res.data }
     } catch (err: any) {
@@ -97,7 +99,7 @@ export const editCategory = createAsyncThunk(
         ...data
       })
       const { categories }: any = getState()
-      dispatch(fetchData(categories.params))
+      if(data.dontFetch === 0) dispatch(fetchData(categories.params))
 
       return { ...res.data }
     } catch (err: any) {
@@ -122,10 +124,15 @@ export const editCategory = createAsyncThunk(
 // ** Delete Category
 export const deleteCategory = createAsyncThunk(
   'appCategories/deleteCategory',
-  async (id: number | string, { getState, dispatch, rejectWithValue }) => {
+  async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
-      const res = await axios.delete(`/api/categories/${id}`)
+      let res;
+      if(data.storeId){
+        res = await axios.delete(`/api/stores/${data.storeId}/category/${data.id}`)
+      }else{
+        res = await axios.delete(`/api/categories/${data.id}`)
+      }
       const { categories }: any = getState()
       dispatch(fetchData(categories.params))
 
@@ -153,6 +160,7 @@ export const appCategoriesSlice = createSlice({
   name: 'appCategories',
   initialState: {
     pathname: '',
+    techUsersPathname: '',
     techUsers: [],
     data: [],
     total: 1,
@@ -198,9 +206,11 @@ export const appCategoriesSlice = createSlice({
       })
       .addCase(fetchURLForRoles.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.pathname = action.payload.pathname
+        state.techUsersPathname = action.payload.techUsersPathname
       })
       .addCase(fetchURLForRoles.rejected, (state, action: PayloadAction<{} | any>) => {
         state.pathname = ''
+        state.techUsersPathname = ''
       })
   }
 })

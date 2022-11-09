@@ -12,7 +12,7 @@ interface data {
 }
 
 export const fetchURLForCategory = createAsyncThunk('appCurrentCategory/fetchURLForCategory', (data: data) => {
-  console.log(data.storeId)
+  console.log(data.storeId, 'fetchURLForCategory')
   return {
     pathname: `/api/stores/${data.storeId}/category/${data.id}`,
     techUsersPathname: `/api/users/store/${data.storeId}?role=tech`

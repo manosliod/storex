@@ -39,6 +39,7 @@ import AddCategoryDrawer from 'src/views/apps/categories/list/AddCategoryDrawer'
 import EditCategoryDrawer from 'src/views/apps/categories/list/EditCategoryDrawer'
 import { NextRouter, useRouter } from 'next/router'
 import { useAuth } from '../../hooks/useAuth'
+import {fetchCategoryData} from "../../store/apps/currentCategory";
 
 interface CategoryData {
   name?: string
@@ -135,8 +136,15 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
       handleRowOptionsClose()
     }
 
-    const handleDelete = () => {
-      dispatch(deleteCategory(id))
+    const handleDelete = async () => {
+      let storeId
+      let dontFetch = 0
+      if(router.pathname.includes('/categories/view')) {
+        dontFetch = 1
+        storeId = user.store
+      }
+      await dispatch(deleteCategory({id, storeId, dontFetch }))
+      if(router.pathname.includes('/categories/view')) dispatch(fetchCategoryData(currentCategoryData._id))
       handleRowOptionsClose()
     }
 
@@ -262,7 +270,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     }else{
       if(store.data.length > 0) setFilteredData(store.data.filter((category: any) => category.name.includes(value)))
     }
-  }, [value, store.data])
+  }, [value, store.data, subcategories])
 
   return (
     <Grid container spacing={6}>
