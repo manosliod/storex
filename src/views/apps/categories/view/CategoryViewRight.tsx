@@ -21,11 +21,13 @@ import Categories from 'src/pages/categories'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+import {useRouter} from "next/router";
 
 interface Props {
   categoryData: any
   techUsers: any
   error: any
+    subcategories: any
 }
 
 // ** Styled Tab component
@@ -38,19 +40,24 @@ const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   }
 }))
 
-const StoreViewRight = ({ categoryData, techUsers, error }: Props) => {
+const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Props) => {
   // ** Hooks
   const auth = useAuth()
   const { role }: any = auth.user
 
   // ** State
   let activeTab = 'overview'
-  if (role !== 'super-admin' && role !== 'store-admin' && role !== 'store-sub-admin') activeTab = 'categories'
+  if (role !== 'super-admin' && role !== 'store-admin' && role !== 'store-sub-admin') activeTab = 'subcategories'
   const [value, setValue] = useState<string>(activeTab)
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
+
+  const router = useRouter()
+  useEffect(() => {
+    setValue('overview')
+  }, [router.asPath]);
 
   return (
     <TabContext value={value}>
@@ -73,7 +80,7 @@ const StoreViewRight = ({ categoryData, techUsers, error }: Props) => {
           role === 'store-sub-admin' ||
           role === 'lead-tech' ||
           role === 'tech') && (
-          <Tab value='subCategories' label='Sub Categories' icon={<ShapeOutline sx={{ fontSize: '18px' }} />} />
+          <Tab value='subcategories' label='Sub Categories' icon={<ShapeOutline sx={{ fontSize: '18px' }} />} />
         )}
         {(role === 'super-admin' ||
           role === 'store-admin' ||
@@ -98,8 +105,8 @@ const StoreViewRight = ({ categoryData, techUsers, error }: Props) => {
           role === 'store-sub-admin' ||
           role === 'lead-tech' ||
           role === 'tech') && (
-          <TabPanel sx={{ p: 0 }} value='subCategories'>
-            <Categories currentCategoryData={categoryData} />
+          <TabPanel sx={{ p: 0 }} value='subcategories'>
+            <Categories currentCategoryData={categoryData} subcategories={subcategories} techUsers={techUsers} />
           </TabPanel>
         )}
         {(role === 'super-admin' ||
@@ -112,4 +119,4 @@ const StoreViewRight = ({ categoryData, techUsers, error }: Props) => {
   )
 }
 
-export default StoreViewRight
+export default CategoryViewRight

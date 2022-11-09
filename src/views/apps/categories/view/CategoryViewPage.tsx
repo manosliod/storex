@@ -41,8 +41,8 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
       await dispatch(fetchURLForCategory(data))
       dispatch(fetchCategoryData(id))
     }
-    if (id !== undefined) fetchData()
-  }, [dispatch])
+    fetchData()
+  }, [dispatch, id])
 
   if (!!Object.keys(store.error).length && store.error.statusCode === 404 && !router.pathname.includes('/home')) {
     return (
@@ -56,13 +56,19 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
       </Grid>
     )
   } else if (!!Object.keys(store.data).length) {
+    const { subcategories }: any = store.data
     return (
       <Grid container spacing={6}>
         <Grid item xs={12} md={5} lg={4}>
           <CategoryViewLeft data={store.data} />
         </Grid>
         <Grid item xs={12} md={7} lg={8}>
-          <CategoryViewRight categoryData={store.data} techUsers={store.techUsers} error={store.error} />
+          <CategoryViewRight
+            categoryData={store.data}
+            techUsers={store.techUsers}
+            error={store.error}
+            subcategories={subcategories}
+          />
         </Grid>
       </Grid>
     )

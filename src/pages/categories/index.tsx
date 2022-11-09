@@ -68,7 +68,7 @@ const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
         query: { ...params }
       },
       url,
-      { shallow: true }
+      { shallow: !router.pathname.includes('/categories/view') }
     )
   }
 }
@@ -86,7 +86,13 @@ const RenderClient = (row: CategoriesType) => {
   )
 }
 
-const Categories = ({ currentCategoryData }: any) => {
+interface Props {
+  currentCategoryData: any
+  subcategories: []
+  techUsers: any
+}
+
+const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) => {
   // ** State
   const [currentCategory, setCurrentCategory] = useState<CategoryData>(CategoryDataDefault)
   const [value, setValue] = useState<string>('')
@@ -118,8 +124,13 @@ const Categories = ({ currentCategoryData }: any) => {
     }
 
     const handleEdit = async () => {
-      const foundedCategory = store.data.find((category: CategoriesType) => category._id === id)
-      setCurrentCategory(foundedCategory!)
+      let foundedCategory: any
+      if (currentCategoryData){
+        foundedCategory = subcategories.find((category: CategoriesType) => category._id === id)
+      } else {
+        foundedCategory = store.data.find((category: CategoriesType) => category._id === id)
+      }
+      setCurrentCategory(foundedCategory)
       setEditCategoryOpen(true)
       handleRowOptionsClose()
     }
@@ -215,19 +226,18 @@ const Categories = ({ currentCategoryData }: any) => {
 
   useEffect(() => {
     const fetch = async () => {
-      if (currentCategoryData?.subcategories) {
-        const data: any = {
-          id: currentCategoryData._id,
-          router,
-          storeId: user.store
-        }
-        await dispatch(fetchURLForRoles(data))
+      const data: any = {
+        id: currentCategoryData?._id,
+        router,
+        storeId: user.store
       }
-      dispatch(
-        fetchData({
-          store: user.store
-        })
-      )
+      await dispatch(fetchURLForRoles(data))
+      if(!router.pathname.includes('/categories/view'))
+        dispatch(
+          fetchData({
+            store: user.store
+          })
+        )
     }
     fetch()
   }, [dispatch, currentCategoryData])
@@ -245,11 +255,14 @@ const Categories = ({ currentCategoryData }: any) => {
     }
   }, [editCategoryOpen])
 
-  let subcategories = currentCategoryData?.subcategories ?? store.data
   const [filteredData, setFilteredData] = useState([])
   useEffect(() => {
-    setFilteredData(subcategories.filter((category: any) => category.name.includes(value)))
-  }, [value])
+    if(subcategories !== undefined) {
+      setFilteredData(subcategories.filter((category: any) => category.name.includes(value)))
+    }else{
+      if(store.data.length > 0) setFilteredData(store.data.filter((category: any) => category.name.includes(value)))
+    }
+  }, [value, store.data])
 
   return (
     <Grid container spacing={6}>
@@ -258,7 +271,7 @@ const Categories = ({ currentCategoryData }: any) => {
           <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddCategoryDrawer} />
           <DataGrid
             autoHeight
-            rows={filteredData ?? subcategories}
+            rows={filteredData ?? store.data}
             getRowId={(row: any) => row._id}
             columns={columns}
             pageSize={pageSize}
@@ -273,14 +286,14 @@ const Categories = ({ currentCategoryData }: any) => {
       <AddCategoryDrawer
         open={addCategoryOpen}
         toggle={toggleAddCategoryDrawer}
-        techUsers={store.techUsers}
+        techUsers={store.techUsers.length > 0 ? store.techUsers : techUsers}
         currentCategoryData={currentCategoryData}
       />
       <EditCategoryDrawer
         open={editCategoryOpen}
         toggle={toggleEditCategoryDrawer}
         data={currentCategory}
-        techUsers={store.techUsers}
+        techUsers={store.techUsers.length > 0 ? store.techUsers : techUsers}
         currentCategoryData={currentCategoryData}
       />
     </Grid>

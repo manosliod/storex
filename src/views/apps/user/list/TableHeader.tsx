@@ -23,7 +23,7 @@ const TableHeader = (props: TableHeaderProps) => {
           size='small'
           value={value}
           sx={{ mr: 6, mb: 2 }}
-          placeholder='Search User'
+          placeholder='Search User by all'
           onChange={e => handleFilter(e.target.value)}
         />
 

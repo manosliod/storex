@@ -22,14 +22,9 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import Button from '@mui/material/Button'
-import { editStore } from 'src/store/apps/currentStore'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'src/store'
-import { StoresType } from 'src/types/apps/storeTypes'
-import { PayloadAction } from '@reduxjs/toolkit'
-import { addStore } from '../../../../store/apps/stores'
-import toast from 'react-hot-toast'
-import { CategoriesType } from '../../../../types/apps/catgoryTypes'
+import { editCategory } from 'src/store/apps/currentCategory'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/store'
 
 interface PostData {
   name?: string
@@ -74,7 +69,7 @@ const StoreViewOverview = ({ categoryData, techUsers, error, role }: Props) => {
 
   const dispatch = useDispatch<AppDispatch>()
   const onEditUserSubmit = async (data: PostData) => {
-    dispatch(editStore({ ...data }))
+    dispatch(editCategory({ ...data }))
   }
 
   useEffect(() => {
@@ -93,7 +88,6 @@ const StoreViewOverview = ({ categoryData, techUsers, error, role }: Props) => {
     })
   }, [reset, categoryData, error])
 
-  console.log(techUsers, 'tech')
   return (
     <Fragment>
       <Card sx={{ mb: 6 }}>

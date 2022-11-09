@@ -41,7 +41,8 @@ export const fetchData = createAsyncThunk('appCategories/fetchData', async (para
       delete params.q
     }
   }
-  const response = await axios.get('/api/categories', {
+  const { categories }: any = getState()
+  const response = await axios.get(categories.pathname, {
     params
   })
   const response_2 = await axios.get(`/api/users/store/${params.store}?role=tech`)

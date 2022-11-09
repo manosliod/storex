@@ -11,7 +11,8 @@ interface data {
   storeId: any
 }
 
-export const fetchURLForCategory = createAsyncThunk('appCurrentCategory/fetchURLForRoles', (data: data) => {
+export const fetchURLForCategory = createAsyncThunk('appCurrentCategory/fetchURLForCategory', (data: data) => {
+  console.log(data.storeId)
   return {
     pathname: `/api/stores/${data.storeId}/category/${data.id}`,
     techUsersPathname: `/api/users/store/${data.storeId}?role=tech`

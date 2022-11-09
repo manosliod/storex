@@ -97,7 +97,10 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
       return
     }
-    if (currentCategoryData) dispatch(fetchCategoryData(currentCategoryData._id))
+    if (currentCategoryData) {
+      console.log('test')
+      dispatch(fetchCategoryData(currentCategoryData._id))
+    }
 
     toggle()
     reset()
