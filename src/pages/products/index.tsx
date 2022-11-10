@@ -32,20 +32,20 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Actions Imports
-import { fetchData, deleteStore } from 'src/store/apps/stores'
+import { fetchData, deleteProduct, fetchURLForProducts } from 'src/store/apps/products'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
-import { StoresType } from 'src/types/apps/storeTypes'
+import { ProductsType } from 'src/types/apps/productTypes'
 
 // ** Custom Components Imports
-import TableHeader from 'src/views/apps/stores/list/TableHeader'
-import AddStoreDrawer from 'src/views/apps/stores/list/AddStoreDrawer'
-import EditStoreDrawer from 'src/views/apps/stores/list/EditStoreDrawer'
-import TextField from '@mui/material/TextField'
+import TableHeader from 'src/views/apps/products/list/TableHeader'
+import AddProductDrawer from 'src/views/apps/products/list/AddProductDrawer'
+import EditProductDrawer from 'src/views/apps/products/list/EditProductDrawer'
 import { NextRouter, useRouter } from 'next/router'
+import { useAuth } from '../../hooks/useAuth'
 
-interface StoreData {
+interface ProductData {
   name?: string
   officialName?: string
   storeType?: string
@@ -54,7 +54,7 @@ interface StoreData {
   country?: string
 }
 
-const StoreDataDefault: StoreData = {
+const ProductDataDefault: ProductData = {
   name: '',
   officialName: '',
   storeType: '',
@@ -64,7 +64,7 @@ const StoreDataDefault: StoreData = {
 }
 
 interface CellType {
-  row: StoresType
+  row: ProductsType
 }
 
 // ** Styled component for the link for the avatar without image
@@ -87,7 +87,7 @@ const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
 }
 
 // ** renders client column
-const RenderClient = (row: StoresType) => {
+const RenderClient = (row: ProductsType) => {
   const router = useRouter()
 
   return (
@@ -99,21 +99,19 @@ const RenderClient = (row: StoresType) => {
   )
 }
 
-const Stores = () => {
+const Products = () => {
   // ** State
-  const [currentStore, setCurrentStore] = useState<StoreData>(StoreDataDefault)
-  const [storeType, setStoreType] = useState<string>('')
-  const [city, setCity] = useState<string>('')
-  const [country, setCountry] = useState<string>('')
+  const [currentProduct, setCurrentProduct] = useState<ProductData>(ProductDataDefault)
+  const [productType, setProductType] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [pageSize, setPageSize] = useState<number>(10)
-  const [addStoreOpen, setAddStoreOpen] = useState<boolean>(false)
-  const [editStoreOpen, setEditStoreOpen] = useState<boolean>(false)
+  const [addProductOpen, setAddProductOpen] = useState<boolean>(false)
+  const [editProductOpen, setEditProductOpen] = useState<boolean>(false)
 
   // ** Hooks
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.stores)
+  const store = useSelector((state: RootState) => state.products)
 
   const RowOptions = ({ id }: { id: number | string }) => {
     // ** Hooks
@@ -132,14 +130,14 @@ const Stores = () => {
     }
 
     const handleEdit = async () => {
-      const foundedStore = store.data.find((store: StoresType) => store._id === id)
-      setCurrentStore(foundedStore!)
-      setEditStoreOpen(true)
+      const foundedProduct = store.data.find((product: ProductsType) => product._id === id)
+      setCurrentProduct(foundedProduct!)
+      setEditProductOpen(true)
       handleRowOptionsClose()
     }
 
     const handleDelete = () => {
-      dispatch(deleteStore(id))
+      dispatch(deleteProduct({ id }))
       handleRowOptionsClose()
     }
 
@@ -182,9 +180,9 @@ const Stores = () => {
       flex: 0.2,
       minWidth: 230,
       field: 'name',
-      headerName: 'Store',
+      headerName: 'Product',
       renderCell: ({ row }: CellType) => {
-        const { name, officialName } = row
+        const { name } = row
 
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -199,109 +197,107 @@ const Stores = () => {
               >
                 {name}
               </Typography>
-              <Typography
-                noWrap
-                component='a'
-                variant='caption'
-                sx={{ textDecoration: 'none', cursor: 'pointer' }}
-                onClick={() => handleRoute(router, `/stores/view/${row.id}`)}
-              >
-                {officialName}
-              </Typography>
             </Box>
           </Box>
         )
       }
     },
     {
+      flex: 0.15,
+      field: 'serial_number',
+      minWidth: 250,
+      headerName: 'Serial Number',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+            {row.serialNumber}
+          </Typography>
+        )
+      }
+    },
+    {
       flex: 0.2,
       minWidth: 150,
-      field: 'storeType',
-      headerName: 'Store Type',
+      field: 'productType',
+      headerName: 'Product Type',
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.storeType}
+            {row.productType}
           </Typography>
         )
       }
     },
     {
       flex: 0.15,
-      field: 'address',
+      field: 'price',
       minWidth: 250,
-      headerName: 'Address',
+      headerName: 'Price',
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.address}
+            {row.price}
           </Typography>
         )
       }
     },
     {
       flex: 0.15,
-      field: 'city',
+      field: 'quantity',
       minWidth: 150,
-      headerName: 'City',
+      headerName: 'Quantity',
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.city}
+            {row.quantity}
           </Typography>
         )
       }
-    },
-    {
-      flex: 0.15,
-      field: 'country',
-      minWidth: 150,
-      headerName: 'Country',
-      renderCell: ({ row }: CellType) => {
-        return (
-          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.country}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.1,
-      minWidth: 90,
-      sortable: false,
-      field: 'actions',
-      headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row._id} />
     }
   ]
 
+  if(!router.pathname.includes('/products')){
+    columns.push({
+      flex: 0.1,
+      minWidth: 90,
+      // sortable: false,
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: ({row}: CellType) => <RowOptions id={row._id}/>
+    })
+  }
+
+  const auth = useAuth()
   useEffect(() => {
-    dispatch(
-      fetchData({
-        storeType,
-        city,
-        country,
-        q: value
-      })
-    )
-  }, [dispatch, storeType, city, country, value])
+    const fetchAll = async () => {
+      const { user }: any = auth
+      await dispatch(fetchURLForProducts({}))
+      dispatch(
+        fetchData({
+          productType,
+          store: user.store
+        })
+      )
+    }
+    fetchAll()
+  }, [dispatch, productType])
 
   const handleFilter = useCallback((val: string) => {
     setValue(val)
   }, [])
 
-  const handleStoreTypeChange = useCallback((e: SelectChangeEvent) => {
-    setStoreType(e.target.value)
+  const handleProductTypeChange = useCallback((e: SelectChangeEvent) => {
+    setProductType(e.target.value)
   }, [])
 
-  const toggleAddStoreDrawer = () => setAddStoreOpen(!addStoreOpen)
-  const toggleEditStoreDrawer = () => setEditStoreOpen(!editStoreOpen)
+  const toggleAddProductDrawer = () => setAddProductOpen(!addProductOpen)
+  const toggleEditProductDrawer = () => setEditProductOpen(!editProductOpen)
 
   useEffect(() => {
-    if (!editStoreOpen) {
-      setCurrentStore(StoreDataDefault)
+    if (!editProductOpen) {
+      setCurrentProduct(ProductDataDefault)
     }
-  }, [editStoreOpen])
+  }, [editProductOpen])
 
   return (
     <Grid container spacing={6}>
@@ -312,35 +308,20 @@ const Stores = () => {
             <Grid container spacing={6}>
               <Grid item sm={4} xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel id='store-select'>Select Store Type</InputLabel>
+                  <InputLabel id='store-select'>Select Product Type</InputLabel>
                   <Select
                     fullWidth
-                    value={storeType}
+                    value={productType}
                     id='select-store-type'
-                    label='Select Store Type'
+                    label='Select Product Type'
                     labelId='store-type-select'
-                    onChange={handleStoreTypeChange}
-                    inputProps={{ placeholder: 'Select Store Type' }}
+                    onChange={handleProductTypeChange}
+                    inputProps={{ placeholder: 'Select Product Type' }}
                   >
-                    <MenuItem value=''>Select Store Type</MenuItem>
-                    <MenuItem value='individual'>Individual</MenuItem>
-                    <MenuItem value='branch'>Branch</MenuItem>
+                    <MenuItem value=''>Select Product Type</MenuItem>
+                    <MenuItem value='commercial'>Commercial</MenuItem>
+                    <MenuItem value='demo'>Demo</MenuItem>
                   </Select>
-                </FormControl>
-              </Grid>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth>
-                  <TextField size='medium' value={city} placeholder='City' onChange={e => setCity(e.target.value)} />
-                </FormControl>
-              </Grid>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    size='medium'
-                    value={country}
-                    placeholder='Country'
-                    onChange={e => setCountry(e.target.value)}
-                  />
                 </FormControl>
               </Grid>
             </Grid>
@@ -350,10 +331,10 @@ const Stores = () => {
 
       <Grid item xs={12}>
         <Card>
-          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddStoreDrawer} />
+          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddProductDrawer} />
           <DataGrid
             autoHeight
-            rows={store.data}
+            rows={store.data ?? []}
             getRowId={(row: any) => row._id}
             columns={columns}
             pageSize={pageSize}
@@ -365,10 +346,19 @@ const Stores = () => {
         </Card>
       </Grid>
 
-      <AddStoreDrawer open={addStoreOpen} toggle={toggleAddStoreDrawer} />
-      <EditStoreDrawer open={editStoreOpen} toggle={toggleEditStoreDrawer} data={currentStore} />
+      {!router.pathname.includes('/products') && (
+        <>
+          <AddProductDrawer open={addProductOpen} toggle={toggleAddProductDrawer}/>
+          <EditProductDrawer open={editProductOpen} toggle={toggleEditProductDrawer} data={currentProduct} />
+        </>
+      )}
     </Grid>
   )
 }
 
-export default Stores
+Products.acl = {
+  action: 'manage',
+  subject: 'products'
+}
+
+export default Products

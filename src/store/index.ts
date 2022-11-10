@@ -9,6 +9,7 @@ import currentStore from 'src/store/apps/currentStore'
 import currentStoreUser from 'src/store/apps/currentStoreUser'
 import categories from 'src/store/apps/categories'
 import currentCategory from 'src/store/apps/currentCategory'
+import products from 'src/store/apps/products'
 
 export const store = configureStore({
   reducer: {
@@ -18,7 +19,8 @@ export const store = configureStore({
     currentStore,
     currentStoreUser,
     categories,
-    currentCategory
+    currentCategory,
+    products
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

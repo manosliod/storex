@@ -268,7 +268,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     if (subcategories !== undefined) {
       setFilteredData(subcategories.filter((category: any) => category.name.includes(value)))
     } else {
-      if (store.data.length > 0) setFilteredData(store.data.filter((category: any) => category.name.includes(value)))
+      if (store.data) setFilteredData(store.data.filter((category: any) => category.name.includes(value)))
     }
   }, [value, store.data, subcategories])
 
@@ -294,14 +294,14 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
       <AddCategoryDrawer
         open={addCategoryOpen}
         toggle={toggleAddCategoryDrawer}
-        techUsers={store.techUsers.length > 0 ? store.techUsers : techUsers}
+        techUsers={store.techUsers ?? techUsers}
         currentCategoryData={currentCategoryData}
       />
       <EditCategoryDrawer
         open={editCategoryOpen}
         toggle={toggleEditCategoryDrawer}
         data={currentCategory}
-        techUsers={store.techUsers.length > 0 ? store.techUsers : techUsers}
+        techUsers={store.techUsers ?? techUsers}
         currentCategoryData={currentCategoryData}
       />
     </Grid>

@@ -24,29 +24,27 @@ import toast from 'react-hot-toast'
 import Close from 'mdi-material-ui/Close'
 
 // ** Store Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
-import { addStore } from 'src/store/apps/stores'
+import { addProduct } from 'src/store/apps/products'
 
 // ** Types Imports
-import { AppDispatch, RootState } from 'src/store'
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { AppDispatch } from 'src/store'
 import { PayloadAction } from '@reduxjs/toolkit'
+import {useAuth} from "../../../../hooks/useAuth";
 
 interface SidebarAddUserType {
   open: boolean
   toggle: () => void
 }
 
-interface StoreData {
+interface ProductData {
   name?: string
-  officialName?: string
-  taxId?: string
-  storeType?: string
-  address?: string
-  city?: string
-  country?: string
+  serialNumber?: string
+  price?: string
+  quantity?: string
+  productType?: string
 }
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
@@ -57,38 +55,31 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   backgroundColor: theme.palette.background.default
 }))
 
-const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
-
 const schema = yup.object().shape({
   name: yup.string().required('Name is a required field'),
-  officialName: yup.string().required('Official Name is a required field'),
-  taxId: yup.string().required('Tax ID Number is a required field').matches(/^\d+$/, 'Tax ID must be a number'),
-  address: yup.string().required('Address is a required field'),
-  city: yup.string().required('City is a required field'),
-  country: yup.string().required('Country is a required field'),
-  phone: yup
+  serialNumber: yup.string().required('Serial Number is a required field').matches(/^[-+]?\d*$/, 'Serial Number must be a number ex. 123'),
+  price: yup
     .string()
-    .required('Phone is a required field')
-    .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
+    .required('Price is a required field')
+    .matches(/[+-]?([0-9]*[.])?[0-9]+/, 'Price must be a number ex. 123, 45.6'),
+  quantity: yup
+    .string()
+    .required('Quantity is a required field')
+    .matches(/^[-+]?\d*$/, 'Quantity must be a number ex. 123'),
+  productType: yup.string().required('Product Type is a required field')
 })
 
 const defaultValues = {
   name: '',
-  officialName: '',
-  taxId: '',
-  address: '',
-  city: '',
-  country: '',
-  phone: ''
+  serialNumber: '',
+  price: '',
+  quantity: '',
+  productType: ''
 }
 
 const SidebarAddUser = (props: SidebarAddUserType) => {
   // ** Props
   const { open, toggle } = props
-
-  // ** State
-  const [storeType, setStoreType] = useState<string>('')
-  const [storeTypeError, setStoreTypeError] = useState<boolean>(false)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -103,13 +94,10 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     mode: 'onChange',
     resolver: yupResolver(schema)
   })
-
-  const onSubmit = async (data: StoreData) => {
-    setStoreTypeError(storeType === '')
-
-    if (storeType === '') return
-
-    const action: PayloadAction<{} | any> = await dispatch(addStore({ ...data, storeType }))
+  const auth = useAuth()
+  const { user }: any = auth
+  const onSubmit = async (data: ProductData) => {
+    const action: PayloadAction<{} | any> = await dispatch(addProduct({ ...data, store: user.store }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
       if (type === 'fail' || type === 'error') {
@@ -143,7 +131,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h6'>Add Store</Typography>
+        <Typography variant='h6'>Add Product</Typography>
         <Close fontSize='small' onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </Header>
       <Box sx={{ p: 5 }}>
@@ -159,85 +147,62 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
-              name='officialName'
+              name='serialNumber'
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
-                <TextField {...field} autoFocus label='Official Name' error={Boolean(errors.officialName)} />
+                <TextField {...field} autoFocus label='Serial Number' error={Boolean(errors.serialNumber)} />
               )}
             />
-            {errors.officialName && (
-              <FormHelperText sx={{ color: 'error.main' }}>{errors.officialName.message}</FormHelperText>
+            {errors.serialNumber && (
+              <FormHelperText sx={{ color: 'error.main' }}>{errors.serialNumber.message}</FormHelperText>
+            )}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <InputLabel id='product-type-select'>Select Product Type</InputLabel>
+            <Controller
+              name='productType'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  fullWidth
+                  id='select-product-type'
+                  label='Select Product Type'
+                  labelId='product-type-select'
+                  inputProps={{ placeholder: 'Select Product Type' }}
+                  error={Boolean(errors.productType)}
+                >
+                  <MenuItem value='' disabled={true}>
+                    Select Product Type
+                  </MenuItem>
+                  <MenuItem value='commercial'>Commercial</MenuItem>
+                  <MenuItem value='demo'>Demo</MenuItem>
+                </Select>
+              )}
+            />
+            {errors.productType && (
+              <FormHelperText sx={{ color: 'error.main' }}>{errors.productType.message}</FormHelperText>
             )}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
-              name='taxId'
+              name='price'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => (
-                <TextField {...field} autoFocus label='Tax ID Number' error={Boolean(errors.taxId)} />
-              )}
+              render={({ field }) => <TextField {...field} autoFocus label='Price' error={Boolean(errors.price)} />}
             />
-            {errors.taxId && <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 4 }}>
-            <InputLabel id='store-type-select'>Select Store Type</InputLabel>
-            <Select
-              fullWidth
-              id='select-store-type'
-              label='Select Store Type'
-              labelId='store-type-select'
-              value={storeType}
-              onChange={e => setStoreType(e.target.value)}
-              inputProps={{ placeholder: 'Select Store Type' }}
-              error={storeTypeError}
-            >
-              <MenuItem value='' disabled={true}>
-                Select Store Type
-              </MenuItem>
-              <MenuItem value='individual'>Individual</MenuItem>
-              <MenuItem value='branch'>Branch</MenuItem>
-            </Select>
-            {storeTypeError && (
-              <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>
-            )}
+            {errors.price && <FormHelperText sx={{ color: 'error.main' }}>{errors.price.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <Controller
-              name='address'
+              name='quantity'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <TextField {...field} autoFocus label='Address' error={Boolean(errors.address)} />}
+              render={({ field }) => <TextField {...field} label='Quantity' error={Boolean(errors.quantity)} />}
             />
-            {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 4 }}>
-            <Controller
-              name='city'
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
-            />
-            {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 4 }}>
-            <Controller
-              name='country'
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
-            />
-            {errors.country && <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 4 }}>
-            <Controller
-              name='phone'
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => <TextField {...field} label='Phone' error={Boolean(errors.phone)} />}
-            />
-            {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
+            {errors.quantity && <FormHelperText sx={{ color: 'error.main' }}>{errors.quantity.message}</FormHelperText>}
           </FormControl>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
