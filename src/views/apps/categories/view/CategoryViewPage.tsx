@@ -30,13 +30,14 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
   const store = useSelector((state: RootState) => state.currentCategory)
 
   const auth = useAuth()
-
+  const { categories, role }: any = auth.user
   useEffect(() => {
     const fetchData = async () => {
       const { user }: any = auth
       const data: any = {
         id: id,
-        storeId: user.store
+        storeId: user.store,
+        role: user.role
       }
       await dispatch(fetchURLForCategory(data))
       dispatch(fetchCategoryData(id))
@@ -62,14 +63,20 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
         <Grid item xs={12} md={5} lg={4}>
           <CategoryViewLeft data={store.data} />
         </Grid>
-        <Grid item xs={12} md={7} lg={8}>
-          <CategoryViewRight
-            categoryData={store.data}
-            techUsers={store.techUsers}
-            error={store.error}
-            subcategories={subcategories}
-          />
-        </Grid>
+        {(role === 'super-admin' ||
+          role === 'store-admin' ||
+          role === 'store-sub-admin' ||
+          role === 'lead-tech' ||
+          (role === 'tech' && categories.find((category: any) => category.toString() === id))) && (
+          <Grid item xs={12} md={7} lg={8}>
+            <CategoryViewRight
+              categoryData={store.data}
+              techUsers={store.techUsers}
+              error={store.error}
+              subcategories={subcategories}
+            />
+          </Grid>
+        )}
       </Grid>
     )
   } else {

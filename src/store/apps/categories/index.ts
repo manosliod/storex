@@ -20,19 +20,26 @@ interface data {
   id: any
   router: NextRouter
   storeId: any
+  role?: any
 }
 
 export const fetchURLForRoles = createAsyncThunk('appCurrentCategory/fetchURLForRoles', (data: data) => {
   if (data.router.pathname.includes('/categories/view') || data.router.pathname.includes('/home/category')) {
     return {
       pathname: `/api/stores/${data.storeId}/category/${data.id}`,
-      techUsersPathname: `/api/users/store/${data.storeId}?role=tech`
+      techUsersPathname:
+        data.role === 'tech' || data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
+          ? ''
+          : `/api/users/store/${data.storeId}?role=tech`
     }
   }
 
   return {
     pathname: `/api/categories`,
-    techUsersPathname: `/api/users/store/${data.storeId}?role=tech`
+    techUsersPathname:
+      data.role === 'tech' || data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
+        ? ''
+        : `/api/users/store/${data.storeId}?role=tech`
   }
 })
 
@@ -47,11 +54,12 @@ export const fetchData = createAsyncThunk('appCategories/fetchData', async (para
   const response = await axios.get(categories.pathname, {
     params
   })
-  const response_2 = await axios.get(categories.techUsersPathname)
+  let response_2
+  if (categories.techUsersPathname !== '') response_2 = await axios.get(categories.techUsersPathname)
 
   return {
     categories: response.data.data,
-    techUsers: response_2.data.data,
+    techUsers: response_2 ? response_2.data.data : '',
     total: response.data.results,
     params: params,
     allData: response.data

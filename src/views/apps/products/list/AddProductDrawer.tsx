@@ -32,7 +32,7 @@ import { addProduct } from 'src/store/apps/products'
 // ** Types Imports
 import { AppDispatch } from 'src/store'
 import { PayloadAction } from '@reduxjs/toolkit'
-import {useAuth} from "../../../../hooks/useAuth";
+import { useAuth } from '../../../../hooks/useAuth'
 
 interface SidebarAddUserType {
   open: boolean
@@ -57,7 +57,10 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is a required field'),
-  serialNumber: yup.string().required('Serial Number is a required field').matches(/^[-+]?\d*$/, 'Serial Number must be a number ex. 123'),
+  serialNumber: yup
+    .string()
+    .required('Serial Number is a required field')
+    .matches(/^[-+]?\d*$/, 'Serial Number must be a number ex. 123'),
   price: yup
     .string()
     .required('Price is a required field')

@@ -2,7 +2,7 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import {useRouter} from "next/router";
+import { useRouter } from 'next/router'
 
 interface TableHeaderProps {
   value: string
@@ -29,7 +29,7 @@ const TableHeader = (props: TableHeaderProps) => {
         />
 
         {!router.pathname.includes('/products') && (
-          <Button sx={{mb: 2}} onClick={toggle} variant='contained'>
+          <Button sx={{ mb: 2 }} onClick={toggle} variant='contained'>
             Add Product
           </Button>
         )}

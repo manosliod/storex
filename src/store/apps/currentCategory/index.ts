@@ -9,13 +9,17 @@ import { NextRouter } from 'next/router'
 interface data {
   id: any
   storeId: any
+  role?: any
 }
 
 export const fetchURLForCategory = createAsyncThunk('appCurrentCategory/fetchURLForCategory', (data: data) => {
   console.log(data.storeId, 'fetchURLForCategory')
   return {
     pathname: `/api/stores/${data.storeId}/category/${data.id}`,
-    techUsersPathname: `/api/users/store/${data.storeId}?role=tech`
+    techUsersPathname:
+      data.role === 'tech' || data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
+        ? ''
+        : `/api/users/store/${data.storeId}?role=tech`
   }
 })
 
@@ -32,10 +36,12 @@ export const fetchCategoryData = createAsyncThunk(
     try {
       const { currentCategory }: any = getState()
       const res = await axios.get(currentCategory.pathname)
-      const response_2 = await axios.get(currentCategory.techUsersPathname)
+
+      let response_2
+      if (currentCategory.techUsersPathname !== '') response_2 = await axios.get(currentCategory.techUsersPathname)
 
       return {
-        techUsers: response_2.data.data,
+        techUsers: response_2 ? response_2.data.data : '',
         category: res.data.doc,
         allData: res.data,
         error: {}
@@ -67,10 +73,11 @@ export const editCategory = createAsyncThunk(
       const res = await axios.patch(currentCategory.pathname, {
         ...data
       })
-      const response_2 = await axios.get(currentCategory.techUsersPathname)
+      let response_2
+      if (currentCategory.techUsersPathname !== '') response_2 = await axios.get(currentCategory.techUsersPathname)
 
       return {
-        techUsers: response_2.data.data,
+        techUsers: response_2 ? response_2.data.data : '',
         category: res.data.doc,
         allData: res.data,
         error: {}

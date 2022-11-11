@@ -148,9 +148,14 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
       handleRowOptionsClose()
     }
 
+    const { categories, role }: any = user
     return (
       <>
-        <IconButton size='small' onClick={handleRowOptionsClick}>
+        <IconButton
+          disabled={role === 'tech' && !categories.find((category: any) => category.toString() === id)}
+          size='small'
+          onClick={handleRowOptionsClick}
+        >
           <DotsVertical />
         </IconButton>
         <Menu
@@ -237,7 +242,8 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
       const data: any = {
         id: currentCategoryData?._id,
         router,
-        storeId: user.store
+        storeId: user.store,
+        role: user.role
       }
       await dispatch(fetchURLForRoles(data))
       if (!router.pathname.includes('/categories/view'))

@@ -27,6 +27,8 @@ export type UserDataType = {
   phone?: string | null
   birthdate?: string | null
   store?: string | null
+  categories?: [] | string
+  products?: [] | string
 
   // avatar?: string | null
 }

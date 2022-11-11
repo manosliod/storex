@@ -20,13 +20,15 @@ import StoreViewRight from 'src/views/apps/stores/view/StoreViewRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
+import { useAuth } from '../../../../hooks/useAuth'
 
 const StoreView = ({ id }: StoreLayoutType) => {
   // ** State
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.currentStore)
-
+  const auth = useAuth()
+  const { role }: any = auth.user
   useEffect(() => {
     if (id !== undefined) dispatch(fetchStoreData(id))
   }, [dispatch])
@@ -48,9 +50,11 @@ const StoreView = ({ id }: StoreLayoutType) => {
         <Grid item xs={12} md={5} lg={4}>
           <StoreViewLeft data={store.data} />
         </Grid>
-        <Grid item xs={12} md={7} lg={8}>
-          <StoreViewRight storeData={store.data} error={store.error} />
-        </Grid>
+        {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin' || role === 'lead-tech') && (
+          <Grid item xs={12} md={7} lg={8}>
+            <StoreViewRight storeData={store.data} error={store.error} />
+          </Grid>
+        )}
       </Grid>
     )
   } else {

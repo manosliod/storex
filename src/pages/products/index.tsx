@@ -256,14 +256,14 @@ const Products = () => {
     }
   ]
 
-  if(!router.pathname.includes('/products')){
+  if (!router.pathname.includes('/products')) {
     columns.push({
       flex: 0.1,
       minWidth: 90,
       // sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({row}: CellType) => <RowOptions id={row._id}/>
+      renderCell: ({ row }: CellType) => <RowOptions id={row._id} />
     })
   }
 
@@ -348,7 +348,7 @@ const Products = () => {
 
       {!router.pathname.includes('/products') && (
         <>
-          <AddProductDrawer open={addProductOpen} toggle={toggleAddProductDrawer}/>
+          <AddProductDrawer open={addProductOpen} toggle={toggleAddProductDrawer} />
           <EditProductDrawer open={editProductOpen} toggle={toggleEditProductDrawer} data={currentProduct} />
         </>
       )}
