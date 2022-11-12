@@ -47,9 +47,10 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
 
   // ** State
   let activeTab = 'overview'
-  if (role === 'tech' && !categories.find((category: any) => category.toString() === categoryData._id))
-    activeTab = 'subcategories'
-  else if (role !== 'super-admin' && role !== 'store-admin' && role !== 'store-sub-admin' && role !== 'tech')
+  if (
+    (role !== 'super-admin' && role !== 'store-admin' && role !== 'store-sub-admin' && role !== 'tech') ||
+    (role === 'tech' && !categories.find((category: any) => category.toString() === categoryData._id))
+  )
     activeTab = 'subcategories'
   const [value, setValue] = useState<string>(activeTab)
 

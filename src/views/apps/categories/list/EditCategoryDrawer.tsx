@@ -66,7 +66,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const dispatch = useDispatch<AppDispatch>()
   const defaultValues = {
     name: '',
-    user: user.role === 'tech' ? user._id : ''
+    user: ''
   }
 
   const schema = yup.object().shape({

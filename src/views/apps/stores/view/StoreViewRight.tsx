@@ -67,12 +67,6 @@ const StoreViewRight = ({ storeData, error }: Props) => {
         {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') && (
           <Tab value='staff' label='Staff' icon={<AccountOutline sx={{ fontSize: '18px' }} />} />
         )}
-        {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin' || role === 'lead-tech') && (
-          <Tab value='categories' label='Categories' icon={<ShapeOutline sx={{ fontSize: '18px' }} />} />
-        )}
-        {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin' || role === 'lead-tech') && (
-          <Tab value='products' label='Products' icon={<PackageVariantClosed sx={{ fontSize: '18px' }} />} />
-        )}
       </TabList>
       <Box sx={{ mt: 3 }}>
         {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') && (
@@ -84,14 +78,6 @@ const StoreViewRight = ({ storeData, error }: Props) => {
           <TabPanel sx={{ p: 0 }} value='staff'>
             <StoreViewStaff storeData={storeData} />
           </TabPanel>
-        )}
-        {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin' || role === 'lead-tech') && (
-          <TabPanel sx={{ p: 0 }} value='categories'>
-            <Categories />
-          </TabPanel>
-        )}
-        {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin' || role === 'lead-tech') && (
-          <TabPanel sx={{ p: 0 }} value='products'></TabPanel>
         )}
       </Box>
     </TabContext>

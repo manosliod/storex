@@ -98,9 +98,10 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setUser(null)
     setIsInitialized(false)
+    await axios.get('/api/users/logout')
     window.localStorage.removeItem('userData')
     window.localStorage.removeItem(authConfig.storageTokenKeyName)
     deleteCookie('StorexJWT', { path: '/' })

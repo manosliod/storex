@@ -23,8 +23,10 @@ const Home = () => {
   const { role }: any = auth.user
 
   useEffect(() => {
-    const { store }: any = auth.user
-    if (store !== undefined) dispatch(fetchStoreData(store))
+    if (role !== 'super-admin') {
+      const {store}: any = auth.user
+      if (store !== undefined) dispatch(fetchStoreData(store))
+    }
   }, [dispatch, auth.user])
 
   if (!Object.keys(store.data).length && role !== 'super-admin') {
@@ -42,7 +44,7 @@ const Home = () => {
         <Card>
           <CardHeader title='Welcome 🚀'></CardHeader>
           <CardContent>
-            <Typography sx={{ mb: 2 }}>As a Super Admin you can manage everything you want.</Typography>
+            <Typography sx={{ mb: 2 }}>As a Super Admin you can manage everything except Store Categories and Products.</Typography>
             <Typography>Please deal it with care.</Typography>
           </CardContent>
         </Card>
