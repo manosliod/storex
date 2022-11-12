@@ -326,7 +326,6 @@ const Stores = () => {
 
   const [filteredData, setFilteredData] = useState([])
   useEffect(() => {
-    console.log(filteredData)
     setFilteredData(
       store.data.filter((storeData: any) => storeData.name.includes(value) || storeData.officialName.includes(value))
     )

@@ -96,7 +96,6 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
       if (type === 'fail' || type === 'error') {
         toast.error(message, { duration: 5000 })
       } else {
-        console.log(action)
         setError(type, {
           type: 'manual',
           message

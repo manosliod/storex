@@ -111,7 +111,6 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
     if (storeType === '') return
 
     const action: PayloadAction<{} | any> = await dispatch(editStore({ ...data, storeType }))
-    console.log(action)
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
 

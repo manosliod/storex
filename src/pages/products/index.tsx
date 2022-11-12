@@ -289,11 +289,6 @@ const Products = ({ category }: any | undefined) => {
     const fetchAll = async () => {
       const { user }: any = auth
       await dispatch(fetchURLForProducts({}))
-      console.log({
-        productType,
-        store: user.store,
-        category: category?._id
-      })
       dispatch(
         fetchData({
           productType,

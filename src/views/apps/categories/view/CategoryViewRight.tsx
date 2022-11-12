@@ -45,7 +45,6 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
   // ** Hooks
   const auth = useAuth()
   const { role, categories }: any = auth.user
-  console.log(categoryData, 'category')
 
   // ** State
   let activeTab = 'overview'

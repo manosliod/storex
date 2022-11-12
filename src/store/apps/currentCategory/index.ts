@@ -13,7 +13,6 @@ interface data {
 }
 
 export const fetchURLForCategory = createAsyncThunk('appCurrentCategory/fetchURLForCategory', (data: data) => {
-  console.log(data.storeId, 'fetchURLForCategory')
   return {
     pathname: `/api/stores/${data.storeId}/category/${data.id}`,
     techUsersPathname:
@@ -155,8 +154,6 @@ export const appCurrentCategorySlice = createSlice({
         state.allData = action.payload.allData
       })
       .addCase(fetchCategoryData.rejected, (state, action: PayloadAction<{} | any>) => {
-        console.log(action)
-        console.log(state.pathname)
         state.error = action.payload.error
       })
       .addCase(editCategory.fulfilled, (state, action: PayloadAction<{} | any>) => {
