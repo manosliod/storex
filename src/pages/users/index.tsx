@@ -178,7 +178,7 @@ const Users = ({ storeData = null }: any) => {
     handleDeleteClose()
   }
 
-  const RowOptions = ({ id, fullName, username }: { id: number | string, fullName: string, username: string }) => {
+  const RowOptions = ({ id, fullName, username }: { id: number | string, fullName?: string, username: string }) => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 

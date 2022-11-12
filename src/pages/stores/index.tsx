@@ -136,7 +136,7 @@ const Stores = () => {
     handleDeleteClose()
   }
 
-  const RowOptions = ({ id, name }: { id: number | string, name: string }) => {
+  const RowOptions = ({ id, name }: { id: number | string, name?: string }) => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
