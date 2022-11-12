@@ -6,11 +6,16 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Menu from '@mui/material/Menu'
 import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
 import { DataGrid } from '@mui/x-data-grid'
 import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Icons Imports
 import DotsVertical from 'mdi-material-ui/DotsVertical'
@@ -101,6 +106,27 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
   const [addCategoryOpen, setAddCategoryOpen] = useState<boolean>(false)
   const [editCategoryOpen, setEditCategoryOpen] = useState<boolean>(false)
 
+  // Handle Delete dialog
+  const [selectedCategory, setSelectedCategory] = useState<any>(null)
+  const [openDelete, setOpenDelete] = useState<boolean>(false)
+  const handleDeleteClickOpen = () => setOpenDelete(true)
+  const handleDeleteClose = () => {
+    setSelectedCategory(null)
+    setOpenDelete(false)
+  }
+  const handleDeleteAuth = async () => {
+    let storeId
+    let dontFetch = 0
+    if (router.pathname.includes('/categories/view')) {
+      dontFetch = 1
+      storeId = user.store
+    }
+    const id = selectedCategory.id
+    await dispatch(deleteCategory({ id, storeId, dontFetch }))
+    if (router.pathname.includes('/categories/view')) dispatch(fetchCategoryData(currentCategoryData._id))
+    handleDeleteClose()
+  }
+
   // ** Hooks
   const auth = useAuth()
   const { user }: any = auth
@@ -108,7 +134,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.categories)
 
-  const RowOptions = ({ id }: { id: number | string }) => {
+  const RowOptions = ({ id, name }: { id: number | string, name: string }) => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
@@ -137,14 +163,8 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     }
 
     const handleDelete = async () => {
-      let storeId
-      let dontFetch = 0
-      if (router.pathname.includes('/categories/view')) {
-        dontFetch = 1
-        storeId = user.store
-      }
-      await dispatch(deleteCategory({ id, storeId, dontFetch }))
-      if (router.pathname.includes('/categories/view')) dispatch(fetchCategoryData(currentCategoryData._id))
+      setSelectedCategory({id, name})
+      handleDeleteClickOpen()
       handleRowOptionsClose()
     }
 
@@ -233,7 +253,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row._id} />
+      renderCell: ({ row }: CellType) => <RowOptions id={row._id} name={row.name} />
     }
   ]
 
@@ -310,6 +330,31 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
         techUsers={store.techUsers ?? techUsers}
         currentCategoryData={currentCategoryData}
       />
+
+      <Dialog
+          open={openDelete}
+          onClose={handleDeleteClose}
+          aria-labelledby='user-view-edit'
+          sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+          aria-describedby='user-view-edit-description'
+      >
+        <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
+          Delete {selectedCategory?.name ?? ''}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText variant='body2' id='user-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
+            Are you sure you want to delete this?
+          </DialogContentText>
+          <Grid container sx={{ justifyContent: 'center' }}>
+            <Button color='error' variant='contained' sx={{ mr: 3 }} onClick={handleDeleteAuth}>
+              Delete
+            </Button>
+            <Button variant='outlined' onClick={handleDeleteClose}>
+              Cancel
+            </Button>
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Grid>
   )
 }

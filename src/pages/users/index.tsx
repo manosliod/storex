@@ -49,6 +49,12 @@ import EditUserDrawer from 'src/views/apps/user/list/EditUserDrawer'
 import axios from 'axios'
 import { NextRouter, useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
+import {deleteStore} from "../../store/apps/stores";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 
 interface UserRoleType {
   [key: string]: ReactElement
@@ -154,7 +160,25 @@ const Users = ({ storeData = null }: any) => {
     )
   }
 
-  const RowOptions = ({ id }: { id: number | string }) => {
+  // Handle Delete dialog
+  const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [openDelete, setOpenDelete] = useState<boolean>(false)
+  const handleDeleteClickOpen = () => setOpenDelete(true)
+  const handleDeleteClose = () => {
+    setSelectedUser(null)
+    setOpenDelete(false)
+  }
+  const handleDeleteAuth = async () => {
+    if (storeData !== null) {
+      await dispatch(setUpdateDeleteUrl(`/api/users/${selectedUser.id}/store/${storeData._id}`))
+    } else {
+      await dispatch(setUpdateDeleteUrl(`/api/users/${selectedUser.id}`))
+    }
+    dispatch(deleteUser(selectedUser.id))
+    handleDeleteClose()
+  }
+
+  const RowOptions = ({ id, fullName, username }: { id: number | string, fullName: string, username: string }) => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
@@ -182,12 +206,8 @@ const Users = ({ storeData = null }: any) => {
     }
 
     const handleDelete = async () => {
-      if (storeData !== null) {
-        await dispatch(setUpdateDeleteUrl(`/api/users/${id}/store/${storeData._id}`))
-      } else {
-        await dispatch(setUpdateDeleteUrl(`/api/users/${id}`))
-      }
-      dispatch(deleteUser(id))
+      setSelectedUser({id, fullName, username})
+      handleDeleteClickOpen()
       handleRowOptionsClose()
     }
 
@@ -349,7 +369,7 @@ const Users = ({ storeData = null }: any) => {
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row._id} />
+      renderCell: ({ row }: CellType) => <RowOptions id={row._id} fullName={row.fullName} username={row.username} />
     }
   ]
 
@@ -451,6 +471,31 @@ const Users = ({ storeData = null }: any) => {
 
       <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
       <EditUserDrawer open={editUserOpen} toggle={toggleEditUserDrawer} data={currentUser} storeData={storeData} />
+
+      <Dialog
+          open={openDelete}
+          onClose={handleDeleteClose}
+          aria-labelledby='user-view-edit'
+          sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+          aria-describedby='user-view-edit-description'
+      >
+        <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
+          Delete {selectedUser?.fullName} - @{selectedUser?.username ?? ''}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText variant='body2' id='user-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
+            Are you sure you want to delete this?
+          </DialogContentText>
+          <Grid container sx={{ justifyContent: 'center' }}>
+            <Button color='error' variant='contained' sx={{ mr: 3 }} onClick={handleDeleteAuth}>
+              Delete
+            </Button>
+            <Button variant='outlined' onClick={handleDeleteClose}>
+              Cancel
+            </Button>
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Grid>
   )
 }

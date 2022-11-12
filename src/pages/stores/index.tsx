@@ -44,6 +44,13 @@ import AddStoreDrawer from 'src/views/apps/stores/list/AddStoreDrawer'
 import EditStoreDrawer from 'src/views/apps/stores/list/EditStoreDrawer'
 import TextField from '@mui/material/TextField'
 import { NextRouter, useRouter } from 'next/router'
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import {deleteCategory} from "../../store/apps/categories";
+import {fetchCategoryData} from "../../store/apps/currentCategory";
 
 interface StoreData {
   name?: string
@@ -115,7 +122,21 @@ const Stores = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.stores)
 
-  const RowOptions = ({ id }: { id: number | string }) => {
+  // Handle Delete dialog
+  const [selectedStore, setSelectedStore] = useState<any>(null)
+  const [openDelete, setOpenDelete] = useState<boolean>(false)
+  const handleDeleteClickOpen = () => setOpenDelete(true)
+  const handleDeleteClose = () => {
+    setSelectedStore(null)
+    setOpenDelete(false)
+  }
+  const handleDeleteAuth = async () => {
+    const id = selectedStore.id
+    dispatch(deleteStore(id))
+    handleDeleteClose()
+  }
+
+  const RowOptions = ({ id, name }: { id: number | string, name: string }) => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
@@ -139,7 +160,8 @@ const Stores = () => {
     }
 
     const handleDelete = () => {
-      dispatch(deleteStore(id))
+      setSelectedStore({id, name})
+      handleDeleteClickOpen()
       handleRowOptionsClose()
     }
 
@@ -271,7 +293,7 @@ const Stores = () => {
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row._id} />
+      renderCell: ({ row }: CellType) => <RowOptions id={row._id} name={row.name} />
     }
   ]
 
@@ -374,6 +396,30 @@ const Stores = () => {
 
       <AddStoreDrawer open={addStoreOpen} toggle={toggleAddStoreDrawer} />
       <EditStoreDrawer open={editStoreOpen} toggle={toggleEditStoreDrawer} data={currentStore} />
+      <Dialog
+          open={openDelete}
+          onClose={handleDeleteClose}
+          aria-labelledby='user-view-edit'
+          sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+          aria-describedby='user-view-edit-description'
+      >
+        <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
+          Delete {selectedStore?.name ?? ''}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText variant='body2' id='user-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
+            Are you sure you want to delete this?
+          </DialogContentText>
+          <Grid container sx={{ justifyContent: 'center' }}>
+            <Button color='error' variant='contained' sx={{ mr: 3 }} onClick={handleDeleteAuth}>
+              Delete
+            </Button>
+            <Button variant='outlined' onClick={handleDeleteClose}>
+              Cancel
+            </Button>
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Grid>
   )
 }
