@@ -10,6 +10,7 @@ interface DataParams {
   q?: string
   productType?: string
   store: any
+  category?: any | undefined
 }
 
 interface Redux {
@@ -24,15 +25,15 @@ interface data {
 }
 
 export const fetchURLForProducts = createAsyncThunk('appCurrentProduct/fetchURLForRoles', (data: data) => {
-  if (data.router) {
-    const { pathname }: any = data.router
-    if (pathname.includes('/products/view') || pathname.includes('/home/product')) {
-      return {
-        pathname: `/api/stores/${data.storeId}/product/${data.id}`,
-        categoriesPathname: ``
-      }
-    }
-  }
+  // if (data.router) {
+  //   const { pathname }: any = data.router
+  //   if (pathname.includes('/products/view') || pathname.includes('/home/product')) {
+  //     return {
+  //       pathname: `/api/stores/${data.storeId}/product/${data.id}`,
+  //       categoriesPathname: ``
+  //     }
+  //   }
+  // }
 
   return {
     pathname: `/api/products`
@@ -135,7 +136,7 @@ export const deleteProduct = createAsyncThunk(
       if (data.storeId) {
         res = await axios.delete(`/api/stores/${data.storeId}/product/${data.id}`)
       } else {
-        res = await axios.delete(`/api/products/${data.id}`)
+        res = await axios.delete(`/api/products/${data.id}?store=${data.store}`)
       }
       const { products }: any = getState()
       dispatch(fetchData(products.params))

@@ -99,6 +99,13 @@ interface Props {
 }
 
 const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) => {
+  // ** Hooks
+  const auth = useAuth()
+  const { user }: any = auth
+  const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const store = useSelector((state: RootState) => state.categories)
+
   // ** State
   const [currentCategory, setCurrentCategory] = useState<CategoryData>(CategoryDataDefault)
   const [value, setValue] = useState<string>('')
@@ -127,14 +134,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     handleDeleteClose()
   }
 
-  // ** Hooks
-  const auth = useAuth()
-  const { user }: any = auth
-  const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.categories)
-
-  const RowOptions = ({ id, name }: { id: number | string, name: string }) => {
+  const RowOptions = ({ id, name }: { id: number | string; name: string }) => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
@@ -163,7 +163,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     }
 
     const handleDelete = async () => {
-      setSelectedCategory({id, name})
+      setSelectedCategory({ id, name })
       handleDeleteClickOpen()
       handleRowOptionsClose()
     }
@@ -332,11 +332,11 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
       />
 
       <Dialog
-          open={openDelete}
-          onClose={handleDeleteClose}
-          aria-labelledby='user-view-edit'
-          sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
-          aria-describedby='user-view-edit-description'
+        open={openDelete}
+        onClose={handleDeleteClose}
+        aria-labelledby='user-view-edit'
+        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+        aria-describedby='user-view-edit-description'
       >
         <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
           Delete {selectedCategory?.name ?? ''}

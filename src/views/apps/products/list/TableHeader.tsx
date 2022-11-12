@@ -28,7 +28,7 @@ const TableHeader = (props: TableHeaderProps) => {
           onChange={e => handleFilter(e.target.value)}
         />
 
-        {!router.pathname.includes('/products') && (
+        {router.pathname.includes('/categories/view') && (
           <Button sx={{ mb: 2 }} onClick={toggle} variant='contained'>
             Add Product
           </Button>

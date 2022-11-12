@@ -49,12 +49,12 @@ import EditUserDrawer from 'src/views/apps/user/list/EditUserDrawer'
 import axios from 'axios'
 import { NextRouter, useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
-import {deleteStore} from "../../store/apps/stores";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
+import { deleteStore } from '../../store/apps/stores'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
 
 interface UserRoleType {
   [key: string]: ReactElement
@@ -178,7 +178,7 @@ const Users = ({ storeData = null }: any) => {
     handleDeleteClose()
   }
 
-  const RowOptions = ({ id, fullName, username }: { id: number | string, fullName?: string, username: string }) => {
+  const RowOptions = ({ id, fullName, username }: { id: number | string; fullName?: string; username: string }) => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
@@ -206,7 +206,7 @@ const Users = ({ storeData = null }: any) => {
     }
 
     const handleDelete = async () => {
-      setSelectedUser({id, fullName, username})
+      setSelectedUser({ id, fullName, username })
       handleDeleteClickOpen()
       handleRowOptionsClose()
     }
@@ -473,11 +473,11 @@ const Users = ({ storeData = null }: any) => {
       <EditUserDrawer open={editUserOpen} toggle={toggleEditUserDrawer} data={currentUser} storeData={storeData} />
 
       <Dialog
-          open={openDelete}
-          onClose={handleDeleteClose}
-          aria-labelledby='user-view-edit'
-          sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
-          aria-describedby='user-view-edit-description'
+        open={openDelete}
+        onClose={handleDeleteClose}
+        aria-labelledby='user-view-edit'
+        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+        aria-describedby='user-view-edit-description'
       >
         <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
           Delete {selectedUser?.fullName} - @{selectedUser?.username ?? ''}

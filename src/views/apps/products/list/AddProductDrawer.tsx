@@ -37,6 +37,7 @@ import { useAuth } from '../../../../hooks/useAuth'
 interface SidebarAddUserType {
   open: boolean
   toggle: () => void
+  category: any
 }
 
 interface ProductData {
@@ -58,31 +59,34 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 const schema = yup.object().shape({
   name: yup.string().required('Name is a required field'),
   serialNumber: yup
-    .string()
-    .required('Serial Number is a required field')
-    .matches(/^[-+]?\d*$/, 'Serial Number must be a number ex. 123'),
+    .number()
+    .positive('Serial Number must be a positive Number')
+    .typeError('Serial Number must be a number ex. 123')
+    .required('Serial Number is a required field'),
   price: yup
-    .string()
-    .required('Price is a required field')
-    .matches(/[+-]?([0-9]*[.])?[0-9]+/, 'Price must be a number ex. 123, 45.6'),
+    .number()
+    .positive('Price must be a positive Number')
+    .typeError('Price must be a number ex. 123, 45.6')
+    .required('Price is a required field'),
   quantity: yup
-    .string()
-    .required('Quantity is a required field')
-    .matches(/^[-+]?\d*$/, 'Quantity must be a number ex. 123'),
+    .number()
+    .positive('Quantity must be a positive Number')
+    .typeError('Quantity must be a number ex. 123')
+    .required('Quantity is a required field'),
   productType: yup.string().required('Product Type is a required field')
 })
 
 const defaultValues = {
   name: '',
-  serialNumber: '',
-  price: '',
-  quantity: '',
+  serialNumber: Number(''),
+  price: Number(''),
+  quantity: Number(''),
   productType: ''
 }
 
 const SidebarAddUser = (props: SidebarAddUserType) => {
   // ** Props
-  const { open, toggle } = props
+  const { open, toggle, category } = props
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -100,7 +104,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const auth = useAuth()
   const { user }: any = auth
   const onSubmit = async (data: ProductData) => {
-    const action: PayloadAction<{} | any> = await dispatch(addProduct({ ...data, store: user.store }))
+    const action: PayloadAction<{} | any> = await dispatch(addProduct({ ...data, store: user.store, category }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
       if (type === 'fail' || type === 'error') {

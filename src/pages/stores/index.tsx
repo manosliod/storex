@@ -44,13 +44,13 @@ import AddStoreDrawer from 'src/views/apps/stores/list/AddStoreDrawer'
 import EditStoreDrawer from 'src/views/apps/stores/list/EditStoreDrawer'
 import TextField from '@mui/material/TextField'
 import { NextRouter, useRouter } from 'next/router'
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import {deleteCategory} from "../../store/apps/categories";
-import {fetchCategoryData} from "../../store/apps/currentCategory";
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import { deleteCategory } from '../../store/apps/categories'
+import { fetchCategoryData } from '../../store/apps/currentCategory'
 
 interface StoreData {
   name?: string
@@ -136,7 +136,7 @@ const Stores = () => {
     handleDeleteClose()
   }
 
-  const RowOptions = ({ id, name }: { id: number | string, name?: string }) => {
+  const RowOptions = ({ id, name }: { id: number | string; name?: string }) => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
@@ -160,7 +160,7 @@ const Stores = () => {
     }
 
     const handleDelete = () => {
-      setSelectedStore({id, name})
+      setSelectedStore({ id, name })
       handleDeleteClickOpen()
       handleRowOptionsClose()
     }
@@ -397,11 +397,11 @@ const Stores = () => {
       <AddStoreDrawer open={addStoreOpen} toggle={toggleAddStoreDrawer} />
       <EditStoreDrawer open={editStoreOpen} toggle={toggleEditStoreDrawer} data={currentStore} />
       <Dialog
-          open={openDelete}
-          onClose={handleDeleteClose}
-          aria-labelledby='user-view-edit'
-          sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
-          aria-describedby='user-view-edit-description'
+        open={openDelete}
+        onClose={handleDeleteClose}
+        aria-labelledby='user-view-edit'
+        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+        aria-describedby='user-view-edit-description'
       >
         <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
           Delete {selectedStore?.name ?? ''}

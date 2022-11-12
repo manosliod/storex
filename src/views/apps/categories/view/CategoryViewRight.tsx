@@ -18,6 +18,7 @@ import PackageVariantClosed from 'mdi-material-ui/PackageVariantClosed'
 // ** Demo Components Imports
 import CategoryViewOverview from 'src/views/apps/categories/view/CategoryViewOverview'
 import Categories from 'src/pages/categories'
+import Products from 'src/pages/products'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -44,6 +45,7 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
   // ** Hooks
   const auth = useAuth()
   const { role, categories }: any = auth.user
+  console.log(categoryData, 'category')
 
   // ** State
   let activeTab = 'overview'
@@ -117,7 +119,11 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
           role === 'store-admin' ||
           role === 'store-sub-admin' ||
           role === 'lead-tech' ||
-          role === 'tech') && <TabPanel sx={{ p: 0 }} value='products'></TabPanel>}
+          role === 'tech') && (
+          <TabPanel sx={{ p: 0 }} value='products'>
+            <Products category={categoryData} />
+          </TabPanel>
+        )}
       </Box>
     </TabContext>
   )

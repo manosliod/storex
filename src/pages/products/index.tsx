@@ -44,23 +44,26 @@ import AddProductDrawer from 'src/views/apps/products/list/AddProductDrawer'
 import EditProductDrawer from 'src/views/apps/products/list/EditProductDrawer'
 import { NextRouter, useRouter } from 'next/router'
 import { useAuth } from '../../hooks/useAuth'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
 
 interface ProductData {
-  name?: string
-  officialName?: string
-  storeType?: string
-  address?: string
-  city?: string
-  country?: string
+  name: string
+  serialNumber: number
+  price: number
+  quantity: number
+  productType: string
 }
 
 const ProductDataDefault: ProductData = {
   name: '',
-  officialName: '',
-  storeType: '',
-  address: '',
-  city: '',
-  country: ''
+  serialNumber: Number(''),
+  price: Number(''),
+  quantity: Number(''),
+  productType: ''
 }
 
 interface CellType {
@@ -91,7 +94,7 @@ const RenderClient = (row: ProductsType) => {
   const router = useRouter()
 
   return (
-    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/stores/view/${row.id}`)}>
+    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/products/view/${row.id}`)}>
       <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
         {getInitials(row.name ? row.name : 'John Doe')}
       </CustomAvatar>
@@ -99,7 +102,7 @@ const RenderClient = (row: ProductsType) => {
   )
 }
 
-const Products = () => {
+const Products = ({ category }: any | undefined) => {
   // ** State
   const [currentProduct, setCurrentProduct] = useState<ProductData>(ProductDataDefault)
   const [productType, setProductType] = useState<string>('')
@@ -109,14 +112,26 @@ const Products = () => {
   const [editProductOpen, setEditProductOpen] = useState<boolean>(false)
 
   // ** Hooks
+  const auth = useAuth()
+  const { user }: any = auth
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.products)
 
-  const RowOptions = ({ id }: { id: number | string }) => {
-    // ** Hooks
-    const dispatch = useDispatch<AppDispatch>()
+  // Handle Delete dialog
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [openDelete, setOpenDelete] = useState<boolean>(false)
+  const handleDeleteClickOpen = () => setOpenDelete(true)
+  const handleDeleteClose = () => {
+    setSelectedProduct(null)
+    setOpenDelete(false)
+  }
+  const handleDeleteAuth = () => {
+    dispatch(deleteProduct({ id: selectedProduct.id, store: user.store }))
+    handleDeleteClose()
+  }
 
+  const RowOptions = ({ id, name }: { id: number | string; name: string | undefined }) => {
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -137,13 +152,19 @@ const Products = () => {
     }
 
     const handleDelete = () => {
-      dispatch(deleteProduct({ id }))
+      setSelectedProduct({ id, name })
+      handleDeleteClickOpen()
       handleRowOptionsClose()
     }
 
+    const { products, role }: any = auth.user
     return (
       <>
-        <IconButton size='small' onClick={handleRowOptionsClick}>
+        <IconButton
+          disabled={role === 'tech' && !products.find((product: any) => product.toString() === id)}
+          size='small'
+          onClick={handleRowOptionsClick}
+        >
           <DotsVertical />
         </IconButton>
         <Menu
@@ -193,7 +214,7 @@ const Products = () => {
                 component='a'
                 variant='subtitle2'
                 sx={{ color: 'text.primary', textDecoration: 'none', cursor: 'pointer' }}
-                onClick={() => handleRoute(router, `/stores/view/${row.id}`)}
+                onClick={() => handleRoute(router, `/products/view/${row.id}`)}
               >
                 {name}
               </Typography>
@@ -231,7 +252,7 @@ const Products = () => {
     {
       flex: 0.15,
       field: 'price',
-      minWidth: 250,
+      minWidth: 100,
       headerName: 'Price',
       renderCell: ({ row }: CellType) => {
         return (
@@ -244,7 +265,7 @@ const Products = () => {
     {
       flex: 0.15,
       field: 'quantity',
-      minWidth: 150,
+      minWidth: 100,
       headerName: 'Quantity',
       renderCell: ({ row }: CellType) => {
         return (
@@ -253,29 +274,31 @@ const Products = () => {
           </Typography>
         )
       }
+    },
+    {
+      flex: 0.1,
+      minWidth: 90,
+      sortable: false,
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: ({ row }: CellType) => <RowOptions id={row._id} name={row.name} />
     }
   ]
 
-  if (!router.pathname.includes('/products')) {
-    columns.push({
-      flex: 0.1,
-      minWidth: 90,
-      // sortable: false,
-      field: 'actions',
-      headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row._id} />
-    })
-  }
-
-  const auth = useAuth()
   useEffect(() => {
     const fetchAll = async () => {
       const { user }: any = auth
       await dispatch(fetchURLForProducts({}))
+      console.log({
+        productType,
+        store: user.store,
+        category: category?._id
+      })
       dispatch(
         fetchData({
           productType,
-          store: user.store
+          store: user.store,
+          category: category?._id
         })
       )
     }
@@ -306,7 +329,7 @@ const Products = () => {
           <CardHeader title='Search Filters' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
           <CardContent>
             <Grid container spacing={6}>
-              <Grid item sm={4} xs={12}>
+              <Grid item sm={6} xs={12}>
                 <FormControl fullWidth>
                   <InputLabel id='store-select'>Select Product Type</InputLabel>
                   <Select
@@ -346,12 +369,33 @@ const Products = () => {
         </Card>
       </Grid>
 
-      {!router.pathname.includes('/products') && (
-        <>
-          <AddProductDrawer open={addProductOpen} toggle={toggleAddProductDrawer} />
-          <EditProductDrawer open={editProductOpen} toggle={toggleEditProductDrawer} data={currentProduct} />
-        </>
-      )}
+      <AddProductDrawer open={addProductOpen} toggle={toggleAddProductDrawer} category={category?._id ?? ''} />
+      <EditProductDrawer open={editProductOpen} toggle={toggleEditProductDrawer} data={currentProduct} />
+
+      <Dialog
+        open={openDelete}
+        onClose={handleDeleteClose}
+        aria-labelledby='user-view-edit'
+        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+        aria-describedby='user-view-edit-description'
+      >
+        <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
+          Delete {selectedProduct?.name ?? ''}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText variant='body2' id='user-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
+            Are you sure you want to delete this?
+          </DialogContentText>
+          <Grid container sx={{ justifyContent: 'center' }}>
+            <Button color='error' variant='contained' sx={{ mr: 3 }} onClick={handleDeleteAuth}>
+              Delete
+            </Button>
+            <Button variant='outlined' onClick={handleDeleteClose}>
+              Cancel
+            </Button>
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Grid>
   )
 }
