@@ -28,7 +28,8 @@ export const fetchURLForProducts = createAsyncThunk('appCurrentProduct/fetchURLF
     const { pathname }: any = data.router
     if (pathname.includes('/products/view') || pathname.includes('/home/product')) {
       return {
-        pathname: `/api/stores/${data.storeId}/product/${data.id}`
+        pathname: `/api/stores/${data.storeId}/product/${data.id}`,
+        categoriesPathname: ``
       }
     }
   }

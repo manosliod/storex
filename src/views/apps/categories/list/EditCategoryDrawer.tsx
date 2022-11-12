@@ -143,39 +143,34 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
             />
             {errors.name && <FormHelperText sx={{ color: 'error.main' }}>{errors.name.message}</FormHelperText>}
           </FormControl>
-          {(user.role === 'super-admin' ||
-            user.role === 'store-admin' ||
-            user.role === 'store-sub-admin' ||
-            user.role === 'lead-tech') && (
-            <FormControl fullWidth sx={{ mb: 4 }}>
-              <InputLabel id='user-select'>Select User</InputLabel>
-              <Controller
-                name='user'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <Select
-                    fullWidth
-                    id='select-user'
-                    label='Select User'
-                    labelId='user-select'
-                    inputProps={{ placeholder: 'Select User' }}
-                    error={Boolean(errors.user)}
-                    {...field}
-                  >
-                    {techUsers !== undefined &&
-                      techUsers.length > 0 &&
-                      techUsers.map((techUser: any) => (
-                        <MenuItem key={techUser.id.toString()} value={techUser.id}>
-                          {techUser.fullName}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                )}
-              />
-              {errors.user && <FormHelperText sx={{ color: 'error.main' }}>{errors.user.message}</FormHelperText>}
-            </FormControl>
-          )}
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <InputLabel id='user-select'>Select User</InputLabel>
+            <Controller
+              name='user'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select
+                  fullWidth
+                  id='select-user'
+                  label='Select User'
+                  labelId='user-select'
+                  inputProps={{ placeholder: 'Select User' }}
+                  error={Boolean(errors.user)}
+                  {...field}
+                >
+                  {techUsers !== undefined &&
+                    techUsers.length > 0 &&
+                    techUsers.map((techUser: any) => (
+                      <MenuItem key={techUser.id.toString()} value={techUser.id}>
+                        {techUser.fullName}
+                      </MenuItem>
+                    ))}
+                </Select>
+              )}
+            />
+            {errors.user && <FormHelperText sx={{ color: 'error.main' }}>{errors.user.message}</FormHelperText>}
+          </FormControl>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
               Submit

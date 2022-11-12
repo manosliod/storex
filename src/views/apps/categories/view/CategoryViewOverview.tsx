@@ -108,41 +108,36 @@ const StoreViewOverview = ({ categoryData, techUsers, error, role }: Props) => {
                   {errors.name && <FormHelperText sx={{ color: 'error.main' }}>{errors.name.message}</FormHelperText>}
                 </FormControl>
               </Grid>
-              {(role === 'super-admin' ||
-                role === 'store-admin' ||
-                role === 'store-sub-admin' ||
-                role === 'lead-tech') && (
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <InputLabel id='user-select'>Select User</InputLabel>
-                    <Controller
-                      name='user'
-                      control={control}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <Select
-                          fullWidth
-                          id='select-user'
-                          label='Select User'
-                          labelId='user-select'
-                          inputProps={{ placeholder: 'Select User' }}
-                          error={Boolean(errors.user)}
-                          {...field}
-                        >
-                          {techUsers !== undefined &&
-                            techUsers.length > 0 &&
-                            techUsers.map((techUser: any) => (
-                              <MenuItem key={techUser.id.toString()} value={techUser.id}>
-                                {techUser.username}
-                              </MenuItem>
-                            ))}
-                        </Select>
-                      )}
-                    />
-                    {errors.user && <FormHelperText sx={{ color: 'error.main' }}>{errors.user.message}</FormHelperText>}
-                  </FormControl>
-                </Grid>
-              )}
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth sx={{ mb: 4 }}>
+                  <InputLabel id='user-select'>Select User</InputLabel>
+                  <Controller
+                    name='user'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Select
+                        fullWidth
+                        id='select-user'
+                        label='Select User'
+                        labelId='user-select'
+                        inputProps={{ placeholder: 'Select User' }}
+                        error={Boolean(errors.user)}
+                        {...field}
+                      >
+                        {techUsers !== undefined &&
+                          techUsers.length > 0 &&
+                          techUsers.map((techUser: any) => (
+                            <MenuItem key={techUser.id.toString()} value={techUser.id}>
+                              {techUser.username}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    )}
+                  />
+                  {errors.user && <FormHelperText sx={{ color: 'error.main' }}>{errors.user.message}</FormHelperText>}
+                </FormControl>
+              </Grid>
               <Grid item xs={12}>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <Button size='large' type='submit' variant='contained'>

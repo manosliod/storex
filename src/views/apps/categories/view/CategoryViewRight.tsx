@@ -43,11 +43,14 @@ const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
 const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Props) => {
   // ** Hooks
   const auth = useAuth()
-  const { role }: any = auth.user
+  const { role, categories }: any = auth.user
 
   // ** State
   let activeTab = 'overview'
-  if (role !== 'super-admin' && role !== 'store-admin' && role !== 'store-sub-admin') activeTab = 'subcategories'
+  if (role === 'tech' && !categories.find((category: any) => category.toString() === categoryData._id))
+    activeTab = 'subcategories'
+  else if (role !== 'super-admin' && role !== 'store-admin' && role !== 'store-sub-admin' && role !== 'tech')
+    activeTab = 'subcategories'
   const [value, setValue] = useState<string>(activeTab)
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
@@ -56,7 +59,7 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
 
   const router = useRouter()
   useEffect(() => {
-    setValue('overview')
+    setValue(activeTab)
   }, [router.asPath])
 
   return (
@@ -72,7 +75,7 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
           role === 'store-admin' ||
           role === 'store-sub-admin' ||
           role === 'lead-tech' ||
-          role === 'tech') && (
+          (role === 'tech' && categories.find((category: any) => category.toString() === categoryData._id))) && (
           <Tab value='overview' label='Overview' icon={<StoreOutline sx={{ fontSize: '18px' }} />} />
         )}
         {(role === 'super-admin' ||
@@ -95,7 +98,7 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
           role === 'store-admin' ||
           role === 'store-sub-admin' ||
           role === 'lead-tech' ||
-          role === 'tech') && (
+          (role === 'tech' && categories.find((category: any) => category.toString() === categoryData._id))) && (
           <TabPanel sx={{ p: 0 }} value='overview'>
             <CategoryViewOverview categoryData={categoryData} techUsers={techUsers} error={error} role={role} />
           </TabPanel>

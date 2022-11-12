@@ -28,7 +28,7 @@ export const fetchURLForRoles = createAsyncThunk('appCurrentCategory/fetchURLFor
     return {
       pathname: `/api/stores/${data.storeId}/category/${data.id}`,
       techUsersPathname:
-        data.role === 'tech' || data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
+        data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
           ? ''
           : `/api/users/store/${data.storeId}?role=tech`
     }
@@ -37,7 +37,7 @@ export const fetchURLForRoles = createAsyncThunk('appCurrentCategory/fetchURLFor
   return {
     pathname: `/api/categories`,
     techUsersPathname:
-      data.role === 'tech' || data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
+      data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
         ? ''
         : `/api/users/store/${data.storeId}?role=tech`
   }

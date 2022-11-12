@@ -67,7 +67,7 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
           role === 'store-admin' ||
           role === 'store-sub-admin' ||
           role === 'lead-tech' ||
-          (role === 'tech' && categories.find((category: any) => category.toString() === id))) && (
+          role === 'tech') && (
           <Grid item xs={12} md={7} lg={8}>
             <CategoryViewRight
               categoryData={store.data}

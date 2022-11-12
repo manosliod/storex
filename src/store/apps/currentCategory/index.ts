@@ -17,7 +17,7 @@ export const fetchURLForCategory = createAsyncThunk('appCurrentCategory/fetchURL
   return {
     pathname: `/api/stores/${data.storeId}/category/${data.id}`,
     techUsersPathname:
-      data.role === 'tech' || data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
+      data.role === 'salesman' || data.role === 'accountant' || data.role === 'user'
         ? ''
         : `/api/users/store/${data.storeId}?role=tech`
   }
@@ -73,11 +73,10 @@ export const editCategory = createAsyncThunk(
       const res = await axios.patch(currentCategory.pathname, {
         ...data
       })
-      let response_2
-      if (currentCategory.techUsersPathname !== '') response_2 = await axios.get(currentCategory.techUsersPathname)
+      const response_2 = await axios.get(currentCategory.techUsersPathname)
 
       return {
-        techUsers: response_2 ? response_2.data.data : '',
+        techUsers: response_2.data.data,
         category: res.data.doc,
         allData: res.data,
         error: {}
