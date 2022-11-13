@@ -136,6 +136,7 @@ export const deleteCategory = createAsyncThunk(
     let error
     try {
       let res
+      console.log(data, 'qerqrewrew')
       if (data.storeId) {
         res = await axios.delete(`/api/stores/${data.storeId}/category/${data.id}`)
       } else {

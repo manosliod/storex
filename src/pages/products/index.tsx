@@ -76,26 +76,13 @@ const AvatarWithoutImageLink = styled(Grid)(({ theme }) => ({
   marginRight: theme.spacing(3)
 }))
 
-const handleRoute = (router: NextRouter, url?: string, params?: {}) => {
-  if (url) {
-    router.replace(
-      {
-        pathname: url,
-        query: { ...params }
-      },
-      url,
-      { shallow: true }
-    )
-  }
-}
-
 // ** renders client column
 const RenderClient = (row: ProductsType) => {
   const router = useRouter()
 
   return (
-    <AvatarWithoutImageLink onClick={() => handleRoute(router, `/products/view/${row.id}`)}>
-      <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
+    <AvatarWithoutImageLink>
+      <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem' }}>
         {getInitials(row.name ? row.name : 'John Doe')}
       </CustomAvatar>
     </AvatarWithoutImageLink>
@@ -213,8 +200,7 @@ const Products = ({ category }: any | undefined) => {
                 noWrap
                 component='a'
                 variant='subtitle2'
-                sx={{ color: 'text.primary', textDecoration: 'none', cursor: 'pointer' }}
-                onClick={() => handleRoute(router, `/products/view/${row.id}`)}
+                sx={{ color: 'text.primary', textDecoration: 'none' }}
               >
                 {name}
               </Typography>
@@ -349,7 +335,12 @@ const Products = ({ category }: any | undefined) => {
 
       <Grid item xs={12}>
         <Card>
-          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddProductDrawer} />
+          <TableHeader
+            value={value}
+            handleFilter={handleFilter}
+            toggle={toggleAddProductDrawer}
+            categoryData={category}
+          />
           <DataGrid
             autoHeight
             rows={store.data ?? []}

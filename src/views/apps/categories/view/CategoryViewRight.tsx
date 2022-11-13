@@ -62,7 +62,7 @@ const CategoryViewRight = ({ categoryData, techUsers, error, subcategories }: Pr
   const router = useRouter()
   useEffect(() => {
     setValue(activeTab)
-  }, [router.asPath])
+  }, [router.asPath, role])
 
   return (
     <TabContext value={value}>

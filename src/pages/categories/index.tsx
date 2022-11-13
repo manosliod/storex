@@ -122,11 +122,10 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     setOpenDelete(false)
   }
   const handleDeleteAuth = async () => {
-    let storeId
+    let storeId = user.store
     let dontFetch = 0
     if (router.pathname.includes('/categories/view')) {
       dontFetch = 1
-      storeId = user.store
     }
     const id = selectedCategory.id
     await dispatch(deleteCategory({ id, storeId, dontFetch }))
@@ -302,7 +301,12 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Card>
-          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddCategoryDrawer} />
+          <TableHeader
+            value={value}
+            handleFilter={handleFilter}
+            toggle={toggleAddCategoryDrawer}
+            categoryData={currentCategoryData}
+          />
           <DataGrid
             autoHeight
             rows={filteredData ?? store.data}
@@ -334,16 +338,19 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
       <Dialog
         open={openDelete}
         onClose={handleDeleteClose}
-        aria-labelledby='user-view-edit'
+        aria-labelledby='category-view-edit'
         sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
-        aria-describedby='user-view-edit-description'
+        aria-describedby='category-view-edit-description'
       >
-        <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
+        <DialogTitle id='category-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
           Delete {selectedCategory?.name ?? ''}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText variant='body2' id='user-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
+          <DialogContentText variant='body2' id='category-view-edit-description' sx={{ textAlign: 'center' }}>
             Are you sure you want to delete this?
+          </DialogContentText>
+          <DialogContentText variant='body2' id='category-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
+            This will delete all the subcategories and the containing products!
           </DialogContentText>
           <Grid container sx={{ justifyContent: 'center' }}>
             <Button color='error' variant='contained' sx={{ mr: 3 }} onClick={handleDeleteAuth}>
