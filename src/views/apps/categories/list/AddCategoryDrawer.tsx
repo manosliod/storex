@@ -138,7 +138,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               name='name'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <TextField {...field} autoFocus label='Name' error={Boolean(errors.name)} />}
+              render={({ field }) => <TextField autoFocus {...field} label='Name' error={Boolean(errors.name)} />}
             />
             {errors.name && <FormHelperText sx={{ color: 'error.main' }}>{errors.name.message}</FormHelperText>}
           </FormControl>

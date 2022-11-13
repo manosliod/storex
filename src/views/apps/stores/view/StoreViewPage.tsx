@@ -20,7 +20,7 @@ import StoreViewRight from 'src/views/apps/stores/view/StoreViewRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
-import { useAuth } from '../../../../hooks/useAuth'
+import { useAuth } from 'src/hooks/useAuth'
 
 const StoreView = ({ id }: StoreLayoutType) => {
   // ** State

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useCallback, useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -18,7 +18,6 @@ import FormHelperText from '@mui/material/FormHelperText'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
-import toast from 'react-hot-toast'
 
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
@@ -27,16 +26,19 @@ import Close from 'mdi-material-ui/Close'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { addStore } from 'src/store/apps/stores'
+import { editSubStore } from 'src/store/apps/subStores'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import toast from 'react-hot-toast'
 import { PayloadAction } from '@reduxjs/toolkit'
 
-interface SidebarAddUserType {
+interface SidebarEditUserType {
   open: boolean
   toggle: () => void
+  data: StoreData
+  id: any
 }
 
 interface StoreData {
@@ -47,6 +49,20 @@ interface StoreData {
   address?: string
   city?: string
   country?: string
+  phone?: string
+}
+
+interface SubStoreData {
+  subStoreId: string | number
+  _id: string | number
+  name?: string
+  officialName?: string
+  taxId?: string
+  storeType?: string
+  address?: string
+  city?: string
+  country?: string
+  phone?: string
 }
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
@@ -57,34 +73,34 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   backgroundColor: theme.palette.background.default
 }))
 
-const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
-
-const schema = yup.object().shape({
-  name: yup.string().required('Name is a required field'),
-  officialName: yup.string().required('Official Name is a required field'),
-  taxId: yup.string().required('Tax ID Number is a required field').matches(/^\d+$/, 'Tax ID must be a number'),
-  address: yup.string().required('Address is a required field'),
-  city: yup.string().required('City is a required field'),
-  country: yup.string().required('Country is a required field'),
-  phone: yup
-    .string()
-    .required('Phone is a required field')
-    .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
-})
-
-const defaultValues = {
-  name: '',
-  officialName: '',
-  taxId: '',
-  address: '',
-  city: '',
-  country: '',
-  phone: ''
-}
-
-const SidebarAddUser = (props: SidebarAddUserType) => {
+const SidebarEditUser = (props: SidebarEditUserType) => {
   // ** Props
-  const { open, toggle } = props
+  const { open, toggle, data, id } = props
+
+  const defaultValues = {
+    name: '',
+    officialName: '',
+    taxId: '',
+    address: '',
+    city: '',
+    country: '',
+    phone: ''
+  }
+
+  const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
+
+  const schema = yup.object().shape({
+    name: yup.string().required('Name is a required field'),
+    officialName: yup.string().required('Official Name is a required field'),
+    taxId: yup.string().required('Tax ID Number is a required field').matches(/^\d+$/, 'Tax ID must be a number'),
+    address: yup.string().required('Address is a required field'),
+    city: yup.string().required('City is a required field'),
+    country: yup.string().required('Country is a required field'),
+    phone: yup
+      .string()
+      .required('Phone is a required field')
+      .matches(phoneRegExp, 'Phone is not valid ex. +302101234567')
+  })
 
   // ** State
   const [storeType, setStoreType] = useState<string>('')
@@ -104,14 +120,14 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = async (data: StoreData) => {
+  const onSubmit = async (data: SubStoreData) => {
     setStoreTypeError(storeType === '')
-
     if (storeType === '') return
-
-    const action: PayloadAction<{} | any> = await dispatch(addStore({ ...data, storeType }))
+    const subStoreId = data._id
+    const action: PayloadAction<{} | any> = await dispatch(editSubStore({ ...data, storeType, id, subStoreId }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
+
       if (type === 'fail' || type === 'error') {
         toast.error(message, { duration: 5000 })
       } else {
@@ -133,6 +149,11 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     reset()
   }
 
+  useEffect(() => {
+    if (data) reset(data)
+    setStoreType(data.storeType!)
+  }, [reset, data])
+
   return (
     <Drawer
       open={open}
@@ -143,7 +164,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h6'>Add Store</Typography>
+        <Typography variant='h6'>Edit Store</Typography>
         <Close fontSize='small' onClick={handleClose} sx={{ cursor: 'pointer' }} />
       </Header>
       <Box sx={{ p: 5 }}>
@@ -182,6 +203,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
           <FormControl fullWidth sx={{ mb: 4 }}>
             <InputLabel id='store-type-select'>Select Store Type</InputLabel>
             <Select
+              disabled={true}
               fullWidth
               id='select-store-type'
               label='Select Store Type'
@@ -191,11 +213,9 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               inputProps={{ placeholder: 'Select Store Type' }}
               error={storeTypeError}
             >
-              <MenuItem value='' disabled={true}>
-                Select Store Type
+              <MenuItem value='individual' selected={true}>
+                Individual
               </MenuItem>
-              <MenuItem value='individual'>Individual</MenuItem>
-              <MenuItem value='branch'>Branch</MenuItem>
             </Select>
             {storeTypeError && (
               <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>
@@ -251,4 +271,4 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   )
 }
 
-export default SidebarAddUser
+export default SidebarEditUser

@@ -27,7 +27,7 @@ import Close from 'mdi-material-ui/Close'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { addStore } from 'src/store/apps/stores'
+import { addSubStore } from 'src/store/apps/subStores'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -37,6 +37,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 interface SidebarAddUserType {
   open: boolean
   toggle: () => void
+  id: any
 }
 
 interface StoreData {
@@ -84,10 +85,10 @@ const defaultValues = {
 
 const SidebarAddUser = (props: SidebarAddUserType) => {
   // ** Props
-  const { open, toggle } = props
+  const { open, toggle, id } = props
 
   // ** State
-  const [storeType, setStoreType] = useState<string>('')
+  const [storeType, setStoreType] = useState<string>('individual')
   const [storeTypeError, setStoreTypeError] = useState<boolean>(false)
 
   // ** Hooks
@@ -109,7 +110,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
     if (storeType === '') return
 
-    const action: PayloadAction<{} | any> = await dispatch(addStore({ ...data, storeType }))
+    const action: PayloadAction<{} | any> = await dispatch(addSubStore({ ...data, id, storeType }))
     if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
       const { type, message }: any = action.payload.error
       if (type === 'fail' || type === 'error') {
@@ -182,6 +183,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
           <FormControl fullWidth sx={{ mb: 4 }}>
             <InputLabel id='store-type-select'>Select Store Type</InputLabel>
             <Select
+              disabled={true}
               fullWidth
               id='select-store-type'
               label='Select Store Type'
@@ -191,11 +193,9 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               inputProps={{ placeholder: 'Select Store Type' }}
               error={storeTypeError}
             >
-              <MenuItem value='' disabled={true}>
-                Select Store Type
+              <MenuItem value='individual' disabled={true} selected={true}>
+                Individual
               </MenuItem>
-              <MenuItem value='individual'>Individual</MenuItem>
-              <MenuItem value='branch'>Branch</MenuItem>
             </Select>
             {storeTypeError && (
               <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>

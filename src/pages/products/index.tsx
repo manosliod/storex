@@ -118,7 +118,15 @@ const Products = ({ category }: any | undefined) => {
     handleDeleteClose()
   }
 
-  const RowOptions = ({ id, name }: { id: number | string; name: string | undefined }) => {
+  const RowOptions = ({
+    id,
+    name,
+    store
+  }: {
+    id: number | string
+    name: string | undefined
+    store: any | undefined
+  }) => {
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -148,7 +156,7 @@ const Products = ({ category }: any | undefined) => {
     return (
       <>
         <IconButton
-          disabled={role === 'tech' && !products.find((product: any) => product.toString() === id)}
+          disabled={(role === 'tech' && !products.find((product: any) => product.toString() === id)) || store.name}
           size='small'
           onClick={handleRowOptionsClick}
         >
@@ -186,11 +194,11 @@ const Products = ({ category }: any | undefined) => {
   const columns = [
     {
       flex: 0.2,
-      minWidth: 230,
+      minWidth: 350,
       field: 'name',
       headerName: 'Product',
       renderCell: ({ row }: CellType) => {
-        const { name } = row
+        const { name, store }: any = row
 
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -204,6 +212,11 @@ const Products = ({ category }: any | undefined) => {
               >
                 {name}
               </Typography>
+              {!!Object.keys(store).length && store.name && (
+                <Typography noWrap component='a' variant='caption' sx={{ textDecoration: 'none' }}>
+                  {store.name} - {store.address}, {store.city}
+                </Typography>
+              )}
             </Box>
           </Box>
         )
@@ -267,9 +280,14 @@ const Products = ({ category }: any | undefined) => {
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row._id} name={row.name} />
+      renderCell: ({ row }: CellType) => <RowOptions id={row._id} name={row.name} store={row.store} />
     }
   ]
+
+  const [checked, setChecked] = useState<boolean>(false)
+  const toggleChecked = () => {
+    setChecked(prev => !prev)
+  }
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -279,12 +297,13 @@ const Products = ({ category }: any | undefined) => {
         fetchData({
           productType,
           store: user.store,
-          category: category?._id
+          category: category?._id,
+          inBranches: checked
         })
       )
     }
     fetchAll()
-  }, [dispatch, productType])
+  }, [dispatch, productType, checked])
 
   const handleFilter = useCallback((val: string) => {
     setValue(val)
@@ -305,6 +324,14 @@ const Products = ({ category }: any | undefined) => {
 
   return (
     <Grid container spacing={6}>
+      <style jsx global>{`
+        .primary-row {
+          background-color: rgb(102, 108, 255, 0.2);
+        }
+        .primary-row:hover {
+          background-color: rgb(102, 108, 255, 0.15) !important;
+        }
+      `}</style>
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Search Filters' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
@@ -340,11 +367,20 @@ const Products = ({ category }: any | undefined) => {
             handleFilter={handleFilter}
             toggle={toggleAddProductDrawer}
             categoryData={category}
+            checked={checked}
+            toggleChecked={toggleChecked}
           />
           <DataGrid
             autoHeight
             rows={store.data ?? []}
             getRowId={(row: any) => row._id}
+            getRowClassName={params => {
+              if (params.row.store) {
+                const { name }: any = params.row.store
+                if (name) return 'primary-row'
+              }
+              return ''
+            }}
             columns={columns}
             pageSize={pageSize}
             disableSelectionOnClick

@@ -5,6 +5,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import user from 'src/store/apps/user'
 import currentUser from 'src/store/apps/currentUser'
 import stores from 'src/store/apps/stores'
+import subStores from 'src/store/apps/subStores'
 import currentStore from 'src/store/apps/currentStore'
 import currentStoreUser from 'src/store/apps/currentStoreUser'
 import categories from 'src/store/apps/categories'
@@ -16,6 +17,7 @@ export const store = configureStore({
     user,
     currentUser,
     stores,
+    subStores,
     currentStore,
     currentStoreUser,
     categories,

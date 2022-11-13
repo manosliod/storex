@@ -74,17 +74,20 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
       .number()
       .positive('Serial Number must be a positive Number')
       .typeError('Serial Number must be a number ex. 123')
-      .required('Serial Number is a required field'),
+      .required('Serial Number is a required field')
+      .moreThan(0, 'Must be more than 0'),
     price: yup
       .number()
       .positive('Price must be a positive Number')
       .typeError('Price must be a number ex. 123, 45.6')
-      .required('Price is a required field'),
+      .required('Price is a required field')
+      .moreThan(0, 'Must be more than 0'),
     quantity: yup
       .number()
       .positive('Quantity must be a positive Number')
       .typeError('Quantity must be a number ex. 123')
-      .required('Quantity is a required field'),
+      .required('Quantity is a required field')
+      .moreThan(0, 'Must be more than 0'),
     productType: yup.string().required('Product Type is a required field')
   })
 
@@ -153,7 +156,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               name='name'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <TextField {...field} autoFocus label='Name' error={Boolean(errors.name)} />}
+              render={({ field }) => <TextField autoFocus {...field} label='Name' error={Boolean(errors.name)} />}
             />
             {errors.name && <FormHelperText sx={{ color: 'error.main' }}>{errors.name.message}</FormHelperText>}
           </FormControl>
@@ -163,7 +166,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
-                <TextField {...field} autoFocus label='Serial Number' error={Boolean(errors.serialNumber)} />
+                <TextField {...field} label='Serial Number' error={Boolean(errors.serialNumber)} />
               )}
             />
             {errors.serialNumber && (
@@ -203,7 +206,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               name='price'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <TextField {...field} autoFocus label='Price' error={Boolean(errors.price)} />}
+              render={({ field }) => <TextField {...field} label='Price' error={Boolean(errors.price)} />}
             />
             {errors.price && <FormHelperText sx={{ color: 'error.main' }}>{errors.price.message}</FormHelperText>}
           </FormControl>

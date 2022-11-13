@@ -160,7 +160,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               name='name'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <TextField {...field} autoFocus label='Name' error={Boolean(errors.name)} />}
+              render={({ field }) => <TextField autoFocus {...field} label='Name' error={Boolean(errors.name)} />}
             />
             {errors.name && <FormHelperText sx={{ color: 'error.main' }}>{errors.name.message}</FormHelperText>}
           </FormControl>
@@ -170,7 +170,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
-                <TextField {...field} autoFocus label='Official Name' error={Boolean(errors.officialName)} />
+                <TextField {...field} label='Official Name' error={Boolean(errors.officialName)} />
               )}
             />
             {errors.officialName && (
@@ -182,9 +182,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               name='taxId'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => (
-                <TextField {...field} autoFocus label='Tax ID Number' error={Boolean(errors.taxId)} />
-              )}
+              render={({ field }) => <TextField {...field} label='Tax ID Number' error={Boolean(errors.taxId)} />}
             />
             {errors.taxId && <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>}
           </FormControl>
@@ -215,7 +213,7 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
               name='address'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <TextField {...field} autoFocus label='Address' error={Boolean(errors.address)} />}
+              render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
             />
             {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
           </FormControl>

@@ -29,6 +29,7 @@ import { StoresType } from 'src/types/apps/storeTypes'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { addStore } from '../../../../store/apps/stores'
 import toast from 'react-hot-toast'
+import { useRouter } from 'next/router'
 
 interface PostData {
   name?: string
@@ -79,6 +80,7 @@ const StoreViewOverview = ({ storeData, error }: Props) => {
     resolver: yupResolver(schema)
   })
 
+  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const [storeType, setStoreType] = useState<string>('')
   const [storeTypeError, setStoreTypeError] = useState<boolean>(false)
@@ -151,29 +153,31 @@ const StoreViewOverview = ({ storeData, error }: Props) => {
                   {errors.taxId && <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>}
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel id='edit-store-type-select'>Select Store Type</InputLabel>
-                  <Select
-                    fullWidth
-                    id='select-store-type-for-edit'
-                    label='Select Store Type'
-                    labelId='edit-store-type-select'
-                    value={storeType}
-                    onChange={e => setStoreType(e.target.value)}
-                    inputProps={{ placeholder: 'Select Store Type' }}
-                  >
-                    <MenuItem value='' disabled={true}>
-                      Select Store Type
-                    </MenuItem>
-                    <MenuItem value='individual'>Individual</MenuItem>
-                    <MenuItem value='branch'>Branch</MenuItem>
-                  </Select>
-                  {storeTypeError && (
-                    <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
+              {!router.pathname.includes('/sub-store/view') && (
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id='edit-store-type-select'>Select Store Type</InputLabel>
+                    <Select
+                      fullWidth
+                      id='select-store-type-for-edit'
+                      label='Select Store Type'
+                      labelId='edit-store-type-select'
+                      value={storeType}
+                      onChange={e => setStoreType(e.target.value)}
+                      inputProps={{ placeholder: 'Select Store Type' }}
+                    >
+                      <MenuItem value='' disabled={true}>
+                        Select Store Type
+                      </MenuItem>
+                      <MenuItem value='individual'>Individual</MenuItem>
+                      <MenuItem value='branch'>Branch</MenuItem>
+                    </Select>
+                    {storeTypeError && (
+                      <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              )}
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <Controller

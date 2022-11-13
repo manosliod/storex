@@ -22,6 +22,7 @@ import Categories from 'src/pages/categories'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+import SubStores from '../../subStores/SubStores'
 
 interface Props {
   storeData: any
@@ -64,6 +65,10 @@ const StoreViewRight = ({ storeData, error }: Props) => {
         {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') && (
           <Tab value='overview' label='Overview' icon={<StoreOutline sx={{ fontSize: '18px' }} />} />
         )}
+        {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') &&
+          storeData.storeType === 'branch' && (
+            <Tab value='subStores' label='Sub-Stores' icon={<StoreOutline sx={{ fontSize: '18px' }} />} />
+          )}
         {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') && (
           <Tab value='staff' label='Staff' icon={<AccountOutline sx={{ fontSize: '18px' }} />} />
         )}
@@ -74,6 +79,12 @@ const StoreViewRight = ({ storeData, error }: Props) => {
             <StoreViewOverview storeData={storeData} error={error} />
           </TabPanel>
         )}
+        {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') &&
+          storeData.storeType === 'branch' && (
+            <TabPanel sx={{ p: 0 }} value='subStores'>
+              <SubStores id={storeData._id} />
+            </TabPanel>
+          )}
         {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') && (
           <TabPanel sx={{ p: 0 }} value='staff'>
             <StoreViewStaff storeData={storeData} />

@@ -4,14 +4,14 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { NextRouter } from 'next/router'
+import { addUser, editUser } from '../user'
 
 interface DataParams {
   q?: string
-  productType?: string
-  store: any
-  category?: any | undefined
-  inBranches: boolean
+  storeType?: string
+  city?: string
+  country?: string
+  id?: string
 }
 
 interface Redux {
@@ -19,61 +19,46 @@ interface Redux {
   dispatch: Dispatch<any>
 }
 
-interface data {
-  id?: any | undefined
-  router?: NextRouter | undefined
-  storeId?: any | undefined
-}
-
-export const fetchURLForProducts = createAsyncThunk('appCurrentProduct/fetchURLForRoles', (data: data) => {
-  // if (data.router) {
-  //   const { pathname }: any = data.router
-  //   if (pathname.includes('/products/view') || pathname.includes('/home/product')) {
-  //     return {
-  //       pathname: `/api/stores/${data.storeId}/product/${data.id}`,
-  //       categoriesPathname: ``
-  //     }
-  //   }
-  // }
-  return {
-    pathname: `/api/products`
-  }
-})
-
-// ** Fetch Categories
-export const fetchData = createAsyncThunk('appCategories/fetchData', async (params: DataParams, { getState }) => {
+// ** Fetch SubStores
+export const fetchData = createAsyncThunk('appSubStores/fetchData', async (params: DataParams) => {
   if (!!Object.keys(params).length) {
     if (params.hasOwnProperty('q') && !Object.keys(params.q!).length) {
       delete params.q
     }
-    if (params.hasOwnProperty('productType') && !Object.keys(params.productType!).length) {
-      delete params.productType
+    if (params.hasOwnProperty('storeType') && !Object.keys(params.storeType!).length) {
+      delete params.storeType
+    }
+    if (params.hasOwnProperty('city') && !Object.keys(params.city!).length) {
+      delete params.city
+    }
+    if (params.hasOwnProperty('country') && !Object.keys(params.country!).length) {
+      delete params.country
     }
   }
-  const { products }: any = getState()
-  const response = await axios.get(products.pathname, {
+
+  const response = await axios.get(`/api/stores/sub-stores`, {
     params
   })
 
   return {
-    products: response.data.data,
+    stores: response.data.doc,
     total: response.data.results,
     params: params,
     allData: response.data
   }
 })
 
-// ** Add Product
-export const addProduct = createAsyncThunk(
-  'appCategories/addProduct',
+// ** Add Store
+export const addSubStore = createAsyncThunk(
+  'appSubStores/addSubStore',
   async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
-      const { products }: any = getState()
-      const res = await axios.post(products.pathname, {
+      const res = await axios.post(`/api/stores/${data.id}/sub-stores`, {
         ...data
       })
-      if (data.dontFetch === undefined || data.dontFetch === 0) dispatch(fetchData(products.params))
+      const { subStores }: any = getState()
+      dispatch(fetchData(subStores.params))
 
       return { ...res.data }
     } catch (err: any) {
@@ -95,16 +80,16 @@ export const addProduct = createAsyncThunk(
   }
 )
 
-export const editProduct = createAsyncThunk(
-  'appCategories/editProduct',
+export const editSubStore = createAsyncThunk(
+  'appSubStores/editSubStore',
   async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
-      const res = await axios.patch(`/api/products/${data._id}`, {
+      const res = await axios.patch(`/api/stores/${data.id}/sub-stores/${data.subStoreId}`, {
         ...data
       })
-      const { products }: any = getState()
-      if (data.dontFetch === undefined || data.dontFetch === 0) dispatch(fetchData(products.params))
+      const { subStores }: any = getState()
+      dispatch(fetchData(subStores.params))
 
       return { ...res.data }
     } catch (err: any) {
@@ -126,20 +111,15 @@ export const editProduct = createAsyncThunk(
   }
 )
 
-// ** Delete Product
-export const deleteProduct = createAsyncThunk(
-  'appCategories/deleteProduct',
-  async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
+// ** Delete Store
+export const deleteSubStore = createAsyncThunk(
+  'appSubStores/deleteSubStore',
+  async (id: number | string, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
-      let res
-      if (data.storeId) {
-        res = await axios.delete(`/api/stores/${data.storeId}/product/${data.id}`)
-      } else {
-        res = await axios.delete(`/api/products/${data.id}?store=${data.store}`)
-      }
-      const { products }: any = getState()
-      dispatch(fetchData(products.params))
+      const { subStores }: any = getState()
+      const res = await axios.delete(`/api/stores/${subStores.params.id}/sub-stores`)
+      dispatch(fetchData(subStores.params))
 
       return { ...res.data }
     } catch (err: any) {
@@ -161,10 +141,9 @@ export const deleteProduct = createAsyncThunk(
   }
 )
 
-export const appCategoriesSlice = createSlice({
-  name: 'appCategories',
+export const appSubStoresSlice = createSlice({
+  name: 'appSubStores',
   initialState: {
-    pathname: '',
     data: [],
     total: 1,
     params: {},
@@ -182,37 +161,31 @@ export const appCategoriesSlice = createSlice({
     }
     builder
       .addCase(fetchData.fulfilled, (state, action) => {
-        state.data = action.payload.products
+        state.data = action.payload.stores
         state.total = action.payload.total
         state.params = action.payload.params
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addProduct.fulfilled, (state, action) => {
+      .addCase(addSubStore.fulfilled, (state, action) => {
         state.error = error
       })
-      .addCase(addProduct.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(addSubStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editProduct.fulfilled, (state, action) => {
+      .addCase(editSubStore.fulfilled, (state, action) => {
         state.error = error
       })
-      .addCase(editProduct.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(editSubStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteProduct.fulfilled, (state, action) => {
+      .addCase(deleteSubStore.fulfilled, (state, action) => {
         state.error = error
       })
-      .addCase(deleteProduct.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(deleteSubStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
-      })
-      .addCase(fetchURLForProducts.fulfilled, (state, action: PayloadAction<{} | any>) => {
-        state.pathname = action.payload.pathname
-      })
-      .addCase(fetchURLForProducts.rejected, (state, action: PayloadAction<{} | any>) => {
-        state.pathname = ''
       })
   }
 })
 
-export default appCategoriesSlice.reducer
+export default appSubStoresSlice.reducer

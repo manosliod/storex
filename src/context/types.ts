@@ -29,6 +29,7 @@ export type UserDataType = {
   store?: string | null
   categories?: [] | string
   products?: [] | string
+  subStores?: [] | string
 
   // avatar?: string | null
 }
