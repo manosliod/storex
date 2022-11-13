@@ -82,7 +82,7 @@ const StoreViewRight = ({ storeData, error }: Props) => {
         {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') &&
           storeData.storeType === 'branch' && (
             <TabPanel sx={{ p: 0 }} value='subStores'>
-              <SubStores id={storeData._id} />
+              <SubStores storeId={storeData._id} />
             </TabPanel>
           )}
         {(role === 'super-admin' || role === 'store-admin' || role === 'store-sub-admin') && (

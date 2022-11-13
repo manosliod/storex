@@ -114,11 +114,11 @@ export const editSubStore = createAsyncThunk(
 // ** Delete Store
 export const deleteSubStore = createAsyncThunk(
   'appSubStores/deleteSubStore',
-  async (id: number | string, { getState, dispatch, rejectWithValue }) => {
+  async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
     let error
     try {
       const { subStores }: any = getState()
-      const res = await axios.delete(`/api/stores/${subStores.params.id}/sub-stores`)
+      const res = await axios.delete(`/api/stores/${subStores.params.id}/sub-stores/${data.id}`)
       dispatch(fetchData(subStores.params))
 
       return { ...res.data }

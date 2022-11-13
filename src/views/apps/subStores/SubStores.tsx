@@ -108,7 +108,7 @@ const RenderClient = (row: StoresType) => {
   )
 }
 
-const Stores = ({ id }: any) => {
+const Stores = ({ storeId }: any) => {
   // ** State
   const [currentStore, setCurrentStore] = useState<StoreData>(StoreDataDefault)
   const [storeType, setStoreType] = useState<string>('')
@@ -139,7 +139,7 @@ const Stores = ({ id }: any) => {
   }
   const handleDeleteAuth = async () => {
     const id = selectedStore.id
-    dispatch(deleteSubStore(id))
+    dispatch(deleteSubStore({ id, storeId }))
     handleDeleteClose()
   }
 
@@ -310,7 +310,7 @@ const Stores = ({ id }: any) => {
         storeType,
         city,
         country,
-        id
+        id: storeId
       })
     )
   }, [dispatch, storeType, city, country])
@@ -402,8 +402,8 @@ const Stores = ({ id }: any) => {
         </Card>
       </Grid>
 
-      <AddSubStoreDrawer open={addStoreOpen} toggle={toggleAddStoreDrawer} id={id} />
-      <EditSubStoreDrawer open={editStoreOpen} toggle={toggleEditStoreDrawer} data={currentStore} id={id} />
+      <AddSubStoreDrawer open={addStoreOpen} toggle={toggleAddStoreDrawer} id={storeId} />
+      <EditSubStoreDrawer open={editStoreOpen} toggle={toggleEditStoreDrawer} data={currentStore} id={storeId} />
       <Dialog
         open={openDelete}
         onClose={handleDeleteClose}
