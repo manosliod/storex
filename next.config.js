@@ -48,6 +48,10 @@ module.exports = (phase, { defaultConfig }) => {
           destination: 'http://localhost:3001/api/v1/users/login/'
         },
         {
+          source: '/api/users/signup/',
+          destination: 'http://localhost:3001/api/v1/users/signup/'
+        },
+        {
           source: '/api/users/logout/',
           destination: 'http://localhost:3001/api/v1/users/logout/'
         },

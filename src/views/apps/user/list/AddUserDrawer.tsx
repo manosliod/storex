@@ -171,7 +171,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       setGender(e.target.value)
       setGenderError(false)
     },
-    [role, roleError]
+    [gender, genderError]
   )
 
   return (

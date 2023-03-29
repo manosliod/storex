@@ -100,7 +100,7 @@ mock.onPost('/jwt/register').reply(async request => {
         fullName,
         birthday,
         phone,
-        role: 'user'
+        role: 'store-admin'
       }
 
       let axiosError

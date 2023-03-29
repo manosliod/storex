@@ -84,6 +84,38 @@ export const addUser = createAsyncThunk(
   }
 )
 
+export const signupUser = createAsyncThunk(
+  'appUsers/signupUser',
+  async (data: { [key: string]: number | string }, { dispatch, getState, rejectWithValue }) => {
+    let error
+
+    try {
+      const { user }: any = getState()
+      const res = await axios.post(user.pathname, {
+        ...data
+      })
+      dispatch(fetchData(user.params))
+
+      return { ...res.data }
+    } catch (err: any) {
+      const { message } = err.response.data
+      if (message.includes('/type:')) {
+        error = {
+          type: message.split('/type:')[1],
+          message: message.split('/type:')[0]
+        }
+      } else {
+        error = {
+          type: 'fail',
+          message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
+        }
+      }
+
+      return rejectWithValue({ error })
+    }
+  }
+)
+
 export const editUser = createAsyncThunk(
   'appUsers/editUser',
   async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
@@ -184,6 +216,12 @@ export const appUsersSlice = createSlice({
       })
       .addCase(addUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
+      })
+      .addCase(signupUser.fulfilled, (state, action) => {
+        state.error = error
+      })
+      .addCase(signupUser.rejected, (state, action: PayloadAction<{} | any>) => {
+        state.error = action.payload?.error
       })
       .addCase(editUser.fulfilled, (state, action) => {
         state.error = error
