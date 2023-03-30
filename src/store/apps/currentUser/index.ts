@@ -68,12 +68,13 @@ export const fetchUserData = createAsyncThunk(
 export const editUser = createAsyncThunk(
   'appCurrentUser/editUser',
   async (data: { [key: string]: number | string }, { getState, rejectWithValue }) => {
+    const id = data._id
     delete data._id
     let error = {}
     try {
       const { currentUser }: any = getState()
       const res = await axios.patch(currentUser.pathname, {
-        ...data
+        ...data, id
       })
 
       return {

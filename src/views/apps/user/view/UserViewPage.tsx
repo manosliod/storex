@@ -59,7 +59,7 @@ const UserView = ({ id, storeId = null }: Props) => {
         </Grid>
       </Grid>
     )
-  } else if (!!Object.keys(store.data).length) {
+  } else if (store.data !== null && !!Object.keys(store.data).length) {
     return (
       <Grid container spacing={6}>
         <Grid item xs={12} md={5} lg={4}>
