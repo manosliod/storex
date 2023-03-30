@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -32,7 +32,6 @@ import { editCategory } from 'src/store/apps/categories'
 import { AppDispatch } from 'src/store'
 import toast from 'react-hot-toast'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { useAuth } from 'src/hooks/useAuth'
 import { fetchCategoryData } from '../../../../store/apps/currentCategory'
 
 interface SidebarEditUserType {
@@ -61,8 +60,6 @@ const SidebarEditUser = (props: SidebarEditUserType) => {
   const { open, toggle, data, techUsers, currentCategoryData } = props
 
   // ** Hooks
-  const auth = useAuth()
-  const { user }: any = auth
   const dispatch = useDispatch<AppDispatch>()
   const defaultValues = {
     name: '',

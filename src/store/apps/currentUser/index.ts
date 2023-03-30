@@ -1,5 +1,4 @@
 // ** Redux Imports
-import { Dispatch } from 'redux'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
@@ -69,7 +68,6 @@ export const fetchUserData = createAsyncThunk(
 export const editUser = createAsyncThunk(
   'appCurrentUser/editUser',
   async (data: { [key: string]: number | string }, { getState, rejectWithValue }) => {
-    const id = data._id
     delete data._id
     let error = {}
     try {
@@ -105,7 +103,7 @@ export const editUser = createAsyncThunk(
 // ** Delete User
 export const deleteUser = createAsyncThunk(
   'appCurrentUser/deleteUser',
-  async (id: number | string, { getState, dispatch, rejectWithValue }) => {
+  async (id: number | string, { getState, rejectWithValue }) => {
     let error = {}
     try {
       const { currentUser }: any = getState()
@@ -141,7 +139,8 @@ export const updatePassword = createAsyncThunk(
     let error
     try {
       const res = await axios.patch('/api/users/updateMyPassword', data)
-      return res.data
+      
+return res.data
     } catch (err: any) {
       const { status, statusCode, message } = err.response.data
       if (message.includes('`password`')) {
@@ -161,7 +160,8 @@ export const updatePassword = createAsyncThunk(
           message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
         }
       }
-      return rejectWithValue({ error })
+      
+return rejectWithValue({ error })
     }
   }
 )
@@ -201,16 +201,16 @@ export const appCurrentUserSlice = createSlice({
       .addCase(fetchUserRole.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.role = action.payload.role
       })
-      .addCase(fetchUserRole.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchUserRole.rejected, (state) => {
         state.role = 'user'
       })
       .addCase(fetchURLForRoles.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.pathname = action.payload
       })
-      .addCase(fetchURLForRoles.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchURLForRoles.rejected, (state) => {
         state.pathname = ''
       })
-      .addCase(updatePassword.fulfilled, (state, action: PayloadAction<{} | any>) => {
+      .addCase(updatePassword.fulfilled, (state) => {
         state.error = {
           statusCode: 200
         }

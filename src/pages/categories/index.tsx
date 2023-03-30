@@ -122,7 +122,7 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     setOpenDelete(false)
   }
   const handleDeleteAuth = async () => {
-    let storeId = user.store
+    const storeId = user.store
     let dontFetch = 0
     if (router.pathname.includes('/categories/view')) {
       dontFetch = 1
@@ -134,9 +134,6 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
   }
 
   const RowOptions = ({ id, name }: { id: number | string; name: string }) => {
-    // ** Hooks
-    const dispatch = useDispatch<AppDispatch>()
-
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -168,7 +165,8 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     }
 
     const { categories, role }: any = user
-    return (
+    
+return (
       <>
         <IconButton
           disabled={role === 'tech' && !categories.find((category: any) => category.toString() === id)}

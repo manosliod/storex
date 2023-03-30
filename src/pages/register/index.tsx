@@ -77,19 +77,6 @@ const schema = yup.object().shape({
     .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
 })
 
-const defaultValues = {
-  username: '',
-  email: '',
-  password: '',
-  passwordConfirm: '',
-  fullName: '',
-  address: '',
-  city: '',
-  country: '',
-  birthday: new Date(moment().subtract(18, 'years').format('MM/DD/YYYY')),
-  phone: ''
-}
-
 interface FormData {
   email: string
   password: string
@@ -144,13 +131,15 @@ const RegisterPage = () => {
         const { type, message }: any = action.payload.error
         if (type === 'fail' || type === 'error') {
           toast.error(message, { duration: 5000 })
-          return
+          
+return
         } else if (message) {
           setError(type, {
             type: 'manual',
             message
           })
-          return
+          
+return
         }
       }
 

@@ -7,7 +7,7 @@ import Link from 'next/link'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // ** Type Import
 import { Settings } from 'src/@core/context/settingsContext'
@@ -37,9 +37,6 @@ const AppBarContent = (props: Props) => {
     horizontalAppBarContent: userHorizontalAppBarContent,
     horizontalAppBarBranding: userHorizontalAppBarBranding
   } = props
-
-  // ** Hooks
-  const theme = useTheme()
 
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

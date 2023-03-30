@@ -99,7 +99,8 @@ const RenderClient = (row: StoresType) => {
   const { user }: any = auth
   let url = '/home'
   if (user.role === 'super-admin') url = '/stores'
-  return (
+  
+return (
     <AvatarWithoutImageLink onClick={() => handleRoute(router, `${url}/sub-store/view/${row._id}`)}>
       <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem', cursor: 'pointer' }}>
         {getInitials(row.name ? row.name : 'John Doe')}
@@ -144,9 +145,6 @@ const Stores = ({ storeId }: any) => {
   }
 
   const RowOptions = ({ id, name }: { id: number | string; name?: string }) => {
-    // ** Hooks
-    const dispatch = useDispatch<AppDispatch>()
-
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 

@@ -1,5 +1,5 @@
 // ** React Imports
-import { SyntheticEvent, useEffect, useState } from 'react'
+import { SyntheticEvent, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -12,13 +12,10 @@ import MuiTab, { TabProps } from '@mui/material/Tab'
 // ** Icons Imports
 import StoreOutline from 'mdi-material-ui/StoreOutline'
 import AccountOutline from 'mdi-material-ui/AccountOutline'
-import ShapeOutline from 'mdi-material-ui/ShapeOutline'
-import PackageVariantClosed from 'mdi-material-ui/PackageVariantClosed'
 
 // ** Demo Components Imports
 import StoreViewStaff from 'src/pages/users'
 import StoreViewOverview from 'src/views/apps/stores/view/StoreViewOverview'
-import Categories from 'src/pages/categories'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'

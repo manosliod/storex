@@ -49,8 +49,6 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
-import { deleteCategory } from '../../store/apps/categories'
-import { fetchCategoryData } from '../../store/apps/currentCategory'
 
 interface StoreData {
   name?: string
@@ -137,9 +135,6 @@ const Stores = () => {
   }
 
   const RowOptions = ({ id, name }: { id: number | string; name?: string }) => {
-    // ** Hooks
-    const dispatch = useDispatch<AppDispatch>()
-
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 

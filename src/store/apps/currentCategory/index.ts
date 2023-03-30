@@ -1,10 +1,8 @@
 // ** Redux Imports
-import { Dispatch } from 'redux'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { NextRouter } from 'next/router'
 
 interface data {
   id: any
@@ -64,7 +62,6 @@ export const fetchCategoryData = createAsyncThunk(
 export const editCategory = createAsyncThunk(
   'appCurrentCategory/editCategory',
   async (data: { [key: string]: number | string }, { getState, rejectWithValue }) => {
-    const id = data._id
     delete data._id
     let error = {}
     try {
@@ -102,7 +99,7 @@ export const editCategory = createAsyncThunk(
 // ** Delete Category
 export const deleteCategory = createAsyncThunk(
   'appCurrentCategory/deleteCategory',
-  async (id: number | string, { getState, dispatch, rejectWithValue }) => {
+  async (id: number | string, { getState, rejectWithValue }) => {
     let error = {}
     try {
       const { currentCategory }: any = getState()
@@ -171,7 +168,7 @@ export const appCurrentCategorySlice = createSlice({
         state.pathname = action.payload.pathname
         state.techUsersPathname = action.payload.techUsersPathname
       })
-      .addCase(fetchURLForCategory.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchURLForCategory.rejected, (state) => {
         state.pathname = ''
         state.techUsersPathname = ''
       })

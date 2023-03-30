@@ -1,21 +1,14 @@
 // ** Redux Imports
-import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { addUser, editUser } from '../user'
 
 interface DataParams {
   q?: string
   storeType?: string
   city?: string
   country?: string
-}
-
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
 }
 
 // ** Fetch Stores
@@ -166,19 +159,19 @@ export const appStoresSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addStore.fulfilled, (state, action) => {
+      .addCase(addStore.fulfilled, (state) => {
         state.error = error
       })
       .addCase(addStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editStore.fulfilled, (state, action) => {
+      .addCase(editStore.fulfilled, (state) => {
         state.error = error
       })
       .addCase(editStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteStore.fulfilled, (state, action) => {
+      .addCase(deleteStore.fulfilled, (state) => {
         state.error = error
       })
       .addCase(deleteStore.rejected, (state, action: PayloadAction<{} | any>) => {

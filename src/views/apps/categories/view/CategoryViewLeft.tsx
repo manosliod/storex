@@ -8,23 +8,11 @@ import CardContent from '@mui/material/CardContent'
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 
-// ** Types
-import { ThemeColor } from 'src/@core/layouts/types'
-
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
 
 interface Props {
   data: any
-}
-
-interface ColorsType {
-  [key: string]: ThemeColor
-}
-
-const storeTypeColors: ColorsType = {
-  branch: 'primary',
-  individual: 'info'
 }
 
 const CategoryViewLeft = ({ data }: Props) => {
@@ -39,6 +27,7 @@ const CategoryViewLeft = ({ data }: Props) => {
         <CustomAvatar
           skin='light'
           variant='rounded'
+
           // color={data.avatarColor as ThemeColor}
           sx={{ width: 120, height: 120, fontWeight: 600, mb: 4, fontSize: '3rem' }}
         >
@@ -66,6 +55,7 @@ const CategoryViewLeft = ({ data }: Props) => {
                 skin='light'
                 size='small'
                 label={`@${data.user.username}`}
+
                 // color={storeTypeColors[data.storeType]}
                 sx={{
                   borderRadius: '4px',

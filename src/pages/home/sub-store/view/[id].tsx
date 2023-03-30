@@ -7,7 +7,6 @@ import { UserLayoutType } from 'src/types/apps/userTypes'
 // ** Demo Components Imports
 import StoreViewPage from 'src/views/apps/stores/view/StoreViewPage'
 import { useAuth } from 'src/hooks/useAuth'
-import BlankLayout from 'src/@core/layouts/BlankLayout'
 import NotAuthorized from 'src/pages/401'
 
 const SubStoreView = ({ id }: UserLayoutType) => {

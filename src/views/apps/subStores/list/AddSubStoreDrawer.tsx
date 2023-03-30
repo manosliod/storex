@@ -1,5 +1,5 @@
 // ** React Imports
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -24,14 +24,13 @@ import toast from 'react-hot-toast'
 import Close from 'mdi-material-ui/Close'
 
 // ** Store Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
 import { addSubStore } from 'src/store/apps/subStores'
 
 // ** Types Imports
-import { AppDispatch, RootState } from 'src/store'
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { AppDispatch } from 'src/store'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 interface SidebarAddUserType {

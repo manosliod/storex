@@ -6,7 +6,6 @@ import { useRouter } from 'next/router'
 import { useAuth } from '../../../../hooks/useAuth'
 import Switch from '@mui/material/Switch'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { useState } from 'react'
 import Grid from '@mui/material/Grid'
 
 interface TableHeaderProps {

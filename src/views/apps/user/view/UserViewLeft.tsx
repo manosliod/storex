@@ -2,11 +2,9 @@
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
-import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
@@ -46,6 +44,7 @@ const UserViewLeft = ({ data }: Props) => {
         <CustomAvatar
           skin='light'
           variant='rounded'
+
           // color={data.avatarColor as ThemeColor}
           sx={{ width: 120, height: 120, fontWeight: 600, mb: 4, fontSize: '3rem' }}
         >

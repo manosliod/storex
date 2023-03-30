@@ -1,5 +1,4 @@
 // ** Redux Imports
-import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
@@ -9,11 +8,6 @@ import { NextRouter } from 'next/router'
 interface DataParams {
   q?: string
   store: string | number
-}
-
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
 }
 
 interface data {
@@ -195,19 +189,19 @@ export const appCategoriesSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addCategory.fulfilled, (state, action) => {
+      .addCase(addCategory.fulfilled, (state) => {
         state.error = error
       })
       .addCase(addCategory.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editCategory.fulfilled, (state, action) => {
+      .addCase(editCategory.fulfilled, (state) => {
         state.error = error
       })
       .addCase(editCategory.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteCategory.fulfilled, (state, action) => {
+      .addCase(deleteCategory.fulfilled, (state) => {
         state.error = error
       })
       .addCase(deleteCategory.rejected, (state, action: PayloadAction<{} | any>) => {
@@ -217,7 +211,7 @@ export const appCategoriesSlice = createSlice({
         state.pathname = action.payload.pathname
         state.techUsersPathname = action.payload.techUsersPathname
       })
-      .addCase(fetchURLForRoles.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchURLForRoles.rejected, (state) => {
         state.pathname = ''
         state.techUsersPathname = ''
       })

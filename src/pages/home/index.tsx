@@ -35,7 +35,8 @@ const Home = () => {
 
   if (!!Object.keys(store.data).length && role !== 'super-admin') {
     const { id }: any = store.data
-    return <StoreViewPage id={id} />
+    
+return <StoreViewPage id={id} />
   }
 
   return (

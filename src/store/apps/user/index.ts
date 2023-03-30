@@ -1,5 +1,4 @@
 // ** Redux Imports
-import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
@@ -8,11 +7,6 @@ import axios from 'axios'
 interface DataParams {
   q?: string
   role?: string
-}
-
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
 }
 
 export const setUrl = createAsyncThunk('appCurrentUser/setUrl', (url: any) => {
@@ -119,7 +113,6 @@ export const signupUser = createAsyncThunk(
 export const editUser = createAsyncThunk(
   'appUsers/editUser',
   async (data: { [key: string]: number | string }, { getState, dispatch, rejectWithValue }) => {
-    const id = data._id
     delete data._id
     let error
     try {
@@ -179,10 +172,6 @@ export const deleteUser = createAsyncThunk(
   }
 )
 
-interface error {
-  type?: {}
-  message?: {}
-}
 export const appUsersSlice = createSlice({
   name: 'appUsers',
   initialState: {
@@ -211,25 +200,25 @@ export const appUsersSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addUser.fulfilled, (state, action) => {
+      .addCase(addUser.fulfilled, (state ) => {
         state.error = error
       })
       .addCase(addUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(signupUser.fulfilled, (state, action) => {
+      .addCase(signupUser.fulfilled, (state ) => {
         state.error = error
       })
       .addCase(signupUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload?.error
       })
-      .addCase(editUser.fulfilled, (state, action) => {
+      .addCase(editUser.fulfilled, (state ) => {
         state.error = error
       })
       .addCase(editUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteUser.fulfilled, (state, action) => {
+      .addCase(deleteUser.fulfilled, (state ) => {
         state.error = error
       })
       .addCase(deleteUser.rejected, (state, action: PayloadAction<{} | any>) => {
@@ -238,13 +227,13 @@ export const appUsersSlice = createSlice({
       .addCase(setUrl.fulfilled, (state, action) => {
         state.pathname = action.payload.pathname
       })
-      .addCase(setUrl.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(setUrl.rejected, (state) => {
         state.pathname = '/api/users'
       })
       .addCase(setUpdateDeleteUrl.fulfilled, (state, action) => {
         state.pathnameUpdateDelete = action.payload.pathnameUpdateDelete
       })
-      .addCase(setUpdateDeleteUrl.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(setUpdateDeleteUrl.rejected, (state) => {
         state.pathname = ''
       })
   }

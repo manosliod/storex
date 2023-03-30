@@ -41,6 +41,7 @@ const StoreViewLeft = ({ data }: Props) => {
         <CustomAvatar
           skin='light'
           variant='rounded'
+
           // color={data.avatarColor as ThemeColor}
           sx={{ width: 120, height: 120, fontWeight: 600, mb: 4, fontSize: '3rem' }}
         >

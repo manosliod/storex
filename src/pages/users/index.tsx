@@ -49,7 +49,6 @@ import EditUserDrawer from 'src/views/apps/user/list/EditUserDrawer'
 import axios from 'axios'
 import { NextRouter, useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
-import { deleteStore } from '../../store/apps/stores'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
@@ -127,7 +126,8 @@ const changeUserRoute = (userId: any, storeData: any, router: NextRouter) => {
   } else if (storeData !== null) {
     url = `/stores/${storeData._id}/user/${userId}`
   }
-  return url
+  
+return url
 }
 
 const Users = ({ storeData = null }: any) => {
@@ -179,9 +179,6 @@ const Users = ({ storeData = null }: any) => {
   }
 
   const RowOptions = ({ id, fullName, username }: { id: number | string; fullName?: string; username: string }) => {
-    // ** Hooks
-    const dispatch = useDispatch<AppDispatch>()
-
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 

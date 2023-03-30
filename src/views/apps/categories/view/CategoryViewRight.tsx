@@ -11,7 +11,6 @@ import MuiTab, { TabProps } from '@mui/material/Tab'
 
 // ** Icons Imports
 import StoreOutline from 'mdi-material-ui/StoreOutline'
-import AccountOutline from 'mdi-material-ui/AccountOutline'
 import ShapeOutline from 'mdi-material-ui/ShapeOutline'
 import PackageVariantClosed from 'mdi-material-ui/PackageVariantClosed'
 

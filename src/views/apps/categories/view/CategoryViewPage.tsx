@@ -30,7 +30,7 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
   const store = useSelector((state: RootState) => state.currentCategory)
 
   const auth = useAuth()
-  const { categories, role }: any = auth.user
+  const { role }: any = auth.user
   useEffect(() => {
     const fetchData = async () => {
       const { user }: any = auth
@@ -58,7 +58,8 @@ const CategoryView = ({ id }: CategoriesLayoutType) => {
     )
   } else if (!!Object.keys(store.data).length) {
     const { subcategories }: any = store.data
-    return (
+    
+return (
       <Grid container spacing={6}>
         <Grid item xs={12} md={5} lg={4}>
           <CategoryViewLeft data={store.data} />

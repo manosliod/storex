@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -43,13 +43,12 @@ interface Props {
   role: string
 }
 
-const phoneRegExp = /^\+[1-9]{1}[0-9]{3,14}$/
 const schema = yup.object().shape({
   name: yup.string().required('Name is a required field'),
   user: yup.string().required('User is a required field')
 })
 
-const StoreViewOverview = ({ categoryData, techUsers, error, role }: Props) => {
+const StoreViewOverview = ({ categoryData, techUsers, error }: Props) => {
   const defaultValues = {
     name: '',
     user: ''

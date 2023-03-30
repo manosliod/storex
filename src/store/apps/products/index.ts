@@ -1,10 +1,8 @@
 // ** Redux Imports
-import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { NextRouter } from 'next/router'
 
 interface DataParams {
   q?: string
@@ -14,18 +12,7 @@ interface DataParams {
   inBranches: boolean
 }
 
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
-}
-
-interface data {
-  id?: any | undefined
-  router?: NextRouter | undefined
-  storeId?: any | undefined
-}
-
-export const fetchURLForProducts = createAsyncThunk('appCurrentProduct/fetchURLForRoles', (data: data) => {
+export const fetchURLForProducts = createAsyncThunk('appCurrentProduct/fetchURLForRoles', () => {
   // if (data.router) {
   //   const { pathname }: any = data.router
   //   if (pathname.includes('/products/view') || pathname.includes('/home/product')) {
@@ -188,19 +175,19 @@ export const appCategoriesSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addProduct.fulfilled, (state, action) => {
+      .addCase(addProduct.fulfilled, (state) => {
         state.error = error
       })
       .addCase(addProduct.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editProduct.fulfilled, (state, action) => {
+      .addCase(editProduct.fulfilled, (state) => {
         state.error = error
       })
       .addCase(editProduct.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteProduct.fulfilled, (state, action) => {
+      .addCase(deleteProduct.fulfilled, (state) => {
         state.error = error
       })
       .addCase(deleteProduct.rejected, (state, action: PayloadAction<{} | any>) => {
@@ -209,7 +196,7 @@ export const appCategoriesSlice = createSlice({
       .addCase(fetchURLForProducts.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.pathname = action.payload.pathname
       })
-      .addCase(fetchURLForProducts.rejected, (state, action: PayloadAction<{} | any>) => {
+      .addCase(fetchURLForProducts.rejected, (state) => {
         state.pathname = ''
       })
   }

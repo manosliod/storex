@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -23,13 +23,13 @@ import { useForm, Controller } from 'react-hook-form'
 import Close from 'mdi-material-ui/Close'
 
 // ** Store Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
-import { editUser, setUpdateDeleteUrl, setUrl } from 'src/store/apps/user'
+import { editUser, setUpdateDeleteUrl } from 'src/store/apps/user'
 
 // ** Types Imports
-import { AppDispatch, RootState } from 'src/store'
+import { AppDispatch } from 'src/store'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import MobileDatePicker from '@mui/lab/MobileDatePicker'
