@@ -126,8 +126,8 @@ const changeUserRoute = (userId: any, storeData: any, router: NextRouter) => {
   } else if (storeData !== null) {
     url = `/stores/${storeData._id}/user/${userId}`
   }
-  
-return url
+
+  return url
 }
 
 const Users = ({ storeData = null }: any) => {

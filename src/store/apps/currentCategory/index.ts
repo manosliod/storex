@@ -168,7 +168,7 @@ export const appCurrentCategorySlice = createSlice({
         state.pathname = action.payload.pathname
         state.techUsersPathname = action.payload.techUsersPathname
       })
-      .addCase(fetchURLForCategory.rejected, (state) => {
+      .addCase(fetchURLForCategory.rejected, state => {
         state.pathname = ''
         state.techUsersPathname = ''
       })

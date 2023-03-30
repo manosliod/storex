@@ -165,8 +165,8 @@ const Categories = ({ currentCategoryData, subcategories, techUsers }: Props) =>
     }
 
     const { categories, role }: any = user
-    
-return (
+
+    return (
       <>
         <IconButton
           disabled={role === 'tech' && !categories.find((category: any) => category.toString() === id)}

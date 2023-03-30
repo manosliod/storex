@@ -139,8 +139,8 @@ export const updatePassword = createAsyncThunk(
     let error
     try {
       const res = await axios.patch('/api/users/updateMyPassword', data)
-      
-return res.data
+
+      return res.data
     } catch (err: any) {
       const { status, statusCode, message } = err.response.data
       if (message.includes('`password`')) {
@@ -160,8 +160,8 @@ return res.data
           message: 'Something Went Wrong! Please refresh your page!\n If the error exists contact with us.'
         }
       }
-      
-return rejectWithValue({ error })
+
+      return rejectWithValue({ error })
     }
   }
 )
@@ -201,16 +201,16 @@ export const appCurrentUserSlice = createSlice({
       .addCase(fetchUserRole.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.role = action.payload.role
       })
-      .addCase(fetchUserRole.rejected, (state) => {
+      .addCase(fetchUserRole.rejected, state => {
         state.role = 'user'
       })
       .addCase(fetchURLForRoles.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.pathname = action.payload
       })
-      .addCase(fetchURLForRoles.rejected, (state) => {
+      .addCase(fetchURLForRoles.rejected, state => {
         state.pathname = ''
       })
-      .addCase(updatePassword.fulfilled, (state) => {
+      .addCase(updatePassword.fulfilled, state => {
         state.error = {
           statusCode: 200
         }

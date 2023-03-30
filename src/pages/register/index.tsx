@@ -131,15 +131,15 @@ const RegisterPage = () => {
         const { type, message }: any = action.payload.error
         if (type === 'fail' || type === 'error') {
           toast.error(message, { duration: 5000 })
-          
-return
+
+          return
         } else if (message) {
           setError(type, {
             type: 'manual',
             message
           })
-          
-return
+
+          return
         }
       }
 

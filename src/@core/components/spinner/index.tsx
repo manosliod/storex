@@ -1,10 +1,9 @@
 // ** MUI Import
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
-import AppLogo from "../app-logo/AppLogo";
+import AppLogo from '../app-logo/AppLogo'
 
 const FallbackSpinner = () => {
-
   return (
     <Box
       sx={{

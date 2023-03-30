@@ -77,7 +77,6 @@ const AvatarWithoutImageLink = styled(Grid)(({ theme }) => ({
 
 // ** renders client column
 const RenderClient = (row: ProductsType) => {
-
   return (
     <AvatarWithoutImageLink>
       <CustomAvatar skin='light' color='primary' sx={{ width: 34, height: 34, fontSize: '1rem' }}>
@@ -155,7 +154,7 @@ const Products = ({ category }: any | undefined) => {
     return (
       <>
         <IconButton
-          disabled={(role === 'tech' && !products.find((product: any) => product.toString() === id))}
+          disabled={role === 'tech' && !products.find((product: any) => product.toString() === id)}
           size='small'
           onClick={handleRowOptionsClick}
         >

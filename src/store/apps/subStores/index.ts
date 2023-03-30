@@ -160,19 +160,19 @@ export const appSubStoresSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addSubStore.fulfilled, (state) => {
+      .addCase(addSubStore.fulfilled, state => {
         state.error = error
       })
       .addCase(addSubStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editSubStore.fulfilled, (state) => {
+      .addCase(editSubStore.fulfilled, state => {
         state.error = error
       })
       .addCase(editSubStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteSubStore.fulfilled, (state) => {
+      .addCase(deleteSubStore.fulfilled, state => {
         state.error = error
       })
       .addCase(deleteSubStore.rejected, (state, action: PayloadAction<{} | any>) => {

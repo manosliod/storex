@@ -175,19 +175,19 @@ export const appCategoriesSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addProduct.fulfilled, (state) => {
+      .addCase(addProduct.fulfilled, state => {
         state.error = error
       })
       .addCase(addProduct.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editProduct.fulfilled, (state) => {
+      .addCase(editProduct.fulfilled, state => {
         state.error = error
       })
       .addCase(editProduct.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteProduct.fulfilled, (state) => {
+      .addCase(deleteProduct.fulfilled, state => {
         state.error = error
       })
       .addCase(deleteProduct.rejected, (state, action: PayloadAction<{} | any>) => {
@@ -196,7 +196,7 @@ export const appCategoriesSlice = createSlice({
       .addCase(fetchURLForProducts.fulfilled, (state, action: PayloadAction<{} | any>) => {
         state.pathname = action.payload.pathname
       })
-      .addCase(fetchURLForProducts.rejected, (state) => {
+      .addCase(fetchURLForProducts.rejected, state => {
         state.pathname = ''
       })
   }

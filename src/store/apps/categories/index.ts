@@ -189,19 +189,19 @@ export const appCategoriesSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addCategory.fulfilled, (state) => {
+      .addCase(addCategory.fulfilled, state => {
         state.error = error
       })
       .addCase(addCategory.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editCategory.fulfilled, (state) => {
+      .addCase(editCategory.fulfilled, state => {
         state.error = error
       })
       .addCase(editCategory.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteCategory.fulfilled, (state) => {
+      .addCase(deleteCategory.fulfilled, state => {
         state.error = error
       })
       .addCase(deleteCategory.rejected, (state, action: PayloadAction<{} | any>) => {
@@ -211,7 +211,7 @@ export const appCategoriesSlice = createSlice({
         state.pathname = action.payload.pathname
         state.techUsersPathname = action.payload.techUsersPathname
       })
-      .addCase(fetchURLForRoles.rejected, (state) => {
+      .addCase(fetchURLForRoles.rejected, state => {
         state.pathname = ''
         state.techUsersPathname = ''
       })

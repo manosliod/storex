@@ -200,25 +200,25 @@ export const appUsersSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addUser.fulfilled, (state ) => {
+      .addCase(addUser.fulfilled, state => {
         state.error = error
       })
       .addCase(addUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(signupUser.fulfilled, (state ) => {
+      .addCase(signupUser.fulfilled, state => {
         state.error = error
       })
       .addCase(signupUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload?.error
       })
-      .addCase(editUser.fulfilled, (state ) => {
+      .addCase(editUser.fulfilled, state => {
         state.error = error
       })
       .addCase(editUser.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteUser.fulfilled, (state ) => {
+      .addCase(deleteUser.fulfilled, state => {
         state.error = error
       })
       .addCase(deleteUser.rejected, (state, action: PayloadAction<{} | any>) => {
@@ -227,13 +227,13 @@ export const appUsersSlice = createSlice({
       .addCase(setUrl.fulfilled, (state, action) => {
         state.pathname = action.payload.pathname
       })
-      .addCase(setUrl.rejected, (state) => {
+      .addCase(setUrl.rejected, state => {
         state.pathname = '/api/users'
       })
       .addCase(setUpdateDeleteUrl.fulfilled, (state, action) => {
         state.pathnameUpdateDelete = action.payload.pathnameUpdateDelete
       })
-      .addCase(setUpdateDeleteUrl.rejected, (state) => {
+      .addCase(setUpdateDeleteUrl.rejected, state => {
         state.pathname = ''
       })
   }

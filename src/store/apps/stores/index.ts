@@ -159,19 +159,19 @@ export const appStoresSlice = createSlice({
         state.allData = action.payload.allData
         state.error = error
       })
-      .addCase(addStore.fulfilled, (state) => {
+      .addCase(addStore.fulfilled, state => {
         state.error = error
       })
       .addCase(addStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(editStore.fulfilled, (state) => {
+      .addCase(editStore.fulfilled, state => {
         state.error = error
       })
       .addCase(editStore.rejected, (state, action: PayloadAction<{} | any>) => {
         state.error = action.payload.error
       })
-      .addCase(deleteStore.fulfilled, (state) => {
+      .addCase(deleteStore.fulfilled, state => {
         state.error = error
       })
       .addCase(deleteStore.rejected, (state, action: PayloadAction<{} | any>) => {

@@ -27,7 +27,6 @@ const CategoryViewLeft = ({ data }: Props) => {
         <CustomAvatar
           skin='light'
           variant='rounded'
-
           // color={data.avatarColor as ThemeColor}
           sx={{ width: 120, height: 120, fontWeight: 600, mb: 4, fontSize: '3rem' }}
         >
@@ -55,7 +54,6 @@ const CategoryViewLeft = ({ data }: Props) => {
                 skin='light'
                 size='small'
                 label={`@${data.user.username}`}
-
                 // color={storeTypeColors[data.storeType]}
                 sx={{
                   borderRadius: '4px',

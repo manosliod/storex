@@ -1,10 +1,10 @@
 import { useTheme } from '@mui/material/styles'
 
 interface props {
-  width?: number | undefined;
-  height?: number | undefined;
+  width?: number | undefined
+  height?: number | undefined
 }
-export default function AppLogo({width = 40, height = 40}: props) {
+export default function AppLogo({ width = 40, height = 40 }: props) {
   const theme = useTheme()
 
   return (
