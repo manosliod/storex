@@ -42,7 +42,6 @@ import { ProductsType } from 'src/types/apps/productTypes'
 import TableHeader from 'src/views/apps/products/list/TableHeader'
 import AddProductDrawer from 'src/views/apps/products/list/AddProductDrawer'
 import EditProductDrawer from 'src/views/apps/products/list/EditProductDrawer'
-import { NextRouter, useRouter } from 'next/router'
 import { useAuth } from '../../hooks/useAuth'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -78,7 +77,6 @@ const AvatarWithoutImageLink = styled(Grid)(({ theme }) => ({
 
 // ** renders client column
 const RenderClient = (row: ProductsType) => {
-  const router = useRouter()
 
   return (
     <AvatarWithoutImageLink>
@@ -101,9 +99,8 @@ const Products = ({ category }: any | undefined) => {
   // ** Hooks
   const auth = useAuth()
   const { user }: any = auth
-  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.products)
+  const appStore = useSelector((state: RootState) => state.products)
 
   // Handle Delete dialog
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
@@ -140,6 +137,7 @@ const Products = ({ category }: any | undefined) => {
     }
 
     const handleEdit = async () => {
+      console.log(store)
       const foundedProduct = store.data.find((product: ProductsType) => product._id === id)
       setCurrentProduct(foundedProduct!)
       setEditProductOpen(true)
@@ -153,10 +151,11 @@ const Products = ({ category }: any | undefined) => {
     }
 
     const { products, role }: any = auth.user
+
     return (
       <>
         <IconButton
-          disabled={(role === 'tech' && !products.find((product: any) => product.toString() === id)) || store.name}
+          disabled={(role === 'tech' && !products.find((product: any) => product.toString() === id))}
           size='small'
           onClick={handleRowOptionsClick}
         >
@@ -280,7 +279,7 @@ const Products = ({ category }: any | undefined) => {
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row._id} name={row.name} store={row.store} />
+      renderCell: ({ row }: CellType) => <RowOptions id={row._id} name={row.name} store={appStore} />
     }
   ]
 
@@ -372,13 +371,14 @@ const Products = ({ category }: any | undefined) => {
           />
           <DataGrid
             autoHeight
-            rows={store.data ?? []}
+            rows={appStore.data ?? []}
             getRowId={(row: any) => row._id}
             getRowClassName={params => {
               if (params.row.store) {
                 const { name }: any = params.row.store
                 if (name) return 'primary-row'
               }
+
               return ''
             }}
             columns={columns}

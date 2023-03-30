@@ -1,5 +1,5 @@
 // ** React Imports
-import {ReactNode, useCallback, useState} from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -42,13 +42,14 @@ import * as yup from 'yup'
 import 'yup-phone'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import {PayloadAction} from "@reduxjs/toolkit";
-import {signupUser} from "src/store/apps/user";
-import toast from "react-hot-toast";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "src/store";
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import { PayloadAction } from '@reduxjs/toolkit'
+import { signupUser } from 'src/store/apps/user'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/store'
+import AppLogo from '../../@core/components/app-logo/AppLogo'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -61,19 +62,19 @@ const schema = yup.object().shape({
   email: yup.string().email('Email must be a valid email e.g. user@domain.net').required('Email is a required field'),
   password: yup.string().min(5).required('Password is a required field'),
   passwordConfirm: yup
-      .string()
-      .min(5)
-      .required('Password Confirm is a required field')
-      .oneOf([yup.ref('password')], 'Passwords do not match'),
+    .string()
+    .min(5)
+    .required('Password Confirm is a required field')
+    .oneOf([yup.ref('password')], 'Passwords do not match'),
   fullName: yup.string().required('Full Name is a required field'),
   address: yup.string().required('Address is a required field'),
   city: yup.string().required('City is a required field'),
   country: yup.string().required('Country is a required field'),
   birthday: yup.date().nullable().required('Birthday is a required field'),
   phone: yup
-      .string()
-      .required('Mobile Phone is a required field')
-      .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
+    .string()
+    .required('Mobile Phone is a required field')
+    .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
 })
 
 const defaultValues = {
@@ -103,11 +104,11 @@ const RegisterPage = () => {
   const [genderError, setGenderError] = useState<boolean>(false)
 
   const handleGenderChange = useCallback(
-      (e: any) => {
-        setGender(e.target.value)
-        setGenderError(false)
-      },
-      [gender, genderError]
+    (e: any) => {
+      setGender(e.target.value)
+      setGenderError(false)
+    },
+    [gender, genderError]
   )
 
   const {
@@ -128,110 +129,43 @@ const RegisterPage = () => {
   const theme = useTheme()
   const dispatch = useDispatch<AppDispatch>()
 
-  const onSubmit = useCallback( async (data: FormData) => {
-    setGenderError(gender === '')
+  const onSubmit = useCallback(
+    async (data: FormData) => {
+      setGenderError(gender === '')
 
-    if (gender === '') return
+      if (gender === '') return
 
-    data.birthday = moment(new Date(data.birthday)).format('MM-DD-YYYY')
+      data.birthday = moment(new Date(data.birthday)).format('MM-DD-YYYY')
 
-    const role = 'store-admin'
-    const action: PayloadAction<{} | any> = await dispatch(signupUser({ ...data, role, gender }))
-    console.log(action)
-    if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
-      const { type, message }: any = action.payload.error
-      if (type === 'fail' || type === 'error') {
-        toast.error(message, { duration: 5000 })
-        return
-      } else if(message) {
-        setError(type, {
-          type: 'manual',
-          message
-        })
-        return
+      const role = 'store-admin'
+      const action: PayloadAction<{} | any> = await dispatch(signupUser({ ...data, role, gender }))
+      console.log(action)
+      if (!!Object.keys(action.payload).length && action.payload.hasOwnProperty('error')) {
+        const { type, message }: any = action.payload.error
+        if (type === 'fail' || type === 'error') {
+          toast.error(message, { duration: 5000 })
+          return
+        } else if (message) {
+          setError(type, {
+            type: 'manual',
+            message
+          })
+          return
+        }
       }
-    }
 
-    const { email, password } = data
-    auth.login({ email, password })
-
-  }, [gender, genderError])
+      const { email, password } = data
+      auth.login({ email, password })
+    },
+    [gender, genderError]
+  )
 
   return (
     <Box className='content-center'>
       <Card sx={{ zIndex: 1 }}>
         <CardContent sx={{ p: theme => `${theme.spacing(15.5, 7)} !important` }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width={47} fill='none' height={26} viewBox='0 0 268 150' xmlns='http://www.w3.org/2000/svg'>
-              <rect
-                rx='25.1443'
-                width='50.2886'
-                height='143.953'
-                fill={theme.palette.primary.main}
-                transform='matrix(-0.865206 0.501417 0.498585 0.866841 195.571 0)'
-              />
-              <rect
-                rx='25.1443'
-                width='50.2886'
-                height='143.953'
-                fillOpacity='0.4'
-                fill='url(#paint0_linear_7821_79167)'
-                transform='matrix(-0.865206 0.501417 0.498585 0.866841 196.084 0)'
-              />
-              <rect
-                rx='25.1443'
-                width='50.2886'
-                height='143.953'
-                fill={theme.palette.primary.main}
-                transform='matrix(0.865206 0.501417 -0.498585 0.866841 173.147 0)'
-              />
-              <rect
-                rx='25.1443'
-                width='50.2886'
-                height='143.953'
-                fill={theme.palette.primary.main}
-                transform='matrix(-0.865206 0.501417 0.498585 0.866841 94.1973 0)'
-              />
-              <rect
-                rx='25.1443'
-                width='50.2886'
-                height='143.953'
-                fillOpacity='0.4'
-                fill='url(#paint1_linear_7821_79167)'
-                transform='matrix(-0.865206 0.501417 0.498585 0.866841 94.1973 0)'
-              />
-              <rect
-                rx='25.1443'
-                width='50.2886'
-                height='143.953'
-                fill={theme.palette.primary.main}
-                transform='matrix(0.865206 0.501417 -0.498585 0.866841 71.7728 0)'
-              />
-              <defs>
-                <linearGradient
-                  y1='0'
-                  x1='25.1443'
-                  x2='25.1443'
-                  y2='143.953'
-                  id='paint0_linear_7821_79167'
-                  gradientUnits='userSpaceOnUse'
-                >
-                  <stop />
-                  <stop offset='1' stopOpacity='0' />
-                </linearGradient>
-                <linearGradient
-                  y1='0'
-                  x1='25.1443'
-                  x2='25.1443'
-                  y2='143.953'
-                  id='paint1_linear_7821_79167'
-                  gradientUnits='userSpaceOnUse'
-                >
-                  <stop />
-                  <stop offset='1' stopOpacity='0' />
-                </linearGradient>
-              </defs>
-            </svg>
+            <AppLogo />
             <Typography variant='h6' sx={{ ml: 2, lineHeight: 1, fontWeight: 700, fontSize: '1.5rem !important' }}>
               {themeConfig.templateName}
             </Typography>
@@ -245,82 +179,94 @@ const RegisterPage = () => {
           <form autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='username'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                      <TextField {...field} autoFocus autoComplete='off' label='Username' error={Boolean(errors.username)} />
-                  )}
+                name='username'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    autoFocus
+                    autoComplete='off'
+                    label='Username'
+                    error={Boolean(errors.username)}
+                  />
+                )}
               />
-              {errors.username && <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>}
+              {errors.username && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>
+              )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='email'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Email' error={Boolean(errors.email)} />}
+                name='email'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Email' error={Boolean(errors.email)} />}
               />
               {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
               <Controller
-                  name='password'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                      <OutlinedInput
-                          {...field}
-                          id='auth-register-password'
-                          type='password'
-                          label='Password'
-                          error={Boolean(errors.password)}
-                      />
-                  )}
+                name='password'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <OutlinedInput
+                    {...field}
+                    id='auth-register-password'
+                    type='password'
+                    label='Password'
+                    error={Boolean(errors.password)}
+                  />
+                )}
               />
-              {errors.password && <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>}
+              {errors.password && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.password.message}</FormHelperText>
+              )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <InputLabel htmlFor='auth-register-confirm-password'>Password Confirm</InputLabel>
               <Controller
-                  name='passwordConfirm'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                      <OutlinedInput
-                          {...field}
-                          id='auth-register-confirm-password'
-                          type='password'
-                          label='Password Confirm'
-                          error={Boolean(errors.passwordConfirm)}
-                      />
-                  )}
+                name='passwordConfirm'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <OutlinedInput
+                    {...field}
+                    id='auth-register-confirm-password'
+                    type='password'
+                    label='Password Confirm'
+                    error={Boolean(errors.passwordConfirm)}
+                  />
+                )}
               />
               {errors.passwordConfirm && (
-                  <FormHelperText sx={{ color: 'error.main' }}>{errors.passwordConfirm.message}</FormHelperText>
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.passwordConfirm.message}</FormHelperText>
               )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='fullName'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Full Name' error={Boolean(errors.fullName)} />}
+                name='fullName'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Full Name' error={Boolean(errors.fullName)} />}
               />
-              {errors.fullName && <FormHelperText sx={{ color: 'error.main' }}>{errors.fullName.message}</FormHelperText>}
+              {errors.fullName && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.fullName.message}</FormHelperText>
+              )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 6 }}>
               <InputLabel id='gender-select'>Select Gender</InputLabel>
               <Select
-                  fullWidth
-                  id='select-gender'
-                  label='Select Gender'
-                  labelId='gender-select'
-                  value={gender}
-                  onChange={e => handleGenderChange(e)}
-                  inputProps={{ placeholder: 'Select Gender' }}
-                  error={genderError}
+                fullWidth
+                id='select-gender'
+                label='Select Gender'
+                labelId='gender-select'
+                value={gender}
+                onChange={e => handleGenderChange(e)}
+                inputProps={{ placeholder: 'Select Gender' }}
+                error={genderError}
               >
                 <MenuItem value='' disabled={true}>
                   Select Gender
@@ -333,56 +279,58 @@ const RegisterPage = () => {
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='birthday'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                      <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <MobileDatePicker
-                            {...field}
-                            label='Birthday'
-                            minDate={new Date(minDate)}
-                            maxDate={new Date(maxDate)}
-                            renderInput={params => <TextField error={Boolean(errors.birthday)} {...params} />}
-                        />
-                      </LocalizationProvider>
-                  )}
+                name='birthday'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <MobileDatePicker
+                      {...field}
+                      label='Birthday'
+                      minDate={new Date(minDate)}
+                      maxDate={new Date(maxDate)}
+                      renderInput={params => <TextField error={Boolean(errors.birthday)} {...params} />}
+                    />
+                  </LocalizationProvider>
+                )}
               />
-              {errors.birthday && <FormHelperText sx={{ color: 'error.main' }}>{errors.birthday.message}</FormHelperText>}
+              {errors.birthday && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.birthday.message}</FormHelperText>
+              )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='address'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
+                name='address'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
               />
               {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='city'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
+                name='city'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
               />
               {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='country'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
+                name='country'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
               />
               {errors.country && <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='phone'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Mobile Phone' error={Boolean(errors.phone)} />}
+                name='phone'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Mobile Phone' error={Boolean(errors.phone)} />}
               />
               {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
             </FormControl>
