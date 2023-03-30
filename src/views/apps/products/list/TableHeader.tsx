@@ -25,11 +25,11 @@ const TableHeader = (props: TableHeaderProps) => {
   // ** Hooks
   const router = useRouter()
   const auth = useAuth()
-  const { role, categories }: any = auth.user
+  const { role, categories, store }: any = auth.user
 
   return (
     <Grid container sx={{ justifyContent: 'between' }}>
-      {router.pathname.includes('/products') && (
+      {router.pathname.includes('/products') && store.storeType === 'branch' && (
         <Grid item sx={{ p: 5, pb: 3, alignItems: 'center' }}>
           <FormControlLabel
             control={<Switch checked={checked} onChange={toggleChecked} />}
