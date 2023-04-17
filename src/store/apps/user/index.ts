@@ -80,25 +80,22 @@ export const addUser = createAsyncThunk(
 
 export const signupUser = createAsyncThunk(
   'appUsers/signupUser',
-  async (data: { [key: string]: number | string }, { dispatch, getState, rejectWithValue }) => {
+  async (data: { [key: string]: number | string }, { rejectWithValue }) => {
     let error
 
     try {
-      const { user }: any = getState()
-      const bufferedBasicAuth = Buffer.from('console-storex:G#h42Jt*409QwerD0').toString('base64');
-      const authHeaders = {
-        key: 'Authorization',
-        value: `Basic ${bufferedBasicAuth}`
-      }
-      const res = await axios.post('http://localhost:3000/api/users/register', {
-        ...data
-      }, {
-        headers: {
-          'Authorization':  `Basic ${bufferedBasicAuth}`
+      const bufferedBasicAuth = Buffer.from('console-storex:G#h42Jt*409QwerD0').toString('base64')
+      const res = await axios.post(
+        'http://localhost:3000/api/users/register',
+        {
+          ...data
+        },
+        {
+          headers: {
+            Authorization: `Basic ${bufferedBasicAuth}`
+          }
         }
-      })
-
-      // dispatch(fetchData(user.params))params
+      )
 
       return { ...res.data }
     } catch (err: any) {

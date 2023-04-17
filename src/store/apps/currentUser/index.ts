@@ -74,7 +74,8 @@ export const editUser = createAsyncThunk(
     try {
       const { currentUser }: any = getState()
       const res = await axios.patch(currentUser.pathname, {
-        ...data, id
+        ...data,
+        id
       })
 
       return {

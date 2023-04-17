@@ -1,5 +1,5 @@
 // ** React Imports
-import {ReactNode, useState} from 'react'
+import { ReactNode, useState } from 'react'
 
 // ** MUI Imports
 import Select from '@mui/material/Select'
@@ -28,12 +28,12 @@ import { addStore } from 'src/store/apps/stores'
 import { AppDispatch } from 'src/store'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { CardContent } from '@mui/material'
-import BlankLayout from "../../@core/layouts/BlankLayout";
-import FooterIllustrationsV1 from "../../views/pages/auth/FooterIllustrationsV1";
-import themeConfig from "../../configs/themeConfig";
-import AppLogo from "../../@core/components/app-logo/AppLogo";
-import Card from "@mui/material/Card";
-import {useTheme} from "@mui/material/styles";
+import BlankLayout from '../../@core/layouts/BlankLayout'
+import FooterIllustrationsV1 from '../../views/pages/auth/FooterIllustrationsV1'
+import themeConfig from '../../configs/themeConfig'
+import AppLogo from '../../@core/components/app-logo/AppLogo'
+import Card from '@mui/material/Card'
+import { useTheme } from '@mui/material/styles'
 
 interface StoreData {
   name?: string
@@ -55,9 +55,9 @@ const schema = yup.object().shape({
   city: yup.string().required('City is a required field'),
   country: yup.string().required('Country is a required field'),
   phone: yup
-      .string()
-      .required('Phone is a required field')
-      .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
+    .string()
+    .required('Phone is a required field')
+    .matches(phoneRegExp, 'Mobile Phone is not valid ex. +302101234567')
 })
 
 const defaultValues = {
@@ -129,46 +129,46 @@ const RegisterStorePage = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='name'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField autoFocus {...field} label='Name' error={Boolean(errors.name)} />}
+                name='name'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField autoFocus {...field} label='Name' error={Boolean(errors.name)} />}
               />
               {errors.name && <FormHelperText sx={{ color: 'error.main' }}>{errors.name.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='officialName'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                      <TextField {...field} label='Official Name' error={Boolean(errors.officialName)} />
-                  )}
+                name='officialName'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField {...field} label='Official Name' error={Boolean(errors.officialName)} />
+                )}
               />
               {errors.officialName && (
-                  <FormHelperText sx={{ color: 'error.main' }}>{errors.officialName.message}</FormHelperText>
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.officialName.message}</FormHelperText>
               )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='taxId'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Tax ID Number' error={Boolean(errors.taxId)} />}
+                name='taxId'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Tax ID Number' error={Boolean(errors.taxId)} />}
               />
               {errors.taxId && <FormHelperText sx={{ color: 'error.main' }}>{errors.taxId.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <InputLabel id='store-type-select'>Select Store Type</InputLabel>
               <Select
-                  fullWidth
-                  id='select-store-type'
-                  label='Select Store Type'
-                  labelId='store-type-select'
-                  value={storeType}
-                  onChange={e => setStoreType(e.target.value)}
-                  inputProps={{ placeholder: 'Select Store Type' }}
-                  error={storeTypeError}
+                fullWidth
+                id='select-store-type'
+                label='Select Store Type'
+                labelId='store-type-select'
+                value={storeType}
+                onChange={e => setStoreType(e.target.value)}
+                inputProps={{ placeholder: 'Select Store Type' }}
+                error={storeTypeError}
               >
                 <MenuItem value='' disabled={true}>
                   Select Store Type
@@ -177,42 +177,42 @@ const RegisterStorePage = () => {
                 <MenuItem value='branch'>Branch</MenuItem>
               </Select>
               {storeTypeError && (
-                  <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>
+                <FormHelperText sx={{ color: 'error.main' }}>Store Type is a required field!</FormHelperText>
               )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='address'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
+                name='address'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Address' error={Boolean(errors.address)} />}
               />
               {errors.address && <FormHelperText sx={{ color: 'error.main' }}>{errors.address.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='city'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
+                name='city'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='City' error={Boolean(errors.city)} />}
               />
               {errors.city && <FormHelperText sx={{ color: 'error.main' }}>{errors.city.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='country'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
+                name='country'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Country' error={Boolean(errors.country)} />}
               />
               {errors.country && <FormHelperText sx={{ color: 'error.main' }}>{errors.country.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                  name='phone'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => <TextField {...field} label='Phone' error={Boolean(errors.phone)} />}
+                name='phone'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => <TextField {...field} label='Phone' error={Boolean(errors.phone)} />}
               />
               {errors.phone && <FormHelperText sx={{ color: 'error.main' }}>{errors.phone.message}</FormHelperText>}
             </FormControl>
