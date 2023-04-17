@@ -36,7 +36,12 @@ const AuthGuard = (props: AuthGuardProps) => {
       } else {
         router.replace('/login')
       }
+    } else if(auth.user !== null && !!getCookie('StorexAuth') && (auth.user.store === null || String(auth.user.store).length === 0)) {
+      console.log(auth.user.role)
+      if(auth.user.role === 'store-admin') router.replace('/register-store')
+      else router.replace('/login')
     }
+    console.log(auth.user, 'USER')
   }, [router.route, router.isReady])
 
   if (auth.loading || auth.user === null) {

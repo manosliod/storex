@@ -68,6 +68,10 @@ module.exports = (phase, { defaultConfig }) => {
           destination: 'http://localhost:3001/api/v1/users/:id/'
         },
         {
+          source: '/api/users/register/',
+          destination: 'http://localhost:3001/api/v1/users/register/'
+        },
+        {
           source: '/api/users/store/:storeId/',
           destination: 'http://localhost:3001/api/v1/users/store/:storeId/'
         },

@@ -1,5 +1,5 @@
 // ** React Imports
-import { createContext, useEffect, useState, ReactNode } from 'react'
+import {createContext, useEffect, useState, ReactNode, useCallback} from 'react'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -98,7 +98,7 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     setUser(null)
     setIsInitialized(false)
     await axios.get('/api/users/logout')
@@ -107,7 +107,7 @@ const AuthProvider = ({ children }: Props) => {
     deleteCookie('StorexJWT', { path: '/' })
     deleteCookie('StorexAuth', { path: '/' })
     router.push('/login')
-  }
+  }, [router])
 
   const handleRegister = (params: RegisterParams, errorCallback?: ErrCallbackType) => {
     axios
